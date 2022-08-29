@@ -2,13 +2,18 @@ xquery version "3.1" encoding "UTF-8";
 (:~
  : module retrieving a list of attestation of an entity in others.
  : 
- : @author Pietro Liuzzo 
+ : @author Pietro Liuzzo
+ : @author Duncan Paterson 
  :)
-module namespace att = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/att";
+module namespace att = "https://www.betamasaheft.uni-hamburg.de/BetMasWebApi/att";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
+
+
 import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
-import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
+(: import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm"; :)
 import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
+
 import module namespace what = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/what" at "xmldb:exist:///db/apps/BetMasApi/local/whatpointshere.xqm";
 
 declare namespace t = "http://www.tei-c.org/ns/1.0";
@@ -93,7 +98,7 @@ let $id := if($pers/@ref) then string($pers/@ref) else 'no-id'
               if($pers/@role) 
               then string($pers/@role) 
               else () 
-       return map {'id' : $id ,'name' : $name, 'type' : $thisrole}
+       return map {'id': $id ,'name': $name, 'type': $thisrole}
 return 
 map {'type' : 'persons', 'persons' : $persons}
 )
@@ -109,7 +114,7 @@ let $id := if($place/@ref) then string($place/@ref) else 'no-id'
               if($place/@type) 
               then string($place/@type)
               else () 
-       return map {'id' : $id ,'name' : $name, 'type' : $thistype}
+       return map {'id': $id ,'name': $name, 'type': $thistype}
 return 
 map {'type' : 'places', 'places' : $places}
 )
@@ -136,9 +141,9 @@ let $id := if($term/@key) then string($term/@key) else 'no-id'
               else if (not($term/@key)) then $term/text()
               else exptit:printTitleID($term/@key)
        
-       return map {'id' : $id ,'name' : $name}
+       return map {'id': $id ,'name': $name}
 return 
-map {'type' : 'terms', 'terms' : $terms}
+map {'type': 'terms', 'terms': $terms}
 )
 else ()
 let $occurrences := ($occpers, $occplace, $occwork, $occterm)
@@ -157,13 +162,13 @@ map {'position' : $p,
 
 
 return 
-map {'result' : $atts, 'title' : $titleRoot, 'id' : $MAINID }
+map {'result': $atts, 'title': $titleRoot, 'id': $MAINID }
 
 return
 
 
 ($config:response200Json,
-map {'query' : $id, 'results' : $hits }
+map {'query': $id, 'results': $hits }
 
 )
 };

@@ -5,18 +5,22 @@ xquery version "3.1" encoding "UTF-8";
  : by SdCtable.js 
  : 
  : @author Pietro Liuzzo 
+ : @author Duncan Paterson
  :)
-module namespace enrich = "https://www.betamasaheft.uni-hamburg.de/BetMas/enrich";
+module namespace enrich = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/enrich";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
+(: import module namespace http="http://expath.org/ns/http-client"; :)
+
 import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
-import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
+(: import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm"; :)
 
 (: namespaces of data used :)
 
 declare namespace t = "http://www.tei-c.org/ns/1.0";
 
-import module namespace http="http://expath.org/ns/http-client";
+
 
 (: For REST annotations :)
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";

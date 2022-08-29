@@ -3,19 +3,23 @@ xquery version "3.1" encoding "UTF-8";
  : clavis matching related funtions.
  : 
  : @author Pietro Liuzzo 
+ : @author Duncan Paterson
  :)
-module namespace clavis = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/clavis";
+module namespace clavis = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/clavis";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
-import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2"  at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
+import module namespace sm = "http://exist-db.org/xquery/securitymanager";
+(: import module namespace http="http://expath.org/ns/http-client"; :)
+
 import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
-import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
-import module namespace http="http://expath.org/ns/http-client";
+(: import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
+import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2"  at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm"; :)
+
 
 (: namespaces of data used :)
 
 declare namespace t = "http://www.tei-c.org/ns/1.0";
-
 declare namespace test="http://exist-db.org/xquery/xqsuite";
 
 (: For REST annotations :)
@@ -62,9 +66,9 @@ se interrogato da titolo da gli id, altrimenti per id da gli altri id e il titol
                     return
                         ( $config:response200Json,
                         map {
-                            "CAe" : $id,
-                            "title" : $title,
-                            "clavis" : $clavisIDS                
+                            "CAe": $id,
+                            "title": $title,
+                            "clavis": $clavisIDS                
                         })
                         
 };
