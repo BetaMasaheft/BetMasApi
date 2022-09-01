@@ -3,18 +3,24 @@ xquery version "3.1" encoding "UTF-8";
  : lists from API
  : 
  : @author Pietro Liuzzo 
+ : @author Duncan Paterson
  :)
-module namespace apiL = "https://www.betamasaheft.uni-hamburg.de/BetMas/apiLists";
+module namespace apiL = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/apiLists";
 import module namespace rest = "http://exquery.org/ns/restxq";
-import module namespace all="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm";
+import module namespace xmldb = "http://exist-db.org/xquery/xmldb";
+import module namespace util = "http://exist-db.org/xquery/dbutil";
+import module namespace sm = "http://exist-db.org/xquery/securitymanager";
+
+(: import module namespace all="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm"; :)
 import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
 import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2"  at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
+
 (: namespaces of data used :)
 declare namespace t = "http://www.tei-c.org/ns/1.0";
 declare namespace json = "http://www.w3.org/2013/XSL/json";
-import module namespace http="http://expath.org/ns/http-client";
+(: import module namespace http="http://expath.org/ns/http-client"; :)
 
 declare namespace test="http://exist-db.org/xquery/xqsuite";
 
@@ -254,10 +260,10 @@ let $log := log:add-log-message('/api/manuscripts/'||$repo||'/list/ids/json', sm
    let $items :=  for $resource in $msfromrepo 
     let $id := string($resource/@xml:id)
     let $title :=  exptit:printTitleID($id)
-    return map {'id' : $id, 'title' : $title}
+    return map {'id': $id, 'title': $title}
     return 
-    map {'items' : $items,
-    'total' : $total}
+    map {'items': $items,
+    'total': $total}
     )
 };
 
