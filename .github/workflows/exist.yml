@@ -6,7 +6,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-       matrix:
+      fail-fast: false
+      matrix:
          exist-version: [5.2.0, release]
          java-version: [8]  
 
