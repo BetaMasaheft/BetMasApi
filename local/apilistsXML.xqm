@@ -2,17 +2,24 @@ xquery version "3.1" encoding "UTF-8";
 (:~
  : lists from API
  : 
- : @author Pietro Liuzzo 
+ : @author Pietro Liuzzo
+ : @author Duncan Paterson 
  :)
-module namespace apiLx = "https://www.betamasaheft.uni-hamburg.de/BetMas/apiLists";
+module namespace apiLx = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/apiListsX";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
-import module namespace all="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm";
+(: import module namespace http="http://expath.org/ns/http-client"; :)
+import module namespace console="http://exist-db.org/xquery/console";
+import module namespace sm = "http://exist-db.org/xquery/securitymanager";
+import module namespace util = "http://exist-db.org/xquery/dbutil";
+
+
+(: import module namespace all="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm"; :)
 import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
 import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2"  at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
-import module namespace http="http://expath.org/ns/http-client";
-import module namespace console="http://exist-db.org/xquery/console";
+
 
 (: namespaces of data used :)
 declare namespace t = "http://www.tei-c.org/ns/1.0";

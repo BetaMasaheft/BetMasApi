@@ -14,7 +14,7 @@ xquery version "3.1" encoding "UTF-8";
 : urn:dts:betmasMS:Zotemberg1234:BLorient12314
  :)
 
-module namespace dts="https://www.betamasaheft.uni-hamburg.de/BetMas/dts";
+module namespace dts="https://www.betamasaheft.uni-hamburg.de/BetMasApi/dts";
 
 declare namespace output="http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace t="http://www.tei-c.org/ns/1.0";

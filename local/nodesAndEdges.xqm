@@ -2,20 +2,28 @@ xquery version "3.1" encoding "UTF-8";
 (:~
  : returns maps of nodes and edges for a given entity
  : 
- : @author Pietro Liuzzo 
+ : TODO(DP): This looks like it might be better located in BetMasWeb instead of BetMasApi
+ :
+ : @author Pietro Liuzzo
+ : @author Duncan Paterson 
  :)
-module namespace NE = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/NE";
+module namespace NE = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/NE";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
+(: import module namespace util = "http://exist-db.org/xquery/dbutil";
+import module namespace http = "http://expath.org/ns/http-client"; :)
+
 import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2" at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
+(: 
 import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
-import module namespace what = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/what" at "xmldb:exist:///db/apps/BetMasApi/local/whatpointshere.xqm";
+import module namespace what = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/what" at "xmldb:exist:///db/apps/BetMasApi/local/whatpointshere.xqm"; :)
 
 (: namespaces of data used :)
 
 declare namespace t = "http://www.tei-c.org/ns/1.0";
-import module namespace http = "http://expath.org/ns/http-client";
+
 (: For REST annotations :)
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace json = "http://www.json.org";
