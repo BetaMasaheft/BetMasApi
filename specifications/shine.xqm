@@ -1,26 +1,42 @@
 xquery version "3.1" encoding "UTF-8";
-module namespace shine="https://www.betamasaheft.uni-hamburg.de/BetMas/shine";
+
+(:~
+ : …on you crazy diamond ?
+ : 
+ : @author Pietro Liuzzo 
+ : @author Duncan Paterson
+ :)
+
+module namespace shine="https://www.betamasaheft.uni-hamburg.de/BetMasApi/shine";
+
+import module namespace rest = "http://exquery.org/ns/restxq";
+(: import module namespace functx="http://www.functx.com";
+import module namespace sparql="http://exist-db.org/xquery/sparql" at "java:org.exist.xquery.modules.rdf.SparqlModule"; :)
+
+
+import module namespace config="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
+
+
+
+(: import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
+import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
+import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
+import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2" at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
+import module namespace editors = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
+import module namespace dtslib="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/dtslib" at "xmldb:exist:///db/apps/BetMasWeb/modules/dtslib.xqm"; :)
+
 
 declare namespace output="http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace t="http://www.tei-c.org/ns/1.0";
 declare namespace exist = "http://exist.sourceforge.net/NS/exist";
-declare namespace s = "http://www.w3.org/2005/xpath-functions";
 declare namespace http = "http://expath.org/ns/http-client";
 declare namespace json = "http://www.json.org";
 declare namespace cx ="http://interedition.eu/collatex/ns/1.0";
 declare namespace sr="http://www.w3.org/2005/sparql-results#";
 declare namespace test="http://exist-db.org/xquery/xqsuite";
 
-import module namespace functx="http://www.functx.com";
-import module namespace rest = "http://exquery.org/ns/restxq";
-import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
-import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
-import module namespace config="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
-import module namespace sparql="http://exist-db.org/xquery/sparql" at "java:org.exist.xquery.modules.rdf.SparqlModule";
-import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
-import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2" at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
-import module namespace editors = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
-import module namespace dtslib="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/dtslib" at "xmldb:exist:///db/apps/BetMasWeb/modules/dtslib.xqm";
+(: declare namespace s = "http://www.w3.org/2005/xpath-functions"; :)
+
 
 declare variable $shine:TU := collection($config:data-rootW)//t:div[@type='edition'][descendant::t:ab[text()]] ;
 declare variable $shine:MS := collection($config:data-rootMS)//t:div[@type='edition'][descendant::t:ab[text()]] ;
