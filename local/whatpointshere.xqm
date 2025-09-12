@@ -2,7 +2,10 @@ xquery version "3.1" encoding "UTF-8";
 (:~
  : module with all the main functions which can be called by the API.
  : 
+ : TODO(DP): Figure out what it really does, this is copy pasta from elsewhere. 
+ :
  : @author Pietro Liuzzo 
+ : @author Duncan Paterson
  :)
 module namespace what = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/what";
 
