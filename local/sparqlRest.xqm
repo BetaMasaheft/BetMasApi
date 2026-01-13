@@ -3,15 +3,21 @@ xquery version "3.1" encoding "UTF-8";
  : module with all the main functions which can be called by the API.
  : 
  : @author Pietro Liuzzo 
+ : @author Duncan Paterson
  :)
 module namespace apisparql = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/apisparql";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
-import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
+import module namespace console="http://exist-db.org/xquery/console";
+(: import module namespace http="http://expath.org/ns/http-client"; :)
+
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
-import module namespace editors="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
 import module namespace fusekisparql = 'https://www.betamasaheft.uni-hamburg.de/BetMasWeb/sparqlfuseki' at "xmldb:exist:///db/apps/BetMasWeb/fuseki/fuseki.xqm";
-import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
-    import module namespace console="http://exist-db.org/xquery/console";
+
+(: import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
+import module namespace editors="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
+import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm"; :)
+
 (: namespaces of data used :)
 declare namespace test="http://exist-db.org/xquery/xqsuite";
 declare namespace t = "http://www.tei-c.org/ns/1.0";
@@ -20,10 +26,11 @@ declare namespace saws = "http://purl.org/saws/ontology";
 declare namespace cmd = "http://www.clarin.eu/cmd/";
 declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
 declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-declare namespace s = "http://www.w3.org/2005/xpath-functions";
 declare namespace sr = "http://www.w3.org/2005/sparql-results#";
 
-import module namespace http="http://expath.org/ns/http-client";
+(: declare namespace s = "http://www.w3.org/2005/xpath-functions"; :)
+
+
 
 (: For REST annotations :)
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
@@ -193,7 +200,7 @@ declare function apisparql:xml2json($nodes as node()*){
                                                          let $thepairs := for $pair in $property 
                                                                               let $type := if($pair/@rdf:resource) then 'uri'  else if($pair/element()) then 'bnode' else 'literal'
                                                                               let $value := if($pair/@rdf:resource) then string($pair/@rdf:resource) else if ($pair/element()) then ('another node') else normalize-space($pair/text())
-                                                                              let $pairmap :=  map {'type' : $type, 'value' : $value}
+                                                                              let $pairmap :=  map {'type': $type, 'value': $value}
                                                                               let $withxmllang := if($pair/@xml:lang) then map:put($pairmap, 'xml:lang', string($pair/@xml:lang)) else $pairmap
                                                                               let $withtype := if($pair/@*:datatype) then map:put($withxmllang, 'datatype', string($pair/@*:datatype)) else $withxmllang
                                                                                  return 
@@ -222,7 +229,7 @@ declare function apisparql:xml2json($nodes as node()*){
         return 
       map:merge( for $x in $node/sr:binding 
        let $binding := apisparql:xml2json($x/node()) 
-       return map{$x!@*:name : $binding}
+       return map{$x!@*:name: $binding}
        )
        case element(sr:bnode)
        return
@@ -237,7 +244,7 @@ declare function apisparql:xml2json($nodes as node()*){
        $withtype
        case element(sr:literal)
        return
-       let $literal :=  map {'type' : 'literal', 'value' : $node/text()}
+       let $literal :=  map {'type': 'literal', 'value': $node/text()}
         let $withxmllang := if($node/@xml:lang) then map:put($literal, 'xml:lang', $node/@xml:lang) else $literal
        let $withtype := if($node/@*:datatype) then map:put($withxmllang, 'datatype', $node/@*:datatype) else $withxmllang
        return 

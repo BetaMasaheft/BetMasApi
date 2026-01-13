@@ -6,33 +6,37 @@ xquery version "3.1" encoding "UTF-8";
  : @author Pietro Liuzzo 
  :)
 
-module namespace places = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/places";
+module namespace places = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/places";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
-import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
-import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
-import module namespace coord = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/coord" at "xmldb:exist:///db/apps/BetMasWeb/modules/coordinates.xqm";
-import module namespace editors="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
-import module namespace ann = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/ann" at "xmldb:exist:///db/apps/BetMasWeb/modules/annotations.xqm";
-import module namespace all="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm";
+import module namespace kwic = "http://exist-db.org/xquery/kwic" at "resource:org/exist/xquery/lib/kwic.xql";
+
+
+
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
-import module namespace kwic = "http://exist-db.org/xquery/kwic"
-    at "resource:org/exist/xquery/lib/kwic.xql";
+import module namespace ann = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/ann" at "xmldb:exist:///db/apps/BetMasWeb/modules/annotations.xqm";
+import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
+
+(: import module namespace editors="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
+import module namespace all="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm";
+import module namespace coord = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/coord" at "xmldb:exist:///db/apps/BetMasWeb/modules/coordinates.xqm";
+import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
 import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2" at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";   
-import module namespace error = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/error" at "xmldb:exist:///db/apps/BetMasWeb/modules/error.xqm";  
+import module namespace error = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/error" at "xmldb:exist:///db/apps/BetMasWeb/modules/error.xqm";   :)
+
 (: namespaces of data used :)
+
+(: declare namespace s = "http://www.w3.org/2005/xpath-functions"; :)
+declare namespace http = "http://expath.org/ns/http-client";
+
 declare namespace t = "http://www.tei-c.org/ns/1.0";
 declare namespace dcterms = "http://purl.org/dc/terms";
 declare namespace saws = "http://purl.org/saws/ontology";
 declare namespace cmd = "http://www.clarin.eu/cmd/";
 declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
 declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-declare namespace s = "http://www.w3.org/2005/xpath-functions";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
-(: For REST annotations :)
-(:http requests:)
-declare namespace http = "http://expath.org/ns/http-client";
-
 
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace json = "http://www.json.org";
@@ -101,8 +105,8 @@ declare function places:JSONfile($item as node(), $id as xs:string){
 let $regions := if($item//t:region[@ref])   then  for $region in $item//t:region[@ref] return ann:getannotationbody($region/@ref)   else ()
         let $settlements := if($item//t:settlement[@ref]) then for $settl in $item//t:settlement[@ref] return ann:getannotationbody($settl/@ref) else ()
         let $connects := ($regions, $settlements, "https://pleiades.stoa.org/places/39274")
-        let $creators := for $c in config:distinct-values($item//t:revisionDesc/t:change[contains(., 'created')]/@who) return map {"name" : editors:editorKey($c)}
-        let $contributors := for $c in config:distinct-values($item//t:revisionDesc/t:change/@who) return map {"name" : editors:editorKey($c)}
+        let $creators := for $c in config:distinct-values($item//t:revisionDesc/t:change[contains(., 'created')]/@who) return map {"name": editors:editorKey($c)}
+        let $contributors := for $c in config:distinct-values($item//t:revisionDesc/t:change/@who) return map {"name": editors:editorKey($c)}
         let $periods := if($item//t:state) then for $c in $item//t:state[@type eq 'existence']/@ref return exptit:printTitleID($c) else ()
         let $names := for $name in $item//t:place/t:placeName 
         let $nID := $name/@xml:id

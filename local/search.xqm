@@ -2,10 +2,15 @@ xquery version "3.1" encoding "UTF-8";
 (:~
  : module with all the main functions which can be called by the API.
  :
+ : TODO(DP): duplicate file in BetMas collection
+ : 
  : @author Pietro Liuzzo 
+ : @author Duncan Paterson
  :)
-module namespace restSearch = "https://www.betamasaheft.uni-hamburg.de/BetMas/restSearch";
+module namespace restSearch = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/restSearch";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
+
 import module namespace apprest = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/apprest" at "xmldb:exist:///db/apps/BetMasWeb/modules/apprest.xqm";
 
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";

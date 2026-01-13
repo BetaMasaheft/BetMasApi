@@ -2,20 +2,24 @@ xquery version "3.1" encoding "UTF-8";
 (:~
  : titles from API
  : 
- : @author Pietro Liuzzo 
+ : @author Pietro Liuzzo
+ : @author Duncan Paterson 
  :)
  
-module namespace apiTit = "https://www.betamasaheft.uni-hamburg.de/BetMas/apiTitles";
+module namespace apiTit = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/apiTitles";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
-import module namespace api = "https://www.betamasaheft.uni-hamburg.de/BetMas/api"  at "xmldb:exist:///db/apps/BetMas/modules/rest.xqm";
+(: import module namespace http="http://expath.org/ns/http-client"; :)
+
+(: import module namespace api = "https://www.betamasaheft.uni-hamburg.de/BetMas/api"  at "xmldb:exist:///db/apps/BetMas/modules/rest.xqm";
 import module namespace all="https://www.betamasaheft.uni-hamburg.de/BetMas/all" at "xmldb:exist:///db/apps/BetMas/modules/all.xqm";
-import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMas/modules/log.xqm";
+import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMas/modules/log.xqm"; :)
+
 import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMas/titles" at "xmldb:exist:///db/apps/BetMas/modules/titles.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
+
 (: namespaces of data used :)
 declare namespace t = "http://www.tei-c.org/ns/1.0";
-import module namespace http="http://expath.org/ns/http-client";
-
 declare namespace test="http://exist-db.org/xquery/xqsuite";
 
 (: For REST annotations :)
@@ -58,7 +62,7 @@ normalize-space(string-join(exptit:printTitleMainID($id)))
    normalize-space(exptit:printTitleMainID($id))
     else $id
     
-    return map {'title':$titletext}
+    return map {'title': $titletext}
     )
 };
 
