@@ -1,31 +1,40 @@
 xquery version "3.1" encoding "UTF-8";
-(: 
-implementation of 
-https://jsonapi.org/format/ 
-for 
-https://github.com/BetaMasaheft/Documentation/issues/1109
-:)
-module namespace jsonapi="https://www.betamasaheft.uni-hamburg.de/BetMas/jsonapi";
+(:~ JsonApi for … ?
+ : @see https://jsonapi.org/format/ 
+ : @see https://github.com/BetaMasaheft/Documentation/issues/1109
+ : 
+ : @author Pietro Liuzzo 
+ : @author Duncan Paterson
+ :)
+ 
+module namespace jsonapi="https://www.betamasaheft.uni-hamburg.de/BetMasApi/jsonapi";
+
+import module namespace rest = "http://exquery.org/ns/restxq";
+
+(: import module namespace functx="http://www.functx.com";
+import module namespace sparql="http://exist-db.org/xquery/sparql" at "java:org.exist.xquery.modules.rdf.SparqlModule";
+import module namespace what = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/what" at "xmldb:exist:///db/apps/BetMasApi/local/whatpointshere.xqm"; :)
+
+import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2" at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
+import module namespace editors = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
+import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
+
+(: import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
+import module namespace config="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm"; :)
+
 
 declare namespace output="http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace t="http://www.tei-c.org/ns/1.0";
 declare namespace exist = "http://exist.sourceforge.net/NS/exist";
-declare namespace s = "http://www.w3.org/2005/xpath-functions";
+
 declare namespace http = "http://expath.org/ns/http-client";
 declare namespace json = "http://www.json.org";
 declare namespace cx ="http://interedition.eu/collatex/ns/1.0";
 declare namespace sr="http://www.w3.org/2005/sparql-results#";
 declare namespace test="http://exist-db.org/xquery/xqsuite";
+(: declare namespace s = "http://www.w3.org/2005/xpath-functions"; :)
 
-import module namespace functx="http://www.functx.com";
-import module namespace rest = "http://exquery.org/ns/restxq";
-import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
-import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
-import module namespace config="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
-import module namespace sparql="http://exist-db.org/xquery/sparql" at "java:org.exist.xquery.modules.rdf.SparqlModule";
-import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2" at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
-import module namespace editors = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
-import module namespace what = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/what" at "xmldb:exist:///db/apps/BetMasApi/local/whatpointshere.xqm";
+
 
 declare variable $jsonapi:response200Json := <rest:response>
             <http:response

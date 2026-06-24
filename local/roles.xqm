@@ -4,24 +4,32 @@ xquery version "3.1" encoding "UTF-8";
  : module with all the main functions which can be called by the API.
  : 
  : @author Pietro Liuzzo 
+ : @author Duncan Paterson
  :)
-module namespace roles = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/roles";
+module namespace roles = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/roles";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
+import module namespace kwic = "http://exist-db.org/xquery/kwic" at "resource:org/exist/xquery/lib/kwic.xql";
+import module namespace sm = "http://exist-db.org/xquery/securitymanager";
+import module namespace ft ="http://exist-db.org/xquery/lucene";
+
+(: import module namespace http="http://expath.org/ns/http-client"; :)
+
 import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
-import module namespace kwic = "http://exist-db.org/xquery/kwic" at "resource:org/exist/xquery/lib/kwic.xql";
+
 (: namespaces of data used :)
 declare namespace t = "http://www.tei-c.org/ns/1.0";
-import module namespace http="http://expath.org/ns/http-client";
-
 declare namespace test="http://exist-db.org/xquery/xqsuite";
 
 (: For REST annotations :)
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
 
-(:~ given a role, search other attestations of it and print the persName around them and related infos :) 
+(:~ given a role, search other attestations of it and print the persName around them and related infos 
+ : TODO(DP): refactor to use structural index via fn:id() instead of relying on range index
+ :) 
 declare
 %rest:GET
 %rest:path("/api/RoleAttestations")
@@ -111,9 +119,9 @@ let $hits := for $pwl in $path
             
         return
             map {
-                'pwl' : $ID,
-                'title' : exptit:printTitleID($ID),
-                'hits' : count($pwl)
+                'pwl': $ID,
+                'title': exptit:printTitleID($ID),
+                'hits': count($pwl)
                     }
 
 return 

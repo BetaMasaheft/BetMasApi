@@ -2,11 +2,16 @@ xquery version "3.1" encoding "UTF-8";
 (:~
  : module with function called to show content of the archival work of Gnisci at the Vatican Library in BM
  : called by gnisci.js
- : @author Pietro Liuzzo 
+ : @author Pietro Liuzzo
+ : @author Duncan Paterson 
  :)
-module namespace chojnacki = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/chojnacki";
-import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
+
+module namespace chojnacki = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/chojnacki";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
+
+import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
+
 declare namespace marc = "http://www.loc.gov/MARC21/slim";
 
 (: For REST annotations :)
@@ -29,7 +34,7 @@ let $ChojnackItems := for $Choj in $Chojnacki
                                             let $name := string-join($Choj//marc:datafield[@tag="534"]/marc:subfield/text(), ' ')
                                        
                                        return
-  map {'name' : $name, 'link' : $link, 'digvatID' : $DigiVatID, 'segnatura' : $DigiVatSegnatura}
-return if (count($ChojnackItems) ge 1) then map {'total' : count($ChojnackItems), 'ChojnackItems' : $ChojnackItems}
+  map {'name': $name, 'link': $link, 'digvatID': $DigiVatID, 'segnatura': $DigiVatSegnatura}
+return if (count($ChojnackItems) ge 1) then map {'total' : count($ChojnackItems), 'ChojnackItems': $ChojnackItems}
 else if (count($ChojnackItems) eq 1) then map {'total' : 1, 'ChojnackItems' : [$ChojnackItems]}
-else map {'total' : 0, 'info' : 'sorry, there are no related items in the Chojnacki Collection at the Vatic Library.'}};
+else map {'total': 0, 'info': 'sorry, there are no related items in the Chojnacki Collection at the Vatic Library.'}};

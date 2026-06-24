@@ -5,22 +5,25 @@ xquery version "3.1" encoding "UTF-8";
  : @author Pietro Liuzzo 
  :)
 module namespace api = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/api";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
+(: import module namespace http="http://expath.org/ns/http-client";
+import module namespace kwic = "http://exist-db.org/xquery/kwic" at "resource:org/exist/xquery/lib/kwic.xql"; :)
+
+import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
+import module namespace viewItem = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/viewItem" at "xmldb:exist:///db/apps/BetMasWeb/modules/viewItem.xqm";
+
+(: import module namespace dts="https://www.betamasaheft.uni-hamburg.de/BetMasApi/dts" at "xmldb:exist:///db/apps/BetMasApi/specifications/dts.xqm";
+
 import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2"  at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
 import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace all="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm";
-import module namespace dts="https://www.betamasaheft.uni-hamburg.de/BetMas/dts" at "xmldb:exist:///db/apps/BetMasApi/specifications/dts.xqm";
 import module namespace editors="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
 import module namespace wiki="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/wiki" at "xmldb:exist:///db/apps/BetMasWeb/modules/wikitable.xqm";
 import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
-import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
-import module namespace viewItem = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/viewItem" at "xmldb:exist:///db/apps/BetMasWeb/modules/viewItem.xqm";
-import module namespace kwic = "http://exist-db.org/xquery/kwic"
-    at "resource:org/exist/xquery/lib/kwic.xql"; 
-
 
 import module namespace fusekisparql = 'https://www.betamasaheft.uni-hamburg.de/BetMasWeb/sparqlfuseki' at "xmldb:exist:///db/apps/BetMasWeb/fuseki/fuseki.xqm";
-import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
+import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm"; :)
 
 (: namespaces of data used :)
 declare namespace test="http://exist-db.org/xquery/xqsuite";
@@ -30,10 +33,9 @@ declare namespace saws = "http://purl.org/saws/ontology";
 declare namespace cmd = "http://www.clarin.eu/cmd/";
 declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
 declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-declare namespace s = "http://www.w3.org/2005/xpath-functions";
+(: declare namespace s = "http://www.w3.org/2005/xpath-functions"; :)
 declare namespace sr = "http://www.w3.org/2005/sparql-results#";
 
-import module namespace http="http://expath.org/ns/http-client";
 
 (: For REST annotations :)
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
@@ -156,7 +158,7 @@ function api:loadmsItems($mainid as xs:string, $msItem as xs:string*)
 let $msItemID := replace($msItem, '-', '.')
 let $msItem := $item/id($msItemID)
 let $items := for $ms in $msItem/t:msItem return api:msItem($mainid, $ms)
-return map{'msitems':$items}
+return map{'msitems': $items}
 
 };
    

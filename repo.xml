@@ -9,5 +9,6 @@
     <type>application</type>
     <target>BetMasApi</target>
     <finish/>
+    <!-- TODO(DP): reconsider the permissions set-up see https://github.com/BetaMasaheft/Documentation/issues/2222 -->
     <permissions user="Pietro" group="dba" mode="rw-rw-r--"/>
 </meta>

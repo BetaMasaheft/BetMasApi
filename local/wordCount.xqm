@@ -3,11 +3,16 @@ xquery version "3.1" encoding "UTF-8";
  : module returning word count for a single piece of text in a manuscript.
  : 
  : @author Pietro Liuzzo 
+ : @author Duncan Paterson
  :)
-module namespace WC = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/WC";
+module namespace WC = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/WC";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
+
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
+
 declare namespace t = "http://www.tei-c.org/ns/1.0";
+
 (: For REST annotations :)
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace json = "http://www.json.org";

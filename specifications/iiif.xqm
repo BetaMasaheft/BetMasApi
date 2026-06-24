@@ -3,20 +3,28 @@ xquery version "3.1" encoding "UTF-8";
  : implementation of the http://iiif.io/api/presentation/2.1/ 
  : for images of manuscripts stored in betamasaheft server. extracts manifest, sequence, canvas from the tei data
  : 
+ : TODO(DP): Check relationship to https://www.betamasaheft.uni-hamburg.de/BetMas/iiifviewer
+ : 
  : @author Pietro Liuzzo 
+ : @author Duncan Paterson
  :)
-module namespace iiif = "https://www.betamasaheft.uni-hamburg.de/BetMas/iiif";
+module namespace iiif = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/iiif";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
+(: import module namespace console = "http://exist-db.org/xquery/console";
+import module namespace kwic = "http://exist-db.org/xquery/kwic" at "resource:org/exist/xquery/lib/kwic.xql"; :)
+
+
+
+import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
+import module namespace locus = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/locus" at "xmldb:exist:///db/apps/BetMasWeb/modules/locus.xqm";
+
+(: import module namespace api="https://www.betamasaheft.uni-hamburg.de/BetMasApi/api" at "xmldb:exist:///db/apps/BetMasApi/local/rest.xqm";
 import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace all="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm";
 import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
-import module namespace api="https://www.betamasaheft.uni-hamburg.de/BetMasApi/api" at "xmldb:exist:///db/apps/BetMasApi/local/rest.xqm";
-import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
-import module namespace kwic = "http://exist-db.org/xquery/kwic"
-    at "resource:org/exist/xquery/lib/kwic.xql";
-import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
-import module namespace console = "http://exist-db.org/xquery/console";
-import module namespace locus = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/locus" at "xmldb:exist:///db/apps/BetMasWeb/modules/locus.xqm";
+import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm"; :)
+
 (: namespaces of data used :)
 declare namespace t = "http://www.tei-c.org/ns/1.0";
 declare namespace dcterms = "http://purl.org/dc/terms";
@@ -24,8 +32,9 @@ declare namespace saws = "http://purl.org/saws/ontology";
 declare namespace cmd = "http://www.clarin.eu/cmd/";
 declare namespace skos = "http://www.w3.org/2004/02/skos/core#";
 declare namespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-declare namespace s = "http://www.w3.org/2005/xpath-functions";
 declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
+(: declare namespace s = "http://www.w3.org/2005/xpath-functions"; :)
+
 
 (: For REST annotations :)
 declare namespace http = "http://expath.org/ns/http-client";

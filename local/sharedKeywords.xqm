@@ -4,18 +4,22 @@ xquery version "3.1" encoding "UTF-8";
  : 
  : @author Pietro Liuzzo 
  :)
-module namespace SK = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/SK";
+module namespace SK = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/SK";
+
 import module namespace rest = "http://exquery.org/ns/restxq";
-import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2"  at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
+import module namespace sm = "http://exist-db.org/xquery/securitymanager";
+import module namespace util = "http://exist-db.org/xquery/dbutil";
+(: import module namespace http="http://expath.org/ns/http-client"; :)
+
 import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
-import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
+
+(: import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2"  at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
+import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm"; :)
 
 (: namespaces of data used :)
 
 declare namespace t = "http://www.tei-c.org/ns/1.0";
-
-import module namespace http="http://expath.org/ns/http-client";
 
 (: For REST annotations :)
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
@@ -73,14 +77,14 @@ let $hits := for $hit in $query
                
           return
             map {
-                'id' : $id,
-                'title' : $title
+                'id': $id,
+                'title': $title
                     }
 
 return 
 ($config:response200Json,
 map {
-'hits' : $hits,
-'total' : $total
+'hits': $hits,
+'total': $total
 })
 };

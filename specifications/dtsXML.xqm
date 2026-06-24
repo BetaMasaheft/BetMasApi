@@ -2,20 +2,27 @@ xquery version "3.1" encoding "UTF-8";
 (:~
  : early test implementation of the https://github.com/distributed-text-services
  : SERVER
- : @author Pietro Liuzzo 
+ : @author Pietro Liuzzo
+ : @author Duncan Paterson 
 :)
-module namespace dtsXML="https://www.betamasaheft.uni-hamburg.de/BetMas/dtsXML";
+module namespace dtsXML="https://www.betamasaheft.uni-hamburg.de/BetMasApi/dtsXML";
 
-declare namespace output="http://www.w3.org/2010/xslt-xquery-serialization";
-declare namespace t="http://www.tei-c.org/ns/1.0";
-declare namespace exist = "http://exist.sourceforge.net/NS/exist";
-declare namespace s = "http://www.w3.org/2005/xpath-functions";
-declare namespace http = "http://expath.org/ns/http-client";
-declare namespace json = "http://www.json.org";
 import module namespace rest = "http://exquery.org/ns/restxq";
+import module namespace xmldb = "http://exist-db.org/xquery/xmldb";
+import module namespace sm = "http://exist-db.org/xquery/securitymanager";
+
 import module namespace log="http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace exptit="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace config="https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
+
+
+declare namespace t="http://www.tei-c.org/ns/1.0";
+declare namespace exist = "http://exist.sourceforge.net/NS/exist";
+declare namespace http = "http://expath.org/ns/http-client";
+declare namespace json = "http://www.json.org";
+(: declare namespace s = "http://www.w3.org/2005/xpath-functions"; :)
+
+declare namespace output="http://www.w3.org/2010/xslt-xquery-serialization";
 declare option output:method "json";
 declare option output:indent "yes";
 
