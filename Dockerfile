@@ -7,6 +7,8 @@
 #   docker compose up --build
 #
 
+ARG EXISTDB_VERSION=6.4.1
+
 # ---- build xars from source (needs ant, not present in the eXist image) ----
 FROM node:latest AS build-stage
 RUN apt-get update && apt-get install -y --no-install-recommends ant && rm -rf /var/lib/apt/lists/*
@@ -22,7 +24,6 @@ COPY . .
 RUN ant
 
 # ---- eXist, with everything installed ----
-ARG EXISTDB_VERSION=6.4.1
 FROM existdb/existdb:${EXISTDB_VERSION}-DEBUG
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && \
