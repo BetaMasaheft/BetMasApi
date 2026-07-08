@@ -451,12 +451,13 @@ declare %rest:GET %rest:path("/api/iiif/collections") %output:method("json") fun
 			for $item in $filtered
 			let $this := $item/ancestor::t:TEI
 			let $cnt := count($this//t:idno[@facs])
+			let $parent := $this//t:idno[@facs]/parent::node()
 			let $manifest := if ($cnt = 1) then
 				iiif:manifestsource($this)
 			else
 				iiif:multipleManifests($this)
 			let $tit := if ($parent/name() = "altIdentifier") then
-				concat(exptit:printTitleID($item/@xml:id), ": subset for ", string($parent/t:idno))
+				concat("subset for ", string-join($parent/t:idno))
 			else
 				try { exptit:printTitleID($this/@xml:id) } catch * { $err:description }
 			return map {"label": $tit, "@type": "sc:Manifest", "@id": $manifest}
