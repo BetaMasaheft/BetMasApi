@@ -1,0 +1,14 @@
+{
+	"name": "betmas-api",
+	"version": "1.0.0",
+	"description": "API for BetMas - Exist-db application",
+	"private": true,
+	"devDependencies": {
+		"prettier": "^3.9.4",
+		"prettier-plugin-xquery": "^1.6.2"
+	},
+	"scripts": {
+		"format:check": "prettier --check .",
+		"format:write": "prettier --write ."
+	}
+}
