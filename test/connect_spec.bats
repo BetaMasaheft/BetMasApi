@@ -8,11 +8,11 @@
 }
 
 @test "logs show clean start" {
-  result=$(docker logs exist-ci | grep -o 'Server has started')
+  result=$(docker logs exist | grep -o 'Server has started')
   [ "$result" == 'Server has started' ]
 }
 
 @test "logs are error free" {
-  result=$(docker logs exist-ci | grep -ow -c 'ERROR' || true)
+  result=$(docker logs exist | grep -ow -c 'ERROR' || true)
   [ "$result" -eq 0 ]
 }
