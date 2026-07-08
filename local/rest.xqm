@@ -211,26 +211,6 @@ declare %rest:GET %rest:path("/api/cataloguesZotero") %output:method("html") fun
 	return <option value="{ replace(string($catalogue/@xml:id), "bm_", "") }">{ $catalogue//text() }</option>
 };
 
-(: given a work id returns the witnesses of works in which this is contained :)
-declare
-	%rest:GET %rest:path("/api/witnessesOfContainer/{$id}") %output:method("json")
-function api:witnessesOfContainerWork($id as xs:string*) {
-	let $id := if (starts-with($id, $config:baseURI)) then
-		string($id)
-	else
-		$config:baseURI || string($id)
-	let $corresps := $dts:collection-rootW//t:div[@type eq "textpart"][@corresp eq $id]
-	for $c in $corresps
-	let $workid := string(root($c)/t:TEI/@xml:id)
-	let $witnesses := $dts:collection-rootMS//t:title[contains(@ref, $workid)]
-	let $witnessesID :=
-		for $w in $witnesses
-		let $wid := string(root($w)/t:TEI/@xml:id)
-		return exptit:printTitle($wid)
-	let $tit := exptit:printTitle($workid)
-	return map {"containerWork": $tit, "witnesses": config:distinct-values($witnessesID)}
-};
-
 (: displayes on the hompage the totals of the portal :)
 declare %rest:GET %rest:path("/api/count") %output:method("json") function api:count() {
 	(
@@ -372,32 +352,6 @@ function api:additiontext($id as xs:string*, $addID as xs:string*) {
 	let $entity := $exptit:col/id($id)
 	let $a := $entity//t:item[@xml:id = $addID]
 	return <div xmlns="https://www.w3.org/1999/xhtml">{ viewItem:q($a) }</div>
-};
-
-(:~
- : returns the relation element with the author attribution
- :)
-
-declare
-	%rest:GET
-	%rest:path("/api/{$id}/author")
-	%output:method("xml")
-	%test:arg("id", "LIT1032Agains")
-	%test:assertXPath("//@name[. = 'saws:isAttributedToAuthor']")
-	%test:arg("id", "BAVet1")
-	%test:assertEquals(
-		'<rest:response xmlns:rest="http://exquery.org/ns/restxq"><http:response xmlns:http="http://expath.org/ns/http-client" status="400"><http:header name="Content-Type" value="application/xml; charset=utf-8"/></http:response></rest:response>',
-		"<sorry>no info</sorry>"
-	)
-function api:getauthorfromrelation($id as xs:string*) {
-	let $item := $dts:collection-rootW/id($id)
-	return if ($item//t:relation[@name eq "saws:isAttributedToAuthor"]) then (
-		log:add-log-message("/api/" || $id || "/author", sm:id()//sm:real/sm:username/string(), "REST"),
-		$api:response200XML,
-		$item//t:relation[@name eq "saws:isAttributedToAuthor"]
-	) else (
-		$api:response400XML, <sorry>no info</sorry>
-	)
 };
 
 (:~

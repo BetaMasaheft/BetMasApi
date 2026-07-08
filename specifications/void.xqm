@@ -60,9 +60,6 @@ declare %rest:GET %rest:path("/api/void") %output:method("text") function void:g
         void:uriLookupEndpoint <" ||
 		$config:appUrl ||
 		"/api/dts> ;
-        void:uriLookupEndpoint <" ||
-		$config:appUrl ||
-		"/api/iiif/collections> ;
         void:exampleResource <" ||
 		$config:appUrl ||
 		"/rdf/manuscripts/BAVcerulli37.rdf> ;

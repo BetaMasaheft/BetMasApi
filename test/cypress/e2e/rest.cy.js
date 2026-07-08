@@ -18,12 +18,6 @@ it("GET /api/cataloguesZotero", () => {
 	});
 });
 
-it("GET /api/witnessesOfContainer/LIT1367Exodus", () => {
-	cy.request({ url: "/api/witnessesOfContainer/LIT1367Exodus", failOnStatusCode: false }).then((res) => {
-		expect(res.status, `/api/witnessesOfContainer/LIT1367Exodus responded with ${res.status}`).to.be.lessThan(500);
-	});
-});
-
 it("GET /api/count", () => {
 	cy.request({ url: "/api/count", failOnStatusCode: false }).then((res) => {
 		expect(res.status, `/api/count responded with ${res.status}`).to.be.lessThan(500);
@@ -57,12 +51,6 @@ it("GET /api/LIT1367Exodus/work/a1", () => {
 it("GET /api/additions/LIT1367Exodus/addition/a1", () => {
 	cy.request({ url: "/api/additions/LIT1367Exodus/addition/a1", failOnStatusCode: false }).then((res) => {
 		expect(res.status, `/api/additions/LIT1367Exodus/addition/a1 responded with ${res.status}`).to.be.lessThan(500);
-	});
-});
-
-it("GET /api/LIT1367Exodus/author", () => {
-	cy.request({ url: "/api/LIT1367Exodus/author", failOnStatusCode: false }).then((res) => {
-		expect(res.status, `/api/LIT1367Exodus/author responded with ${res.status}`).to.be.lessThan(500);
 	});
 });
 

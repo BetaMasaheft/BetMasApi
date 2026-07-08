@@ -289,19 +289,6 @@ function places:alljsonIns($start as xs:integer*) {
 	return map {"type": "FeatureCollection", "features": $places}
 };
 
-declare
-	%rest:GET %rest:path("/api/geoJson/places") %rest:query-param("start", "{$start}", 1) %output:method("json")
-function places:alljsonPl($start as xs:integer*) {
-	$places:response200json,
-	let $log := log:add-log-message("/api/geoJson/places/", sm:id()//sm:real/sm:username/string(), "places")
-	let $ps := $places:collection-rootPl//t:TEI[descendant::t:place[descendant::t:geo/text() or @sameAs]]
-	let $places :=
-		for $item in $ps
-		let $id := string($item/@xml:id)
-		return try { places:JSONfile($item, $id) } catch * { ($id || " !error! " || $err:code || ": " || $err:description) }
-	return map {"type": "FeatureCollection", "features": $places}
-};
-
 (: get places mentioned in one item :)
 declare %rest:GET %rest:path("/api/KML/places/{$id}") %output:method("xml") function places:kmlattestation(
 	$id as xs:string*

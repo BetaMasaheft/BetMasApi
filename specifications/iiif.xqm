@@ -435,49 +435,6 @@ declare function iiif:placemanifest() {
 		return map {"label": $label, "@type": "sc:Manifest", "@id": $manifestId}
 };
 
-(: collection of all manifests available. this is called by rest viewer /manuscripts/viewer in the miradorcoll.js :)
-declare %rest:GET %rest:path("/api/iiif/collections") %output:method("json") function iiif:allManifests() {
-	(
-		$iiif:response200,
-		log:add-log-message("/api/iiif/collections", sm:id()//sm:real/sm:username/string(), "iiif"),
-		let $allidno := $iiif:collection-rootMS//t:idno[@facs]
-		let $EMIP := $allidno[preceding-sibling::t:collection eq "EMIP"][@n]
-		let $ES := $allidno[preceding-sibling::t:collection eq "Ethio-SPaRe"][@n]
-		let $vat := $allidno[preceding-sibling::t:repository[@ref eq "INS0003BAV"]]
-		let $bnf := $allidno[preceding-sibling::t:repository[@ref eq "INS0303BNF"]]
-		let $bml := $allidno[preceding-sibling::t:repository[@ref eq "INS0339BML"]]
-		let $filtered := ($ES, $EMIP, $vat, $bnf, $bml)
-		let $manifests :=
-			for $item in $filtered
-			let $this := $item/ancestor::t:TEI
-			let $cnt := count($this//t:idno[@facs])
-			let $manifest := if ($cnt = 1) then
-				iiif:manifestsource($this)
-			else
-				iiif:multipleManifests($this)
-			let $tit := if ($parent/name() = "altIdentifier") then
-				concat(exptit:printTitleID($item/@xml:id), ": subset for ", string($parent/t:idno))
-			else
-				try { exptit:printTitleID($this/@xml:id) } catch * { $err:description }
-			return map {"label": $tit, "@type": "sc:Manifest", "@id": $manifest}
-		let $placeManifests := iiif:placemanifest()
-		let $iiifroot := $config:appUrl || "/api/iiif/"
-		let $request := $iiifroot || "/collections"
-
-		return map {
-			"@context": "http://iiif.io/api/presentation/2/context.json",
-			"@id": $request,
-			"@type": "sc:Collection",
-			"label": "Top Level Collection for " || $config:app-title,
-			"viewingHint": "top",
-			"description": "All images of Ethiopian Manuscripts available",
-			"attribution":
-				"Provided by Bibliothèque nationale de France, The Vatican Library, Ethio-SPaRe, EMIP, Biblioteca Medicea Laurenziana and other IIIF providers",
-			"manifests": ($manifests, $placeManifests)
-		}
-	)
-};
-
 (: collection of all manifests available from one institution. this is called by rest viewer /manuscripts/{$repoid}/list/viewer in the miradorcoll.js :)
 
 declare

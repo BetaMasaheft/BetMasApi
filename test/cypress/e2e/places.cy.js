@@ -12,12 +12,6 @@ it("GET /api/geoJson/institutions", () => {
 	});
 });
 
-it("GET /api/geoJson/places", () => {
-	cy.request({ url: "/api/geoJson/places", failOnStatusCode: false }).then((res) => {
-		expect(res.status, `/api/geoJson/places responded with ${res.status}`).to.be.lessThan(500);
-	});
-});
-
 it("GET /api/KML/places/LIT1367Exodus", () => {
 	cy.request({ url: "/api/KML/places/LIT1367Exodus", failOnStatusCode: false }).then((res) => {
 		expect(res.status, `/api/KML/places/LIT1367Exodus responded with ${res.status}`).to.be.lessThan(500);
