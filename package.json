@@ -4,11 +4,17 @@
 	"description": "API for BetMas - Exist-db application",
 	"private": true,
 	"devDependencies": {
+		"husky": "^9.1.7",
+		"lint-staged": "^17.0.8",
 		"prettier": "^3.9.4",
 		"prettier-plugin-xquery": "^1.6.2"
 	},
 	"scripts": {
 		"format:check": "prettier --check .",
-		"format:write": "prettier --write ."
+		"format:write": "prettier --write .",
+		"prepare": "husky"
+	},
+	"lint-staged": {
+		"*": "prettier --write --ignore-unknown"
 	}
 }
