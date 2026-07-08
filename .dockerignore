@@ -1,0 +1,5 @@
+node_modules
+build
+.git
+test/cypress/screenshots
+test/cypress/videos
