@@ -2,38 +2,166 @@ name: exist-db CI
 
 on: [push, pull_request]
 
+concurrency:
+  group: betmasapi-ci-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
+      fail-fast: false
       matrix:
-        exist-version: [5.2.0, release]
-        java-version: [8]
+        include:
+          - exist-version: 6.4.1
+            experimental: false
+          # unstable dev build; failures here are early warnings, not blockers
+          - exist-version: 7.0.0-beta3
+            experimental: true
 
     steps:
-      # Prepare Host
-      - uses: actions/checkout@v7
-      - name: Cache Docker layers
-        uses: actions/cache@v6
+      - name: Checkout BetMasApi
+        uses: actions/checkout@v7
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-      - name: Install Bats
-        run: sudo apt-get -y install bats
-      # Build Expath Package
-      - name: Build Expath Package
+          path: BetMasApi
+
+      # BetMasApi depends on BetMasWeb (see expath-pkg.xml), which isn't
+      # published anywhere we can just download - build it from source too.
+      - name: Checkout BetMasWeb
+        uses: actions/checkout@v7
+        with:
+          repository: BetaMasaheft/BetMasWeb
+          path: BetMasWeb
+
+      # BetMasWeb's post-install.xql needs BetMasService's registerRESTXQ.xql
+      # to be present. BetMasService only exists inside the BetMas monorepo.
+      - name: Checkout BetMas
+        uses: actions/checkout@v7
+        with:
+          repository: BetaMasaheft/BetMas
+          path: BetMas
+
+      - name: Install bats and ant
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install bats ant
+
+      - name: Setup Java
         uses: actions/setup-java@v5
         with:
-          java-version: ${{ matrix.java-version }}
-          distribution: "temurin"
-      - run: ant
-      # Install Package
-      - name: Install package and start exist instance
-        run: docker run -dit -p 8080:8080 -p 8443:8433 -v ${{ github.workspace }}/build:/exist/autodeploy:ro --name exist-ci existdb/existdb:${{ matrix.exist-version }}
-      - name: wait for instance
-        run: sleep 15
-      # Test
-      - name: Run Bats Tests
+          java-version: 11
+          distribution: temurin
+
+      - name: Build BetMasApi package
+        working-directory: BetMasApi
+        run: ant
+
+      - name: Build BetMasWeb package
+        working-directory: BetMasWeb
+        run: ant
+
+      - name: Build BetMasService package
+        working-directory: BetMas/db/apps/BetMasService
+        run: ant
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: BetMasApi/package-lock.json
+
+      - name: Install npm dependencies
+        working-directory: BetMasApi
+        run: npm ci
+
+      - name: Start eXist
+        run: docker run -dit -p 8080:8080 --name exist existdb/existdb:${{ matrix.exist-version }}
+
+      - name: Wait for eXist to start
+        timeout-minutes: 2
+        run: |
+          until docker logs exist 2>&1 | grep -q "Server has started"; do
+            echo "Still waiting..."
+            sleep 2
+          done
+
+      - name: Run bats smoke tests
+        working-directory: BetMasApi
         run: bats --tap test/*.bats
+
+      # Install order matters: BetMasWeb declares a dependency on
+      # shared-resources, and BetMasApi declares a dependency on BetMasWeb.
+      - name: Install shared-resources dependency
+        working-directory: BetMasApi
+        env:
+          EXISTDB_SERVER: http://localhost:8080
+          EXISTDB_USER: admin
+          EXISTDB_PASS: ""
+        run: npx xst package install from-registry shared-resources
+
+      # BetMasWeb's pre/post-install scripts assume a few things a fresh
+      # instance doesn't have: the BetaMasaHeftAdmin account (production
+      # provisions it separately) and a /db/apps/expanded collection
+      # (normally populated by a separate data-expansion step).
+      - name: Prepare instance for BetMasWeb install
+        working-directory: BetMasApi
+        env:
+          EXISTDB_SERVER: http://localhost:8080
+          EXISTDB_USER: admin
+          EXISTDB_PASS: ""
+        run: |
+          npx xst execute "if (sm:user-exists('BetaMasaHeftAdmin')) then () else sm:create-account('BetaMasaHeftAdmin', 'test', 'dba')"
+          npx xst execute "if (xmldb:collection-available('/db/apps/expanded')) then () else xmldb:create-collection('/db/apps', 'expanded')"
+          npx xst execute "for \$c in ('authority-files','manuscripts','institutions','narratives','persons','places','studies','works') where not(xmldb:collection-available('/db/apps/expanded/' || \$c)) return xmldb:create-collection('/db/apps/expanded', \$c)"
+
+      - name: Install BetMasService package
+        working-directory: BetMasApi
+        env:
+          EXISTDB_SERVER: http://localhost:8080
+          EXISTDB_USER: admin
+          EXISTDB_PASS: ""
+        run: npx xst package install local-files ../BetMas/db/apps/BetMasService/build/*.xar
+
+      - name: Install BetMasWeb package
+        working-directory: BetMasApi
+        env:
+          EXISTDB_SERVER: http://localhost:8080
+          EXISTDB_USER: admin
+          EXISTDB_PASS: ""
+        run: npx xst package install local-files ../BetMasWeb/build/*.xar
+
+      - name: Install BetMasApi package
+        working-directory: BetMasApi
+        env:
+          EXISTDB_SERVER: http://localhost:8080
+          EXISTDB_USER: admin
+          EXISTDB_PASS: ""
+        run: npx xst package install local-files build/*.xar
+
+      # Registers this package's RestXQ modules; see test/register-restxq.xq
+      - name: Register RestXQ endpoints
+        working-directory: BetMasApi
+        env:
+          EXISTDB_SERVER: http://localhost:8080
+          EXISTDB_USER: admin
+          EXISTDB_PASS: ""
+        run: npx xst execute --file test/register-restxq.xq
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v7
+        with:
+          working-directory: BetMasApi
+          install: false
+
+      - name: Show eXist logs on failure
+        if: failure()
+        run: docker logs exist
+
+      - name: Upload Cypress screenshots
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: cypress-screenshots-${{ matrix.exist-version }}
+          path: BetMasApi/test/cypress/screenshots/
