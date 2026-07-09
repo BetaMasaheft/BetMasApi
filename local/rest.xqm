@@ -456,11 +456,16 @@ declare function api:citation($item as node()) {
 (:~
  : given the file id, returns the source TEI xml
  :)
-declare %test:arg("id", "LIT1367Exodus") %test:assertXPath("//*:text") function api:get-tei-by-ID($request as map(*)) {
-	let $id as xs:string := $request?parameters?id
-	return let $log := log:add-log-message("/api/" || $id || "/tei", sm:id()//sm:real/sm:username/string(), "REST")
-		let $login := xmldb:login($config:data-root, $config:ADMIN, $config:ppw)
-		return (api:get-tei-rec-by-ID($id))
+declare function api:get-tei-by-ID($id as xs:string) {
+	let $log := log:add-log-message("/api/" || $id || "/tei", sm:id()//sm:real/sm:username/string(), "REST")
+	let $login := xmldb:login($config:data-root, $config:ADMIN, $config:ppw)
+	return (api:get-tei-rec-by-ID($id))
+};
+
+declare %test:arg("id", "LIT1367Exodus") %test:assertXPath("//*:text") function api:get-tei-by-ID-route(
+	$request as map(*)
+) {
+	api:get-tei-by-ID($request?parameters?id)
 };
 
 (:~

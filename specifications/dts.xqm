@@ -385,12 +385,12 @@ declare function dts:URItemplates($request as map(*)) {
 					"variableRepresentation": "BasicRepresentation",
 					"mapping":
 						[
-							map {"@type": "IriTemplateMapping", "variable": "collection_id", "required": true},
-							map {"@type": "IriTemplateMapping", "variable": "passage", "required": false},
-							map {"@type": "IriTemplateMapping", "variable": "page", "required": false},
-							map {"@type": "IriTemplateMapping", "variable": "level", "required": false},
-							map {"@type": "IriTemplateMapping", "variable": "start", "required": false},
-							map {"@type": "IriTemplateMapping", "variable": "end", "required": false}
+							map {"@type": "IriTemplateMapping", "variable": "collection_id", "required": true()},
+							map {"@type": "IriTemplateMapping", "variable": "passage", "required": false()},
+							map {"@type": "IriTemplateMapping", "variable": "page", "required": false()},
+							map {"@type": "IriTemplateMapping", "variable": "level", "required": false()},
+							map {"@type": "IriTemplateMapping", "variable": "start", "required": false()},
+							map {"@type": "IriTemplateMapping", "variable": "end", "required": false()}
 						]
 				}
 			)
@@ -410,10 +410,10 @@ declare function dts:URItemplates($request as map(*)) {
 					"variableRepresentation": "BasicRepresentation",
 					"mapping":
 						[
-							map {"@type": "IriTemplateMapping", "variable": "collection_id", "required": true},
-							map {"@type": "IriTemplateMapping", "variable": "passage", "required": false},
-							map {"@type": "IriTemplateMapping", "variable": "start", "required": false},
-							map {"@type": "IriTemplateMapping", "variable": "end", "required": false}
+							map {"@type": "IriTemplateMapping", "variable": "collection_id", "required": true()},
+							map {"@type": "IriTemplateMapping", "variable": "passage", "required": false()},
+							map {"@type": "IriTemplateMapping", "variable": "start", "required": false()},
+							map {"@type": "IriTemplateMapping", "variable": "end", "required": false()}
 						]
 				}
 			)
@@ -432,8 +432,8 @@ declare function dts:URItemplates($request as map(*)) {
 					"variableRepresentation": "BasicRepresentation",
 					"mapping":
 						[
-							map {"@type": "IriTemplateMapping", "variable": "collection_id", "required": false},
-							map {"@type": "IriTemplateMapping", "variable": "page", "required": false}
+							map {"@type": "IriTemplateMapping", "variable": "collection_id", "required": false()},
+							map {"@type": "IriTemplateMapping", "variable": "page", "required": false()}
 						]
 				}
 			)
@@ -465,11 +465,11 @@ declare function dts:Indexes($request as map(*)) {
 	let $indexName as xs:string* := $request?parameters?indexName
 	let $ref as xs:string* := $request?parameters?ref
 	let $level as xs:string* := $request?parameters?level
-	let $begin as xs:string* := $request?parameters?begin
+	let $begin as xs:integer* := $request?parameters?begin
 	let $start as xs:string* := $request?parameters?start
 	let $end as xs:string* := $request?parameters?end
 	let $groupBy as xs:string* := $request?parameters?groupBy
-	let $page as xs:string* := $request?parameters?page
+	let $page as xs:integer* := $request?parameters?page
 	let $max as xs:string* := $request?parameters?max
 	let $version as xs:string* := $request?parameters?version
 	return let $id := if ($id = "") then
@@ -574,8 +574,8 @@ declare function dts:WebAnnotationsIndex($request as map(*)) {
 	let $coll as xs:string* := $request?parameters?coll
 	let $id as xs:string* := $request?parameters?id
 	let $indexName as xs:string* := $request?parameters?indexName
-	let $begin as xs:string* := $request?parameters?begin
-	let $page as xs:string* := $request?parameters?page
+	let $begin as xs:integer* := $request?parameters?begin
+	let $page as xs:integer* := $request?parameters?page
 	let $version as xs:string* := $request?parameters?version
 	return let $parsedURN := dtslib:parseDTS($id)
 		let $BMid := if (matches($id, "https://betamasaheft.eu")) then
@@ -616,8 +616,8 @@ else print all paginated values for that index in the collection :)
 declare function dts:WebAnnotationsItem($request as map(*)) {
 	let $coll as xs:string* := $request?parameters?coll
 	let $BMid as xs:string* := $request?parameters?BMid
-	let $begin as xs:string* := $request?parameters?begin
-	let $page as xs:string* := $request?parameters?page
+	let $begin as xs:integer* := $request?parameters?begin
+	let $page as xs:integer* := $request?parameters?page
 	let $version as xs:string* := $request?parameters?version
 	return let $indexes := ("persons", "places", "keywords", "loci", "works")
 		let $file := dtslib:switchContext($coll)/id($BMid)
@@ -659,8 +659,8 @@ declare function dts:WebAnnotationsItemIndex($request as map(*)) {
 	let $BMid as xs:string* := $request?parameters?BMid
 	let $indexName as xs:string* := $request?parameters?indexName
 	let $id as xs:string* := $request?parameters?id
-	let $begin as xs:string* := $request?parameters?begin
-	let $page as xs:string* := $request?parameters?page
+	let $begin as xs:integer* := $request?parameters?begin
+	let $page as xs:integer* := $request?parameters?page
 	let $version as xs:string* := $request?parameters?version
 	return let $file := dtslib:switchContext($coll)/id($BMid)
 		let $title := exptit:printTitleID($BMid)
