@@ -21,20 +21,15 @@ declare namespace sparql = "http://www.w3.org/2005/sparql-results#";
 (: http requests :)
 declare namespace http = "http://expath.org/ns/http-client";
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
-declare namespace json = "http://www.json.org";
 
-import module namespace rest = "http://exquery.org/ns/restxq";
 import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace coord = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/coord" at "xmldb:exist:///db/apps/BetMasWeb/modules/coordinates.xqm";
 import module namespace editors = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
 import module namespace ann = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/ann" at "xmldb:exist:///db/apps/BetMasWeb/modules/annotations.xqm";
-import module namespace all = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
-import module namespace kwic = "http://exist-db.org/xquery/kwic" at "resource:org/exist/xquery/lib/kwic.xql";
 import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
 import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2" at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
-import module namespace error = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/error" at "xmldb:exist:///db/apps/BetMasWeb/modules/error.xqm";
 
 declare variable $places:prefixes :=
 	"
@@ -69,19 +64,6 @@ declare variable $places:placeprefixes :=
 @prefix lawd: &lt;http://lawd.info/ontology/&gt; .
 @prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
 @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema&gt; .";
-
-declare variable $places:response200 := $config:response200;
-
-declare variable $places:response200turtle := <rest:response>
-	<http:response status="200">
-		<http:header name="Content-Type" value="text/turtle; charset=utf-8" />
-		<http:header name="Access-Control-Allow-Origin" value="*" />
-	</http:response>
-</rest:response>;
-
-declare variable $places:response200xml := $config:response200XML;
-
-declare variable $places:response200json := $config:response200Json;
 
 declare variable $places:bmurl := $config:appUrl;
 
@@ -265,11 +247,9 @@ declare function places:JSONfile($item as node(), $id as xs:string) {
 	}
 };
 
-declare %rest:GET %rest:path("/api/geoJson/places/{$id}") %output:method("json") function places:json(
-	$id as xs:string*
-) {
-	if (starts-with($id, "LOC") or starts-with($id, "INS") or starts-with($id, "ETH")) then (
-		$places:response200json,
+declare function places:json($request as map(*)) {
+	let $id as xs:string* := $request?parameters?id
+	return if (starts-with($id, "LOC") or starts-with($id, "INS") or starts-with($id, "ETH")) then (
 		let $log := log:add-log-message("/api/geoJson/places/" || $id, sm:id()//sm:real/sm:username/string(), "places")
 		let $item := $places:collection-rootPlIn/id($id)[name() = "TEI"]
 		return places:JSONfile($item, $id)
@@ -277,50 +257,42 @@ declare %rest:GET %rest:path("/api/geoJson/places/{$id}") %output:method("json")
 	)
 };
 
-declare
-	%rest:GET %rest:path("/api/geoJson/institutions") %rest:query-param("start", "{$start}", 1) %output:method("json")
-function places:alljsonIns($start as xs:integer*) {
-	$places:response200json,
-	let $log := log:add-log-message("/api/geoJson/institutions/", sm:id()//sm:real/sm:username/string(), "places")
-	let $ps := $places:collection-rootIn//t:TEI[descendant::t:place[descendant::t:geo/text() or @sameAs]]
+declare function places:alljsonIns($request as map(*)) {
+	let $start as xs:integer* := $request?parameters?start
+	return let $log := log:add-log-message("/api/geoJson/institutions/", sm:id()//sm:real/sm:username/string(), "places")
+		let $ps := $places:collection-rootIn//t:TEI[descendant::t:place[descendant::t:geo/text() or @sameAs]]
 
-	let $places :=
-		for $item in $ps
-		let $id := string($item/@xml:id)
-		return try { places:JSONfile($item, $id) } catch * { map {"info": ("error with" || $id)} }
-	return map {"type": "FeatureCollection", "features": $places}
+		let $places :=
+			for $item in $ps
+			let $id := string($item/@xml:id)
+			return try { places:JSONfile($item, $id) } catch * { map {"info": ("error with" || $id)} }
+		return map {"type": "FeatureCollection", "features": $places}
 };
 
-declare
-	%rest:GET %rest:path("/api/geoJson/places") %rest:query-param("start", "{$start}", 1) %output:method("json")
-function places:alljsonPl($start as xs:integer*) {
-	$places:response200json,
-	let $log := log:add-log-message("/api/geoJson/places/", sm:id()//sm:real/sm:username/string(), "places")
-	let $ps := $places:collection-rootPl//t:TEI[descendant::t:place[descendant::t:geo/text() or @sameAs]]
-	let $places :=
-		for $item in $ps
-		let $id := string($item/@xml:id)
-		return try { places:JSONfile($item, $id) } catch * { ($id || " !error! " || $err:code || ": " || $err:description) }
-	return map {"type": "FeatureCollection", "features": $places}
+declare function places:alljsonPl($request as map(*)) {
+	let $start as xs:integer* := $request?parameters?start
+	return let $log := log:add-log-message("/api/geoJson/places/", sm:id()//sm:real/sm:username/string(), "places")
+		let $ps := $places:collection-rootPl//t:TEI[descendant::t:place[descendant::t:geo/text() or @sameAs]]
+		let $places :=
+			for $item in $ps
+			let $id := string($item/@xml:id)
+			return try { places:JSONfile($item, $id) } catch * {
+				($id || " !error! " || $err:code || ": " || $err:description)
+			}
+		return map {"type": "FeatureCollection", "features": $places}
 };
 
 (: get places mentioned in one item :)
-declare %rest:GET %rest:path("/api/KML/places/{$id}") %output:method("xml") function places:kmlattestation(
-	$id as xs:string*
-) {
-	$places:response200xml,
-	let $log := log:add-log-message("/api/KML/places/" || $id, sm:id()//sm:real/sm:username/string(), "places")
-	let $items := $places:collection-root/id($id)
-	return places:kmlplacesm($items)
+declare function places:kmlattestation($request as map(*)) {
+	let $id as xs:string* := $request?parameters?id
+	return let $log := log:add-log-message("/api/KML/places/" || $id, sm:id()//sm:real/sm:username/string(), "places")
+		let $items := $places:collection-root/id($id)
+		return places:kmlplacesm($items)
 };
 
 (: get for one date all places attestated with a link to it :)
 (: does not work TODO need to implement error code for problem with parameter conversion!: exerr:ERROR :)
-(: declare
-%rest:GET
-%rest:path("/api/KML/date/{$d}")
-%output:method("xml")
-function places:kmlDateswithPlacesatts($d as xs:date) {
+(: declare function places:kmlDateswithPlacesatts($d as xs:date) {
 
 let $log := log:add-log-message('/api/KML/date/' || $id, sm:id()//sm:real/sm:username/string() , 'places')
   let $items := ($places:collection-root//t:date[(@when | @notBefore | @notAfter)[contains(., $d)]][@corresp[contains(., '#P')]], $places:collection-root//t:creation[(@when | @notBefore | @notAfter)[contains(., $d)]][@corresp[contains(., '#P')]])
@@ -328,8 +300,7 @@ return
 
 if($items >= 1)
 then(
-$places:response200xml,
-       <kml>
+<kml>
        {for $place in $items
        return
       places:datePlaceMark($place)
@@ -340,16 +311,14 @@ $places:response200xml,
 }; :)
 
 (: get for one place all its attestations with date :)
-declare %rest:GET %rest:path("/api/KML/place/{$placeid}") %output:method("xml") function places:kmlPlaceAttestation(
-	$placeid as xs:string*
-) {
-	if (
+declare function places:kmlPlaceAttestation($request as map(*)) {
+	let $placeid as xs:string* := $request?parameters?placeid
+	return if (
 		starts-with($placeid, "LOC") or
 			starts-with($placeid, "INS") or
 			starts-with($placeid, "wd:") or
 			starts-with($placeid, "gn:")
 	) then (
-		$places:response200xml,
 		let $log := log:add-log-message("/api/KML/places/" || $placeid, sm:id()//sm:real/sm:username/string(), "places")
 		let $items := $places:collection-root//t:placeName[@ref eq $placeid]
 		return <kml>
@@ -365,27 +334,19 @@ declare %rest:GET %rest:path("/api/KML/place/{$placeid}") %output:method("xml") 
 };
 
 (: get all places mentioned in a collection :)
-declare %rest:GET %rest:path("/api/KML/{$collection}/places") %output:method("xml") function places:kmltextALL(
-	$collection as xs:string
-) {
-	$places:response200xml,
-	let $log := log:add-log-message(
-		"/api/KML/" || $collection || "/places",
-		sm:id()//sm:real/sm:username/string(),
-		"places"
-	)
-	let $items := switch2:collectionVar($collection)
-	return places:kmlplacesm($items)
+declare function places:kmltextALL($request as map(*)) {
+	let $collection as xs:string := $request?parameters?collection
+	return let $log := log:add-log-message(
+			"/api/KML/" || $collection || "/places",
+			sm:id()//sm:real/sm:username/string(),
+			"places"
+		)
+		let $items := switch2:collectionVar($collection)
+		return places:kmlplacesm($items)
 };
 
 (: get all places mentioned in a collection :)
-(: declare
-%rest:GET
-%rest:path("/api/KML/{$collection}/origPlaces")
-%output:method("xml")
-function places:kmltextALLorig($collection as xs:string) {
-
-$places:response200xml,
+(: declare function places:kmltextALLorig($collection as xs:string) {
 
 let $log := log:add-log-message('/api/KML/'||$collection||'/origPlaces', sm:id()//sm:real/sm:username/string() , 'places')
 let $col := switch2:collectionVar($collection)
@@ -413,13 +374,7 @@ declare function places:kmlplacesm($items) {
 };
  :)
 (: get dates related to places about one item (metadata) :)
-(: declare
-%rest:GET
-%rest:path("/api/KML/datePlace/{$id}")
-%output:method("xml")
-function places:kmlmetadata($id as xs:string*) {
-
-$places:response200xml,
+(: declare function places:kmlmetadata($id as xs:string*) {
 
 let $log := log:add-log-message('/api/KML/datePlace/'||$id, sm:id()//sm:real/sm:username/string() , 'places')
        let $items := $places:collection-root/id($id)
@@ -429,13 +384,7 @@ return
  :)
 
 (: get all dates related to places mentioned in a collection :)
-(: declare
-%rest:GET
-%rest:path("/api/KML/{$collection}/datePlace")
-%output:method("xml")
-function places:kmlmetadataALL($collection as xs:string) {
-
-$places:response200xml,
+(: declare function places:kmlmetadataALL($collection as xs:string) {
 
 let $log := log:add-log-message('/api/KML/'||$collection||'/datePlace', sm:id()//sm:real/sm:username/string() , 'places')
     let $items :=   switch2:collectionVar($collection)
@@ -553,22 +502,21 @@ see geobrowser data specification :)
 
 (: a test export of pelagios annotations. not suitable for the complete data set, but parametrizable to filter a more reasonable dataset. :)
 
-declare
-	%rest:GET %rest:path("/api/gazetteer") %rest:query-param("start", "{$start}", 1) %output:method("text")
-function places:placesGazetteer($start as xs:integer*) {
-	let $log := log:add-log-message("/api/gazetteer", sm:id()//sm:real/sm:username/string(), "places")
-	let $data := subsequence($places:collection-rootPlIn//t:place, $start, 100)
-	let $annotations :=
-		for $d in $data
-		let $r := root($d)//t:TEI/@xml:id
-		let $tit := try { exptit:printTitleID(string($r)) } catch * { root($d)//t:titleStmt/t:title/text() }
-		order by $tit
-		return ann:annotatedThing($d, $tit, $r)
+declare function places:placesGazetteer($request as map(*)) {
+	let $start as xs:integer* := $request?parameters?start
+	return let $log := log:add-log-message("/api/gazetteer", sm:id()//sm:real/sm:username/string(), "places")
+		let $data := subsequence($places:collection-rootPlIn//t:place, $start, 100)
+		let $annotations :=
+			for $d in $data
+			let $r := root($d)//t:TEI/@xml:id
+			let $tit := try { exptit:printTitleID(string($r)) } catch * { root($d)//t:titleStmt/t:title/text() }
+			order by $tit
+			return ann:annotatedThing($d, $tit, $r)
 
-	return ($places:response200turtle, $places:prefixes || string-join($annotations//text(), " "))
+		return ($places:prefixes || string-join($annotations//text(), " "))
 };
 
-declare %rest:GET %rest:path("/api/gazetteer/all") %output:method("text") function places:placesGazetteer() {
+declare function places:placesGazetteerAll($request as map(*)) {
 	let $log := log:add-log-message("/api/gazetteer/all", sm:id()//sm:real/sm:username/string(), "places")
 	let $data := $places:collection-rootPlIn//t:place
 	let $annotations :=
@@ -578,21 +526,24 @@ declare %rest:GET %rest:path("/api/gazetteer/all") %output:method("text") functi
 		order by $tit
 		return ann:annotatedThing($d, $tit, $r)
 
-	return ($places:response200turtle, $places:prefixes || string-join($annotations//text(), " "))
+	return ($places:prefixes || string-join($annotations//text(), " "))
 };
 
-declare
-	%rest:GET %rest:path("/api/gazetteer/place/{$id}") %output:method("text")
-function places:placesGazetteerOneplace($id as xs:string*) {
-	let $log := log:add-log-message("/api/gazetteer/place/" || $id, sm:id()//sm:real/sm:username/string(), "places")
-	let $data := $places:collection-rootPlIn//t:TEI/id($id)//t:place
-	return if ($data) then
-		let $tit := exptit:printTitleID($id)
-		let $annotations := ann:annotatedThing($data, $tit, $id)
-		return ($places:response200turtle, $places:prefixes || string-join($annotations//text(), " "))
-	else (
-		"Sorry, the item you have requested does not exist in our places and repositories collections."
-	)
+declare function places:placesGazetteerOneplace($request as map(*)) {
+	let $id as xs:string* := $request?parameters?id
+	return let $log := log:add-log-message(
+			"/api/gazetteer/place/" || $id,
+			sm:id()//sm:real/sm:username/string(),
+			"places"
+		)
+		let $data := $places:collection-rootPlIn//t:TEI/id($id)//t:place
+		return if ($data) then
+			let $tit := exptit:printTitleID($id)
+			let $annotations := ann:annotatedThing($data, $tit, $id)
+			return ($places:prefixes || string-join($annotations//text(), " "))
+		else (
+			"Sorry, the item you have requested does not exist in our places and repositories collections."
+		)
 };
 
 declare function places:annotation($this, $r, $x, $mode) {
@@ -670,126 +621,126 @@ declare function places:ThisAnnotatedThing($r, $tit, $mode as xs:string) {
                 '
 };
 
-declare
-	%rest:GET %rest:path("/api/placeNames/works/all") %rest:query-param("start", "{$start}", 1) %output:method("text")
-function places:placesInWorksTTL($start as xs:integer*) {
-	let $log := log:add-log-message("/api/placeNames/works/all", sm:id()//sm:real/sm:username/string(), "places")
-	let $data := $places:collection-rootW//t:placeName[starts-with(@ref, "http")]
-	let $annotations :=
-		for $d in $data
-		group by $r := root($d)//t:TEI/@xml:id
-		let $tit := exptit:printTitleID(string($r))
-		order by $r
-		return <annotatedThing id="{ $r }">
-			{ places:ThisAnnotatedThing($r, $tit, "works") }
-			<annotations>
-				{
-					for $thisd at $x in $d
-					return places:annotation($thisd, $r, $x, "works")
-				}
-			</annotations>
-		</annotatedThing>
-
-	return ($places:response200turtle, $places:prefixes || string-join($annotations//text(), " "))
-};
-
-declare
-	%rest:GET
-	%rest:path("/api/placeNames/manuscripts/all")
-	%rest:query-param("start", "{$start}", 1)
-	%output:method("text")
-function places:placesInManuscriptsTTL($start as xs:integer*) {
-	let $log := log:add-log-message("/api/placeNames/manuscripts/all", sm:id()//sm:real/sm:username/string(), "places")
-	let $data := $places:collection-rootW//t:placeName[starts-with(@ref, "http")]
-
-	let $annotations :=
-		for $d in $data
-		group by $r := root($d)//t:TEI/@xml:id
-		let $tit := exptit:printTitleID(string($r))
-		order by $r
-		return <annotatedThing id="{ $r }">
-			{ places:ThisAnnotatedThing($r, $tit, "manuscripts") }
-			<annotations>
-				{
-					for $thisd at $x in $d
-					return places:annotation($thisd, $r, $x, "manuscripts")
-				}
-			</annotations>
-		</annotatedThing>
-
-	return ($places:response200turtle, $places:prefixes || string-join($annotations//text(), " "))
-};
-
-declare %rest:GET %rest:path("/api/placeNames/works/{$id}") %output:method("text") function places:placesInOneWorkTTL(
-	$id as xs:string
-) {
-	let $log := log:add-log-message("/api/placeNames/works/" || $id, sm:id()//sm:real/sm:username/string(), "places")
-	let $file := $places:collection-rootW/id($id)
-	let $sid := string($id)
-	let $r := $file/@xml:id
-	return if ($file) then
-		let $data := $file//t:placeName[@ref]
-		let $abstract := if ($file//t:abstract) then
-			$file//t:abstract
-		else (
-			"no description available"
-		)
-		let $url := $config:appUrl || "/"
-		let $baseUrl := $config:appUrl || $id
+declare function places:placesInWorksTTL($request as map(*)) {
+	let $start as xs:integer* := $request?parameters?start
+	return let $log := log:add-log-message("/api/placeNames/works/all", sm:id()//sm:real/sm:username/string(), "places")
+		let $data := $places:collection-rootW//t:placeName[starts-with(@ref, "http")]
 		let $annotations :=
-			let $tit := exptit:printTitleID($sid)
-			return <annotatedThing id="{ $id }">
+			for $d in $data
+			group by $r := root($d)//t:TEI/@xml:id
+			let $tit := exptit:printTitleID(string($r))
+			order by $r
+			return <annotatedThing id="{ $r }">
 				{ places:ThisAnnotatedThing($r, $tit, "works") }
 				<annotations>
 					{
-						for $thisd at $x in $data
+						for $thisd at $x in $d
 						return places:annotation($thisd, $r, $x, "works")
 					}
 				</annotations>
 			</annotatedThing>
 
-		return ($places:response200turtle, $places:prefixes || string-join($annotations//text(), " "))
-
-	else (
-		"Sorry, the id you provided is not a valid work record id."
-	)
+		return ($places:prefixes || string-join($annotations//text(), " "))
 };
 
-declare
-	%rest:GET %rest:path("/api/placeNames/manuscripts/{$id}") %output:method("text")
-function places:placesInOneManuscriptTTL($id as xs:string) {
-	let $log := log:add-log-message(
-		"/api/placeNames/manuscripts/" || $id,
-		sm:id()//sm:real/sm:username/string(),
-		"places"
-	)
-	let $file := $places:collection-rootMS/id($id)
-	let $sid := string($id)
-	let $r := $file/@xml:id
-	return if ($file) then
-		let $data := $file//t:placeName[@ref]
+declare function places:placesInManuscriptsTTL($request as map(*)) {
+	let $start as xs:integer* := $request?parameters?start
+	return let $log := log:add-log-message(
+			"/api/placeNames/manuscripts/all",
+			sm:id()//sm:real/sm:username/string(),
+			"places"
+		)
+		let $data := $places:collection-rootW//t:placeName[starts-with(@ref, "http")]
 
 		let $annotations :=
-			let $tit := exptit:printTitleID($sid)
-			return <annotatedThing id="{ $id }">
+			for $d in $data
+			group by $r := root($d)//t:TEI/@xml:id
+			let $tit := exptit:printTitleID(string($r))
+			order by $r
+			return <annotatedThing id="{ $r }">
 				{ places:ThisAnnotatedThing($r, $tit, "manuscripts") }
 				<annotations>
 					{
-						for $thisd at $x in $data
+						for $thisd at $x in $d
 						return places:annotation($thisd, $r, $x, "manuscripts")
 					}
 				</annotations>
 			</annotatedThing>
 
-		return ($places:response200turtle, $places:prefixes || string-join($annotations//text(), " "))
-
-	else (
-		"Sorry, the id you provided is not a valid manuscript record id."
-	)
+		return ($places:prefixes || string-join($annotations//text(), " "))
 };
 
-declare %rest:GET %rest:path("/api/placeNames/void") %output:method("text") function places:placesInWorksTTLVoid() {
-	$places:response200turtle,
+declare function places:placesInOneWorkTTL($request as map(*)) {
+	let $id as xs:string := $request?parameters?id
+	return let $log := log:add-log-message(
+			"/api/placeNames/works/" || $id,
+			sm:id()//sm:real/sm:username/string(),
+			"places"
+		)
+		let $file := $places:collection-rootW/id($id)
+		let $sid := string($id)
+		let $r := $file/@xml:id
+		return if ($file) then
+			let $data := $file//t:placeName[@ref]
+			let $abstract := if ($file//t:abstract) then
+				$file//t:abstract
+			else (
+				"no description available"
+			)
+			let $url := $config:appUrl || "/"
+			let $baseUrl := $config:appUrl || $id
+			let $annotations :=
+				let $tit := exptit:printTitleID($sid)
+				return <annotatedThing id="{ $id }">
+					{ places:ThisAnnotatedThing($r, $tit, "works") }
+					<annotations>
+						{
+							for $thisd at $x in $data
+							return places:annotation($thisd, $r, $x, "works")
+						}
+					</annotations>
+				</annotatedThing>
+
+			return ($places:prefixes || string-join($annotations//text(), " "))
+
+		else (
+			"Sorry, the id you provided is not a valid work record id."
+		)
+};
+
+declare function places:placesInOneManuscriptTTL($request as map(*)) {
+	let $id as xs:string := $request?parameters?id
+	return let $log := log:add-log-message(
+			"/api/placeNames/manuscripts/" || $id,
+			sm:id()//sm:real/sm:username/string(),
+			"places"
+		)
+		let $file := $places:collection-rootMS/id($id)
+		let $sid := string($id)
+		let $r := $file/@xml:id
+		return if ($file) then
+			let $data := $file//t:placeName[@ref]
+
+			let $annotations :=
+				let $tit := exptit:printTitleID($sid)
+				return <annotatedThing id="{ $id }">
+					{ places:ThisAnnotatedThing($r, $tit, "manuscripts") }
+					<annotations>
+						{
+							for $thisd at $x in $data
+							return places:annotation($thisd, $r, $x, "manuscripts")
+						}
+					</annotations>
+				</annotatedThing>
+
+			return ($places:prefixes || string-join($annotations//text(), " "))
+
+		else (
+			"Sorry, the id you provided is not a valid manuscript record id."
+		)
+};
+
+declare function places:placesInWorksTTLVoid($request as map(*)) {
 	let $dataMS := $places:collection-rootMS//t:placeName[starts-with(@ref, "http")]
 	let $dataW := $places:collection-rootW//t:placeName[starts-with(@ref, "http")]
 	let $annotationsMS :=

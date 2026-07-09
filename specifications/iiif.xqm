@@ -22,7 +22,7 @@ declare namespace http = "http://expath.org/ns/http-client";
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace json = "http://www.json.org";
 
-import module namespace rest = "http://exquery.org/ns/restxq";
+import module namespace roaster = "http://e-editiones.org/roaster";
 import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace all = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
@@ -43,10 +43,6 @@ declare variable $iiif:collection-rootIn := collection($config:data-rootIn);
 declare variable $iiif:collection-rootMS := collection($config:data-rootMS);
 
 declare variable $iiif:collection-rootW := collection($config:data-rootW);
-
-declare variable $iiif:response200 := $config:response200Json;
-
-declare variable $iiif:response400 := $config:response400;
 
 (: functions doing microtasks for the structures :)
 
@@ -417,7 +413,7 @@ declare function iiif:multipleManifests($item as node()) {
 };
 
 (: switch single or multiple :)
-declare function iiif:manifest($this as node()) {
+declare function iiif:manifest-for-node($this as node()) {
 	let $manifest := if (count($this//t:idno[@facs]) = 1) then
 		iiif:manifestsource($this)
 	else
@@ -436,9 +432,8 @@ declare function iiif:placemanifest() {
 };
 
 (: collection of all manifests available. this is called by rest viewer /manuscripts/viewer in the miradorcoll.js :)
-declare %rest:GET %rest:path("/api/iiif/collections") %output:method("json") function iiif:allManifests() {
+declare function iiif:allManifests($request as map(*)) {
 	(
-		$iiif:response200,
 		log:add-log-message("/api/iiif/collections", sm:id()//sm:real/sm:username/string(), "iiif"),
 		let $allidno := $iiif:collection-rootMS//t:idno[@facs]
 		let $EMIP := $allidno[preceding-sibling::t:collection eq "EMIP"][@n]
@@ -481,11 +476,9 @@ declare %rest:GET %rest:path("/api/iiif/collections") %output:method("json") fun
 
 (: collection of all manifests available from one institution. this is called by rest viewer /manuscripts/{$repoid}/list/viewer in the miradorcoll.js :)
 
-declare
-	%rest:GET %rest:path("/api/iiif/collection/{$institutionid}") %output:method("json")
-function iiif:RepoCollection($institutionid as xs:string) {
-	(
-		$iiif:response200,
+declare function iiif:RepoCollection($request as map(*)) {
+	let $institutionid as xs:string := $request?parameters?institutionid
+	return (
 		log:add-log-message("/api/iiif/collections/" || $institutionid, sm:id()//sm:real/sm:username/string(), "iiif"),
 		let $repoName := exptit:printTitleID($institutionid)
 		let $repo := $iiif:collection-rootMS//t:repository[@ref eq $institutionid]
@@ -516,11 +509,9 @@ function iiif:RepoCollection($institutionid as xs:string) {
 	)
 };
 
-declare %rest:GET %rest:path("/api/iiif/witnesses/{$workID}") %output:method("json") function iiif:WitnessesCollection(
-	$workID as xs:string
-) {
-	(
-		$iiif:response200,
+declare function iiif:WitnessesCollection($request as map(*)) {
+	let $workID as xs:string := $request?parameters?workID
+	return (
 		log:add-log-message("/api/iiif/witnesses/" || $workID, sm:id()//sm:real/sm:username/string(), "iiif"),
 		let $workName := exptit:printTitleID($workID)
 		let $work := $iiif:collection-rootW/id($workID)
@@ -563,151 +554,150 @@ declare %rest:GET %rest:path("/api/iiif/witnesses/{$workID}") %output:method("js
 
 (: manifest for one manuscript, including all ranges and canvases :)
 (: IIIF: The manifest response contains sufficient information for the client to initialize itself and begin to display something quickly to the user. The manifest resource represents a single object and any intellectual work or works embodied within that object. In particular it includes the descriptive, rights and linking information for the object. It then embeds the sequence(s) of canvases that should be rendered to the user. :)
-declare
-	%rest:GET %rest:path("/api/iiif/{$id}/manifest") %rest:query-param("alt", "{$alt}", "") %output:method("json")
-function iiif:manifest($id as xs:string*, $alt as xs:string*) {
-	let $item := if (starts-with($id, "ES")) then
-		collection($config:data-rootMS || "/ES")/id($id)
-	else if (starts-with($id, "BML")) then
-		collection($config:data-rootMS || "/FlorenceBML")/id($id)
-	else if (starts-with($id, "EMIP")) then
-		collection($config:data-rootMS || "/EMIP")/id($id)
-	else
-		$exptit:col/id($id)
-	let $facsid := if ($alt = "") then
-		($item//t:msIdentifier/t:idno[@facs], $item//t:place//t:desc[@facs])[1]
-	else
-		($item//t:altIdentifier[@xml:id eq $alt]/t:idno[@facs], $item//t:place//t:desc[@facs])[1]
-	(: returns an attribute @facs :)
-	let $facs := iiif:facsSwitch($facsid)
-	return if ($facs) then (
-		$iiif:response200,
-		log:add-log-message("/api/iiif/" || $id || "/manifest", sm:id()//sm:real/sm:username/string(), "iiif"),
-		let $institutionID := if ($item//t:repository) then
-			string(($item//t:repository)[1]/@ref)
+declare function iiif:manifest($request as map(*)) {
+	let $id as xs:string* := $request?parameters?id
+	let $alt as xs:string* := $request?parameters?alt
+	return let $item := if (starts-with($id, "ES")) then
+			collection($config:data-rootMS || "/ES")/id($id)
+		else if (starts-with($id, "BML")) then
+			collection($config:data-rootMS || "/FlorenceBML")/id($id)
+		else if (starts-with($id, "EMIP")) then
+			collection($config:data-rootMS || "/EMIP")/id($id)
 		else
-			$id
+			$exptit:col/id($id)
+		let $facsid := if ($alt = "") then
+			($item//t:msIdentifier/t:idno[@facs], $item//t:place//t:desc[@facs])[1]
+		else
+			($item//t:altIdentifier[@xml:id eq $alt]/t:idno[@facs], $item//t:place//t:desc[@facs])[1]
+		(: returns an attribute @facs :)
+		let $facs := iiif:facsSwitch($facsid)
+		return if ($facs) then (
+			log:add-log-message("/api/iiif/" || $id || "/manifest", sm:id()//sm:real/sm:username/string(), "iiif"),
+			let $institutionID := if ($item//t:repository) then
+				string(($item//t:repository)[1]/@ref)
+			else
+				$id
 
-		let $institution := exptit:printTitleID($institutionID)
-		let $imagesbaseurl := $config:appUrl || "/iiif/" || $facs
-		let $tot := $facsid/@n
-		let $url := $config:appUrl ||
-			(
-				if ($item/ancestor::t:TEI/@type = "ins") then
-					"/institutions/"
-				else
-					"/manuscripts/"
-			) ||
-			$id
-		(: this is where the images actually are, in the images server :)
-		let $thumbid := $imagesbaseurl ||
-			(
-				if ($item//t:collection = "Ethio-SPaRe") then
-					"_"
-				else (
-				)
-			) ||
-			"001.tif/full/80,100/0/default.jpg"
-		let $objectType := string($item//@form[1])
-		let $iiifroot := $config:appUrl || "/api/iiif/" || $id
-		let $image := $config:appUrl || "/iiif/" || $id || "/"
-		let $canvas := iiif:Canvases($item, $id, $iiifroot, $facsid)
-		let $structures := iiif:Structures($item, $iiifroot, $facsid)
-		(: this is where the manifest is :)
-		let $request := $iiifroot ||
-			"/manifest" ||
-			(
-				if ($facsid/parent::t:altIdentifier/@xml:id) then
-					"?alt=" || string($facsid/parent::t:altIdentifier/@xml:id)
-				else if ($facsid/parent::t:altIdentifier) then
-					"?alt=alt"
-				else (
-				)
-			)
-		(: this is where the sequence is :)
-		let $attribution := if ($item//t:repository[1][@ref eq "INS0339BML"]) then (
-			"The images of the manuscript taken by Antonella Brita, Karsten Helmholz and Susanne Hummel during a mission funded by the Sonderforschungsbereich 950 Manuskriptkulturen in Asien, Afrika und Europa, the ERC Advanced Grant TraCES, From Translation to Creation: Changes in Ethiopic Style and Lexicon from Late Antiquity to the Middle Ages (Grant Agreement no. 338756) and Beta maṣāḥǝft. The images are published in conjunction with this descriptive data about the manuscript with the permission of the https://www.bmlonline.it/la-biblioteca/cataloghi/, prot. 190/28.13.10.01/2.23 of the 24 January 2019 and are available for research purposes."
-		) else
-			"Provided by " ||
+			let $institution := exptit:printTitleID($institutionID)
+			let $imagesbaseurl := $config:appUrl || "/iiif/" || $facs
+			let $tot := $facsid/@n
+			let $url := $config:appUrl ||
 				(
-					if ($item//t:collection/text()) then
-						string-join($item//t:collection/text(), ", ")
+					if ($item/ancestor::t:TEI/@type = "ins") then
+						"/institutions/"
 					else
-						"Bm"
+						"/manuscripts/"
 				) ||
-				" project. " ||
+				$id
+			(: this is where the images actually are, in the images server :)
+			let $thumbid := $imagesbaseurl ||
 				(
-					if ($item//t:editionStmt/t:p) then
-						string-join($item//t:editionStmt/t:p/string())
-					else
-						" "
+					if ($item//t:collection = "Ethio-SPaRe") then
+						"_"
+					else (
+					)
+				) ||
+				"001.tif/full/80,100/0/default.jpg"
+			let $objectType := string($item//@form[1])
+			let $iiifroot := $config:appUrl || "/api/iiif/" || $id
+			let $image := $config:appUrl || "/iiif/" || $id || "/"
+			let $canvas := iiif:Canvases($item, $id, $iiifroot, $facsid)
+			let $structures := iiif:Structures($item, $iiifroot, $facsid)
+			(: this is where the manifest is :)
+			let $request := $iiifroot ||
+				"/manifest" ||
+				(
+					if ($facsid/parent::t:altIdentifier/@xml:id) then
+						"?alt=" || string($facsid/parent::t:altIdentifier/@xml:id)
+					else if ($facsid/parent::t:altIdentifier) then
+						"?alt=alt"
+					else (
+					)
 				)
-		let $logo := if ($item//t:repository[1][@ref eq "INS0339BML"]) then (
-			"/rest/BetMasWeb/resources/images/logobml.png"
-		) else
-			"/rest/BetMasWeb/resources/images/logo" ||
-				string-join($item//t:collection[1][not(matches(., "\s"))]/text()) ||
-				".png"
-		let $sequence := $iiifroot || "/sequence/normal"
-		let $parent := $facsid/parent::node()
-		let $label := if ($parent/name() = "altIdentifier") then
-			concat(exptit:printTitleID($item/@xml:id), ": subset for ", string($parent/@xml:id))
-		else
-			exptit:printTitleID($item/@xml:id)
+			(: this is where the sequence is :)
+			let $attribution := if ($item//t:repository[1][@ref eq "INS0339BML"]) then (
+				"The images of the manuscript taken by Antonella Brita, Karsten Helmholz and Susanne Hummel during a mission funded by the Sonderforschungsbereich 950 Manuskriptkulturen in Asien, Afrika und Europa, the ERC Advanced Grant TraCES, From Translation to Creation: Changes in Ethiopic Style and Lexicon from Late Antiquity to the Middle Ages (Grant Agreement no. 338756) and Beta maṣāḥǝft. The images are published in conjunction with this descriptive data about the manuscript with the permission of the https://www.bmlonline.it/la-biblioteca/cataloghi/, prot. 190/28.13.10.01/2.23 of the 24 January 2019 and are available for research purposes."
+			) else
+				"Provided by " ||
+					(
+						if ($item//t:collection/text()) then
+							string-join($item//t:collection/text(), ", ")
+						else
+							"Bm"
+					) ||
+					" project. " ||
+					(
+						if ($item//t:editionStmt/t:p) then
+							string-join($item//t:editionStmt/t:p/string())
+						else
+							" "
+					)
+			let $logo := if ($item//t:repository[1][@ref eq "INS0339BML"]) then (
+				"/rest/BetMasWeb/resources/images/logobml.png"
+			) else
+				"/rest/BetMasWeb/resources/images/logo" ||
+					string-join($item//t:collection[1][not(matches(., "\s"))]/text()) ||
+					".png"
+			let $sequence := $iiifroot || "/sequence/normal"
+			let $parent := $facsid/parent::node()
+			let $label := if ($parent/name() = "altIdentifier") then
+				concat(exptit:printTitleID($item/@xml:id), ": subset for ", string($parent/@xml:id))
+			else
+				exptit:printTitleID($item/@xml:id)
 
-		(: $mainstructure :)
-		return map {
-			"@context": "http://iiif.io/api/presentation/2/context.json",
-			"@id": $request,
-			"@type": "sc:Manifest",
-			"label": $label,
-			"metadata":
-				[
-					map {
-						"label": "Repository",
-						"value":
-							[
-								map {
-									"@value":
-										'<a href="' ||
-											$config:appUrl ||
-											"/manuscripts/" ||
-											$institutionID ||
-											'/list">' ||
-											$institution ||
-											"</a>",
-									"@language": "en"
-								}
-							]
-					},
-					map {"label": "object type", "value": [map {"@value": $objectType, "@language": "en"}]},
-					map {"label": "main view", "value": $config:appUrl || "/" || $id}
-				],
-			"description": "An Ethiopian Manuscript.",
-			"viewingDirection": "left-to-right",
-			"viewingHint": "paged",
-			"license": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
-			"attribution": $attribution,
-			"logo": map {"@id": $config:appUrl || $logo},
-			"rendering": map {"@id": $url, "label": "web presentation", "format": "text/html"},
-			"within": $config:appUrl || "/manuscripts/list",
-			"sequences":
-				[
-					map {
-						"@context": "http://iiif.io/api/presentation/2/context.json",
-						"@id": $sequence,
-						"@type": "sc:Sequence",
-						"label": "Current Page Order",
-						"viewingDirection": "left-to-right",
-						"viewingHint": "paged",
-						"canvases": $canvas
-					}
-				],
-			"structures": $structures
-		}
-	) else (
-		$iiif:response400, map {"info": ("no manifest available for " || $id)}
-	)
+			(: $mainstructure :)
+			return map {
+				"@context": "http://iiif.io/api/presentation/2/context.json",
+				"@id": $request,
+				"@type": "sc:Manifest",
+				"label": $label,
+				"metadata":
+					[
+						map {
+							"label": "Repository",
+							"value":
+								[
+									map {
+										"@value":
+											'<a href="' ||
+												$config:appUrl ||
+												"/manuscripts/" ||
+												$institutionID ||
+												'/list">' ||
+												$institution ||
+												"</a>",
+										"@language": "en"
+									}
+								]
+						},
+						map {"label": "object type", "value": [map {"@value": $objectType, "@language": "en"}]},
+						map {"label": "main view", "value": $config:appUrl || "/" || $id}
+					],
+				"description": "An Ethiopian Manuscript.",
+				"viewingDirection": "left-to-right",
+				"viewingHint": "paged",
+				"license": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+				"attribution": $attribution,
+				"logo": map {"@id": $config:appUrl || $logo},
+				"rendering": map {"@id": $url, "label": "web presentation", "format": "text/html"},
+				"within": $config:appUrl || "/manuscripts/list",
+				"sequences":
+					[
+						map {
+							"@context": "http://iiif.io/api/presentation/2/context.json",
+							"@id": $sequence,
+							"@type": "sc:Sequence",
+							"label": "Current Page Order",
+							"viewingDirection": "left-to-right",
+							"viewingHint": "paged",
+							"canvases": $canvas
+						}
+					],
+				"structures": $structures
+			}
+		) else (
+			roaster:response(400, map {"info": ("no manifest available for " || $id)})
+		)
 };
 
 declare function iiif:rangeexistence($nodes, $iiifroot, $element, $name) {
@@ -717,111 +707,110 @@ declare function iiif:rangeexistence($nodes, $iiifroot, $element, $name) {
 	)
 };
 
-declare
-	%rest:GET %rest:path("/api/iiif/{$id}/range/{$rangeId}") %rest:query-param("alt", "{$alt}", "") %output:method("json")
-function iiif:singerange($id as xs:string*, $rangeId as xs:string*, $alt as xs:string*) {
-	let $item := if (starts-with($id, "ES")) then
-		collection($config:data-rootMS || "/ES")/id($id)
-	else if (starts-with($id, "BML")) then
-		collection($config:data-rootMS || "/FlorenceBML")/id($id)
-	else if (starts-with($id, "EMIP")) then
-		collection($config:data-rootMS || "/EMIP")/id($id)
-	else
-		$exptit:col/id($id)
-	let $facsid := if ($alt = "") then
-		($item//t:msIdentifier/t:idno[@facs], $item//t:place//t:desc[@facs])[1]
-	else
-		($item//t:altIdentifier[@xml:id eq $alt]/t:idno[@facs], $item//t:place//t:desc[@facs])[1]
-	(: returns an attribute @facs :)
-	let $facs := iiif:facsSwitch($facsid)
-	return if ($facs) then (
-		$iiif:response200,
-		log:add-log-message("/api/iiif/" || $id || "/range/" || $rangeId, sm:id()//sm:real/sm:username/string(), "iiif"),
-		let $institutionID := if ($item//t:repository) then
-			string(($item//t:repository)[1]/@ref)
+declare function iiif:singerange($request as map(*)) {
+	let $id as xs:string* := $request?parameters?id
+	let $rangeId as xs:string* := $request?parameters?rangeId
+	let $alt as xs:string* := $request?parameters?alt
+	return let $item := if (starts-with($id, "ES")) then
+			collection($config:data-rootMS || "/ES")/id($id)
+		else if (starts-with($id, "BML")) then
+			collection($config:data-rootMS || "/FlorenceBML")/id($id)
+		else if (starts-with($id, "EMIP")) then
+			collection($config:data-rootMS || "/EMIP")/id($id)
 		else
-			$id
+			$exptit:col/id($id)
+		let $facsid := if ($alt = "") then
+			($item//t:msIdentifier/t:idno[@facs], $item//t:place//t:desc[@facs])[1]
+		else
+			($item//t:altIdentifier[@xml:id eq $alt]/t:idno[@facs], $item//t:place//t:desc[@facs])[1]
+		(: returns an attribute @facs :)
+		let $facs := iiif:facsSwitch($facsid)
+		return if ($facs) then (
+			log:add-log-message("/api/iiif/" || $id || "/range/" || $rangeId, sm:id()//sm:real/sm:username/string(), "iiif"),
+			let $institutionID := if ($item//t:repository) then
+				string(($item//t:repository)[1]/@ref)
+			else
+				$id
 
-		let $institution := exptit:printTitleID($institutionID)
-		let $imagesbaseurl := $config:appUrl || "/iiif/" || string($facs)
-		let $tot := $facsid/@n
-		let $url := $config:appUrl ||
-			(
-				if ($item/ancestor::t:TEI/@type = "ins") then
-					"/institutions/"
-				else
-					"/manuscripts/"
-			) ||
-			$id
-		(: this is where the images actually are, in the images server :)
-		let $thumbid := $imagesbaseurl ||
-			(
-				if ($item//t:collection = "Ethio-SPaRe") then
-					"_"
-				else (
-				)
-			) ||
-			"001.tif/full/80,100/0/default.jpg"
-		let $objectType := string($item//@form[1])
-		let $iiifroot := $config:appUrl || "/api/iiif/" || $id
-		let $mainranges := ("msItems", "decorations", "additions", "quires")
-		return if ($rangeId = $mainranges) then (
-			(: a superrange :)
-			switch ($rangeId)
-				case "decorations" return
-					iiif:rangeexistence($item//t:decoNote[.//t:locus], $iiifroot, "decorations", "Decorations")
-				case "additions" return
-					iiif:rangeexistence(
-						$item//t:additions/t:list/t:item[.//t:locus],
-						$iiifroot,
-						"additions",
-						"Additions and Extras"
+			let $institution := exptit:printTitleID($institutionID)
+			let $imagesbaseurl := $config:appUrl || "/iiif/" || string($facs)
+			let $tot := $facsid/@n
+			let $url := $config:appUrl ||
+				(
+					if ($item/ancestor::t:TEI/@type = "ins") then
+						"/institutions/"
+					else
+						"/manuscripts/"
+				) ||
+				$id
+			(: this is where the images actually are, in the images server :)
+			let $thumbid := $imagesbaseurl ||
+				(
+					if ($item//t:collection = "Ethio-SPaRe") then
+						"_"
+					else (
 					)
-				case "quires" return
-					iiif:rangeexistence($item//t:collation/t:list/t:item[.//t:locus], $iiifroot, "quires", "Collation")
-				(: default on msItems :)
-				default return
-					iiif:rangeexistence($item//t:msItem[t:locus][t:title[@ref]], $iiifroot, "msItems", "Contents")
-		) else if (count($item/id($rangeId)) = 1) then (
-			let $singleRange := $item/id($rangeId)
-			let $elements := switch ($rangeId)
-				case starts-with($rangeId, "a") return
-					"additions"
-				case starts-with($rangeId, "e") return
-					"additions"
-				case starts-with($rangeId, "d") return
-					"decorations"
-				case starts-with($rangeId, "q") return
-					"quires"
-				default return
-					"msItems"
+				) ||
+				"001.tif/full/80,100/0/default.jpg"
+			let $objectType := string($item//@form[1])
+			let $iiifroot := $config:appUrl || "/api/iiif/" || $id
+			let $mainranges := ("msItems", "decorations", "additions", "quires")
+			return if ($rangeId = $mainranges) then (
+				(: a superrange :)
+				switch ($rangeId)
+					case "decorations" return
+						iiif:rangeexistence($item//t:decoNote[.//t:locus], $iiifroot, "decorations", "Decorations")
+					case "additions" return
+						iiif:rangeexistence(
+							$item//t:additions/t:list/t:item[.//t:locus],
+							$iiifroot,
+							"additions",
+							"Additions and Extras"
+						)
+					case "quires" return
+						iiif:rangeexistence($item//t:collation/t:list/t:item[.//t:locus], $iiifroot, "quires", "Collation")
+					(: default on msItems :)
+					default return
+						iiif:rangeexistence($item//t:msItem[t:locus][t:title[@ref]], $iiifroot, "msItems", "Contents")
+			) else if (count($item/id($rangeId)) = 1) then (
+				let $singleRange := $item/id($rangeId)
+				let $elements := switch ($rangeId)
+					case starts-with($rangeId, "a") return
+						"additions"
+					case starts-with($rangeId, "e") return
+						"additions"
+					case starts-with($rangeId, "d") return
+						"decorations"
+					case starts-with($rangeId, "q") return
+						"quires"
+					default return
+						"msItems"
 
-			let $rangeType := switch ($rangeId)
-				case starts-with($rangeId, "a") return
-					"Additions and Extras"
-				case starts-with($rangeId, "e") return
-					"Additions and Extras"
-				case starts-with($rangeId, "d") return
-					"Decorations"
-				case starts-with($rangeId, "q") return
-					"Collation"
-				default return
-					"Contents"
-			return iiif:makeRanges($singleRange, $iiifroot, $elements, $rangeType)
+				let $rangeType := switch ($rangeId)
+					case starts-with($rangeId, "a") return
+						"Additions and Extras"
+					case starts-with($rangeId, "e") return
+						"Additions and Extras"
+					case starts-with($rangeId, "d") return
+						"Decorations"
+					case starts-with($rangeId, "q") return
+						"Collation"
+					default return
+						"Contents"
+				return iiif:makeRanges($singleRange, $iiifroot, $elements, $rangeType)
+			) else (
+				roaster:response(400, map {"info": ("no rage available for " || $rangeId || " in " || $id)})
+			)
 		) else (
-			$iiif:response400, map {"info": ("no rage available for " || $rangeId || " in " || $id)}
+			roaster:response(400, map {"info": ("no manifest available for " || $id)})
 		)
-	) else (
-		$iiif:response400, map {"info": ("no manifest available for " || $id)}
-	)
 };
 
 (: dereferencable sequence The sequence conveys the ordering of the views of the object. :)
-declare
-	%rest:GET %rest:path("/api/iiif/{$id}/sequence/normal") %rest:query-param("alt", "{$alt}", "") %output:method("json")
-function iiif:sequence($id as xs:string*, $alt as xs:string*) {
-	(
-		$iiif:response200,
+declare function iiif:sequence($request as map(*)) {
+	let $id as xs:string* := $request?parameters?id
+	let $alt as xs:string* := $request?parameters?alt
+	return (
 		log:add-log-message("/api/iiif/" || $id || "/sequence/normal", sm:id()//sm:real/sm:username/string(), "iiif"),
 		let $item := collection($config:data-rootMS || "/ES")/id($id)
 		let $facsid := if ($alt = "") then
@@ -850,11 +839,11 @@ function iiif:sequence($id as xs:string*, $alt as xs:string*) {
 (: dereference    canvas :)
 
 (: IIIF: The canvas represents an individual page or view and acts as a central point for laying out the different content resources that make up the display. :)
-declare
-	%rest:GET %rest:path("/api/iiif/{$id}/canvas/p{$n}") %rest:query-param("alt", "{$alt}", "") %output:method("json")
-function iiif:canvas($id as xs:string*, $n as xs:string*, $alt as xs:string*) {
-	(
-		$iiif:response200,
+declare function iiif:canvas($request as map(*)) {
+	let $id as xs:string* := $request?parameters?id
+	let $n as xs:string* := $request?parameters?n
+	let $alt as xs:string* := $request?parameters?alt
+	return (
 		log:add-log-message("/api/iiif/" || $id || "/canvas/p" || $n, sm:id()//sm:real/sm:username/string(), "iiif"),
 		let $item := $iiif:collection-rootMS/id($id)
 		let $facsid := if ($alt = "") then
