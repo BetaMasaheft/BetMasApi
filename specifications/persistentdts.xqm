@@ -29,22 +29,13 @@ module namespace persdts = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/pe
 
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace t = "http://www.tei-c.org/ns/1.0";
-declare namespace exist = "http://exist.sourceforge.net/NS/exist";
 declare namespace s = "http://www.w3.org/2005/xpath-functions";
-declare namespace http = "http://expath.org/ns/http-client";
-declare namespace json = "http://www.json.org";
-declare namespace cx = "http://interedition.eu/collatex/ns/1.0";
-declare namespace sr = "http://www.w3.org/2005/sparql-results#";
-declare namespace test = "http://exist-db.org/xquery/xqsuite";
 
-import module namespace functx = "http://www.functx.com";
-import module namespace rest = "http://exquery.org/ns/restxq";
+import module namespace roaster = "http://e-editiones.org/roaster";
 import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
-import module namespace fusekisparql = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/sparqlfuseki" at "xmldb:exist:///db/apps/BetMasWeb/fuseki/fuseki.xqm";
 import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
-import module namespace editors = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
 import module namespace dts = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/dts" at "xmldb:exist:///db/apps/BetMasWeb/modules/dts.xqm";
 
 declare variable $persdts:collection-rootMS := collection($config:data-rootMS);
@@ -58,118 +49,86 @@ declare function persdts:capitalize-first($arg as xs:string?) as xs:string? {
 (:~
  : Main access point to DTS style API returning passages from text
  :)
-declare %rest:GET %rest:path("/permanent/{$sha}/api/dts") %output:method("json") function persdts:dtsmain(
-	$sha as xs:string+
-) {
-	let $perma := ("/permanent/" || $sha || "/api/dts/")
-	let $col := $perma || "collections"
-	let $doc := $perma || "document"
-	let $nav := $perma || "navigation"
-	return (
-		$config:response200JsonLD,
-		map {
-			"@context": "/dts/api/contexts/EntryPoint.jsonld",
-			"@id": "/api/dts/",
-			"@type": "EntryPoint",
-			"documents": $doc,
-			"navigation": $nav
-		}
-	)
-};
-
-(:~
- : dts/collection https://github.com/distributed-text-services/specifications/blob/master/Collection-Endpoint.md
- :)
-declare
-	%rest:GET
-	%rest:path("/permanent/{$sha}/api/dts/collections")
-	%rest:query-param("id", "{$id}", "")
-	%rest:query-param("page", "{$page}", 1)
-	%rest:query-param("nav", "{$nav}", "children")
-	%output:method("json")
-function persdts:Collection($id as xs:string*, $page as xs:integer*, $nav as xs:string*, $sha as xs:string*) {
-	if ($id = "") then (
-		<rest:response>
-			<http:response status="302">
-				<http:header name="location" value="/permanent/{ $sha }/api/dts/collections?id=https://betamasaheft.eu" />
-			</http:response>
-		</rest:response>
-	) else if (
-		matches(
-			$id,
-			"(https://betamasaheft.eu/)?(textualunits/|narrativeunits/|transcriptions/)?([a-zA-Z\d]+)?(:)?(((\d+)(\w)?(\w)?((@)([\p{L}]+)(\[(\d+|last)\])?)?)?(\-)?((\d+)(\w)?(\w)?((@)([\p{L}]+)(\[(\d+|last)\])?)?)?)"
+declare function persdts:dtsmain($request as map(*)) {
+	let $sha as xs:string+ := $request?parameters?sha
+	return let $perma := ("/permanent/" || $sha || "/api/dts/")
+		let $col := $perma || "collections"
+		let $doc := $perma || "document"
+		let $nav := $perma || "navigation"
+		return (
+			map {
+				"@context": "/dts/api/contexts/EntryPoint.jsonld",
+				"@id": "/api/dts/",
+				"@type": "EntryPoint",
+				"documents": $doc,
+				"navigation": $nav
+			}
 		)
-	) then (
-		let $parsedURN := dts:parseDTS($id)
-		return if (matches($parsedURN//s:group[@nr eq 3], "[a-zA-Z\d]+")) then (
-			let $specificID := $parsedURN//s:group[@nr eq 3]/text()
-			return persdts:CollMember($id, $specificID, $page, $nav, $sha)
-		) else
-			persdts:Coll($id, $page, $nav, $sha)
-	) else (
-		$config:response400,
-		let $error := $id || "is not a valid URN pattern"
-		return map {
-			"@context": "http://www.w3.org/ns/hydra/context.jsonld",
-			"@type": "Status",
-			"statusCode": 400,
-			"title": "Not Found",
-			"description": " Resource requested is not found ",
-			"error": $error
-		}
-	)
 };
 
 (:~
  : dts/document https://github.com/distributed-text-services/specifications/blob/master/Document-Endpoint.md
  :)
-declare
-	%rest:GET
-	%rest:path("/permanent/{$sha}/api/dts/document")
-	%rest:query-param("id", "{$id}", "")
-	%rest:query-param("ref", "{$ref}", "")
-	%rest:query-param("start", "{$start}", "")
-	%rest:query-param("end", "{$end}", "")
-	%output:method("xml")
-	%output:omit-xml-declaration("no")
-function persdts:anyDocument($id as xs:string*, $ref as xs:string*, $sha as xs:string*, $start, $end) {
-	if ($id = "") then (
-		<rest:response>
-			<http:response status="302">
-				<http:header name="location" value="/permanent/{ $sha }/api/dts/collections?id=https://betamasaheft.eu" />
-			</http:response>
-		</rest:response>
+declare function persdts:anyDocument($request as map(*)) {
+	let $id as xs:string* := $request?parameters?id
+	let $ref as xs:string* := $request?parameters?ref
+	let $sha as xs:string* := $request?parameters?sha
+	let $start := $request?parameters?start
+	let $end := $request?parameters?end
+	return if ($id = "") then (
+		roaster:response(
+			302,
+			(),
+			(),
+			map {"Location": "/permanent/" || $sha || "/api/dts/collections?id=https://betamasaheft.eu"}
+		)
 	) else
 		let $parsedURN := dts:parseDTS($id)
 		return if ($ref != "" and (($start != "") or ($end != ""))) then (
-			$config:response400XML,
-			<error xmlns="https://w3id.org/dts/api#" statusCode="400">
-				<title>Bad Request</title>
-				<description>You should use start and end, or passage only</description>
-			</error>
+			roaster:response(
+				400,
+				<error xmlns="https://w3id.org/dts/api#" statusCode="400">
+					<title>Bad Request</title>
+					<description>You should use start and end, or passage only</description>
+				</error>
+			)
 		) else if (($start = "" and $end != "") or ($start != "" and $end = "")) then (
-			$config:response400XML,
-			<error xmlns="https://w3id.org/dts/api#" statusCode="400">
-				<title>Bad Request</title>
-				<description>You cannot use start and end disjunted</description>
-			</error>
+			roaster:response(
+				400,
+				<error xmlns="https://w3id.org/dts/api#" statusCode="400">
+					<title>Bad Request</title>
+					<description>You cannot use start and end disjunted</description>
+				</error>
+			)
 		) else
-			let $links := if ($ref = "") then (
-			) else if ($start != "") then
-				<http:header
-					name="Link"
-					value="&lt;/permanent/{ $sha }/api/dts/document?id={ $id }&amp;ref={
-						number($start) - 1
-					}&gt; ; rel='prev', &lt;/api/dts/document/?id={ $id }&amp;ref={ number($end) + 1 }&gt; ; rel='next'" />
-
+			let $links := if ($ref = "") then
+				""
+			else if ($start != "") then
+				"</permanent/" ||
+					$sha ||
+					"/api/dts/document?id=" ||
+					$id ||
+					"&amp;ref=" ||
+					(number($start) - 1) ||
+					"> ; rel='prev', </api/dts/document/?id=" ||
+					$id ||
+					"&amp;ref=" ||
+					(number($end) + 1) ||
+					"> ; rel='next'"
 			else
-				<http:header
-					name="Link"
-					value="&lt;/permanent/{ $sha }/api/dts/document?id={ $id }&amp;ref={
-						number($ref) - 1
-					}&gt; ; rel='prev', &lt;/api/dts/document/?id={ $id }&amp;ref={ number($ref) + 1 }&gt; ; rel='next'" />
+				"</permanent/" ||
+					$sha ||
+					"/api/dts/document?id=" ||
+					$id ||
+					"&amp;ref=" ||
+					(number($ref) - 1) ||
+					"> ; rel='prev', </api/dts/document/?id=" ||
+					$id ||
+					"&amp;ref=" ||
+					(number($ref) + 1) ||
+					"> ; rel='next'"
 
-			return (: we need a restxq redirect in case the id contains already the passage. it should redirect the urn with passage to one which splits it and redirect it to a parametrized query :) if (
+			return (: we need a redirect in case the id contains already the passage. it should redirect the urn with passage to one which splits it and redirect it to a parametrized query :) if (
 				count($parsedURN//s:group[@nr eq 5]//text()) ge 1
 			) then
 				let $location := if ($parsedURN//s:group[@nr eq 15]/text() = "-") then (
@@ -193,9 +152,7 @@ function persdts:anyDocument($id as xs:string*, $ref as xs:string*, $sha as xs:s
 						"&amp;ref=" ||
 						$parsedURN//s:group[@nr eq 5]//text()
 				)
-				return <rest:response>
-					<http:response status="302"><http:header name="location" value="{ $location }" /></http:response>
-				</rest:response>
+				return roaster:response(302, (), (), map {"Location": $location})
 			else
 				let $thisid := $parsedURN//s:group[@nr eq 3]/text()
 				let $edition := $parsedURN//s:group[@nr eq 4]
@@ -220,50 +177,37 @@ function persdts:anyDocument($id as xs:string*, $ref as xs:string*, $sha as xs:s
 					$file//t:div[@type eq "edition"]
 				let $doc := dts:fragment($file, $edition, $ref, $start, $end, $text)
 
-				return (
-					<rest:response>
-						<http:response status="200">
-							<http:header name="Content-Type" value="application/tei+xml; charset=utf-8" />
-							<http:header name="Access-Control-Allow-Origin" value="*" />
-							{ $links }
-						</http:response>
-					</rest:response>,
-					$doc
+				return roaster:response(
+					200,
+					"application/tei+xml; charset=utf-8",
+					$doc,
+					if ($links != "") then
+						map {"Link": $links}
+					else
+						map {}
 				)
 };
 
 (:~
  : dts/navigation https://github.com/distributed-text-services/specifications/blob/master/Navigation-Endpoint.md
  :)
-declare
-	%rest:GET
-	%rest:path("/permanent/{$sha}/api/dts/navigation")
-	%rest:query-param("id", "{$id}", "")
-	%rest:query-param("ref", "{$ref}", "")
-	%rest:query-param("level", "{$level}", "")
-	%rest:query-param("start", "{$start}", "")
-	%rest:query-param("end", "{$end}", "")
-	%rest:query-param("page", "{$page}", "")
-	%rest:query-param("groupBy", "{$groupBy}", "")
-	%rest:query-param("max", "{$max}", "")
-	%output:method("json")
-function persdts:Cit(
-	$sha as xs:string*,
-	$id as xs:string*,
-	$ref as xs:string*,
-	$level as xs:string*,
-	$start as xs:string*,
-	$end as xs:string*,
-	$groupBy as xs:string*,
-	$page as xs:string*,
-	$max as xs:string*
-) {
-	if ($id = "") then (
-		<rest:response>
-			<http:response status="302">
-				<http:header name="location" value="/permanent/{ $sha }/api/dts/collections?id=https://betamasaheft.eu" />
-			</http:response>
-		</rest:response>
+declare function persdts:Cit($request as map(*)) {
+	let $sha as xs:string* := $request?parameters?sha
+	let $id as xs:string* := $request?parameters?id
+	let $ref as xs:string* := $request?parameters?ref
+	let $level as xs:string* := $request?parameters?level
+	let $start as xs:string* := $request?parameters?start
+	let $end as xs:string* := $request?parameters?end
+	let $groupBy as xs:string* := $request?parameters?groupBy
+	let $page as xs:string* := $request?parameters?page
+	let $max as xs:string* := $request?parameters?max
+	return if ($id = "") then (
+		roaster:response(
+			302,
+			(),
+			(),
+			map {"Location": "/permanent/" || $sha || "/api/dts/collections?id=https://betamasaheft.eu"}
+		)
 	) else
 		let $parsedURN := dts:parseDTS($id)
 		let $BMid := $parsedURN//s:group[@nr eq 3]
@@ -409,16 +353,17 @@ LIT1546Genesi&start=3&end=4 :) then
 			number($level)
 
 		return if (count($text//t:ab//text()) le 1) then (
-			$config:response404JsonLD,
-			map {
-				"@context": "http://www.w3.org/ns/hydra/context.jsonld",
-				"@type": "Status",
-				"statusCode": 404,
-				"title": "Not Found",
-				"description": "Sorry, there is no text here to navigate."
-			}
+			roaster:response(
+				404,
+				map {
+					"@context": "http://www.w3.org/ns/hydra/context.jsonld",
+					"@type": "Status",
+					"statusCode": 404,
+					"title": "Not Found",
+					"description": "Sorry, there is no text here to navigate."
+				}
+			)
 		) else (
-			$config:response200JsonLD,
 			log:add-log-message("/api/dts/cit/" || $id, sm:id()//sm:real/sm:username/string(), "dts"),
 			map {
 				"@context":
@@ -446,7 +391,6 @@ LIT1546Genesi&start=3&end=4 :) then
  :)
 declare function persdts:Coll($id, $page, $nav, $sha) {
 	if ($id = $availableCollectionIDs) then (
-		$config:response200JsonLD,
 		switch ($id)
 			case "https://betamasaheft.eu/textualunits" return
 				dts:mainColl($id, $countW, $w, $page, $nav)
@@ -498,31 +442,31 @@ declare function persdts:Coll($id, $page, $nav, $sha) {
 						]
 				}
 	) else (
-		$config:response404JsonLD,
-		map {
-			"@context": "http://www.w3.org/ns/hydra/context.jsonld",
-			"@type": "Status",
-			"statusCode": 404,
-			"title": "Not Found",
-			"description": "Unknown Collection, try betmas for works or betmasMS for manuscripts"
-		}
+		roaster:response(
+			404,
+			map {
+				"@context": "http://www.w3.org/ns/hydra/context.jsonld",
+				"@type": "Status",
+				"statusCode": 404,
+				"title": "Not Found",
+				"description": "Unknown Collection, try betmas for works or betmasMS for manuscripts"
+			}
+		)
 	)
 };
 
-declare
-	%rest:GET
-	%rest:path("/permanent/{$sha}/api/dts/collections")
-	%rest:query-param("id", "{$id}", "")
-	%rest:query-param("page", "{$page}", 1)
-	%rest:query-param("nav", "{$nav}", "children")
-	%output:method("json")
-function persdts:Collection($id as xs:string*, $page as xs:integer*, $nav as xs:string*, $sha as xs:string*) {
-	if ($id = "") then (
-		<rest:response>
-			<http:response status="302">
-				<http:header name="location" value="/permanent/{ $sha }/api/dts/collections?id=https://betamasaheft.eu" />
-			</http:response>
-		</rest:response>
+declare function persdts:Collection($request as map(*)) {
+	let $id as xs:string* := $request?parameters?id
+	let $page as xs:integer* := $request?parameters?page
+	let $nav as xs:string* := $request?parameters?nav
+	let $sha as xs:string* := $request?parameters?sha
+	return if ($id = "") then (
+		roaster:response(
+			302,
+			(),
+			(),
+			map {"Location": "/permanent/" || $sha || "/api/dts/collections?id=https://betamasaheft.eu"}
+		)
 	) else if (
 		matches(
 			$id,
@@ -534,27 +478,31 @@ function persdts:Collection($id as xs:string*, $page as xs:integer*, $nav as xs:
 			let $specificID := $parsedURN//s:group[@nr eq 3]/text()
 			return persdts:CollMember($id, $specificID, $page, $nav, $sha)
 		) else (
-			$config:response400,
-			map {
+			roaster:response(
+				400,
+				map {
+					"@context": "http://www.w3.org/ns/hydra/context.jsonld",
+					"@type": "Status",
+					"statusCode": 400,
+					"title": "Not Found",
+					"description": " Resource requested is not available (versioned collection)"
+				}
+			)
+		)
+
+	else (
+		roaster:response(
+			400,
+			let $error := $id || "is not a valid URN pattern"
+			return map {
 				"@context": "http://www.w3.org/ns/hydra/context.jsonld",
 				"@type": "Status",
 				"statusCode": 400,
 				"title": "Not Found",
-				"description": " Resource requested is not available (versioned collection)"
+				"description": " Resource requested is not found ",
+				"error": $error
 			}
 		)
-
-	else (
-		$config:response400,
-		let $error := $id || "is not a valid URN pattern"
-		return map {
-			"@context": "http://www.w3.org/ns/hydra/context.jsonld",
-			"@type": "Status",
-			"statusCode": 400,
-			"title": "Not Found",
-			"description": " Resource requested is not found ",
-			"error": $error
-		}
 	)
 };
 
@@ -569,7 +517,6 @@ declare function persdts:CollMember($id, $bmID, $page, $nav, $sha) {
 	) else
 		$doc//t:div[@type eq "edition"]
 	return if (count($doc) eq 1) then (
-		$config:response200JsonLD,
 		let $shortid := substring-before($id, concat(":", $bmID))
 		let $memberInfo := persdts:member($shortid, $document, $sha)
 		let $addcontext := map:put($memberInfo, "@context", $dts:context)
@@ -600,14 +547,16 @@ declare function persdts:CollMember($id, $bmID, $page, $nav, $sha) {
 			$addcontext
 		return $addnav
 	) else (
-		$config:response400JsonLD,
-		map {
-			"@context": "http://www.w3.org/ns/hydra/context.jsonld",
-			"@type": "Status",
-			"statusCode": 400,
-			"title": "Bad Request",
-			"description": "There is none or too many " || $bmID
-		}
+		roaster:response(
+			400,
+			map {
+				"@context": "http://www.w3.org/ns/hydra/context.jsonld",
+				"@type": "Status",
+				"statusCode": 400,
+				"title": "Bad Request",
+				"description": "There is none or too many " || $bmID
+			}
+		)
 	)
 };
 
@@ -616,9 +565,7 @@ declare function persdts:CollMember($id, $bmID, $page, $nav, $sha) {
  :)
 declare function persdts:member($collURN, $document, $sha) as map(*) {
 	if (not($document)) then
-		<rest:response>
-			<http:response status="204"><http:header name="Access-Control-Allow-Origin" value="*" /></http:response>
-		</rest:response>
+		roaster:response(204, ())
 	else
 		let $doc := root($document)
 		let $id := string($doc//t:TEI/@xml:id)

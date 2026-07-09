@@ -13,27 +13,21 @@ declare namespace test = "http://exist-db.org/xquery/xqsuite";
 (: For REST annotations :)
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
-import module namespace rest = "http://exquery.org/ns/restxq";
 import module namespace api = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/api" at "xmldb:exist:///db/apps/BetMasApi/local/rest.xqm";
-import module namespace all = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm";
 import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
-import module namespace http = "http://expath.org/ns/http-client";
 
 (: ~ returns the full first level subdivision
 
 e.g. Ex. 1
 
  :)
-declare
-	%rest:GET
-	%rest:path("/api/xml/{$id}/{$level1}")
-	%output:method("xml")
-	%test:args("LIT1367Exodus", "1")
-	%test:assertXPath("//partofwork")
-function apiT:get-level1XML($id as xs:string, $level1 as xs:string*) {
-	(
-		$api:response200XML,
+declare %test:args("LIT1367Exodus", "1") %test:assertXPath("//partofwork") function apiT:get-level1XML(
+	$request as map(*)
+) {
+	let $id as xs:string := $request?parameters?id
+	let $level1 as xs:string* := $request?parameters?level1
+	return (
 		let $log := log:add-log-message("/api/xml/" || $id || "/" || $level1, sm:id()//sm:real/sm:username/string(), "REST")
 		let $collection := "works"
 		let $item := api:get-tei-rec-by-ID($id)
@@ -53,7 +47,7 @@ function apiT:get-level1XML($id as xs:string, $level1 as xs:string*) {
 				}
 				{
 					if (number($level1) = count($item//t:div[@type eq "edition"]/t:div)) then (
-					) else if ($item//t:div[@type eq "edition"]/t:div[@n eq (number($level1) + 1)]) then
+					) else if ($item//t:div[@type eq "edition"]/t:div[@n = (number($level1) + 1)]) then
 						<next>{ $config:appUrl }/api/xml/{ $id }/{ number($level1) + 1 }</next>
 					else (
 					)
@@ -80,15 +74,13 @@ function apiT:get-level1XML($id as xs:string, $level1 as xs:string*) {
  : Ex. 2, 4-7
  :
  :)
-declare
-	%rest:GET
-	%rest:path("/api/xml/{$id}/{$level1}/{$line}")
-	%output:method("xml")
-	%test:args("LIT1367Exodus", "1", "1-2")
-	%test:assertXPath("//partOf")
-function apiT:get-level1LineXML($id as xs:string, $level1 as xs:string*, $line as xs:string*) {
-	(
-		$api:response200XML,
+declare %test:args("LIT1367Exodus", "1", "1-2") %test:assertXPath("//partOf") function apiT:get-level1LineXML(
+	$request as map(*)
+) {
+	let $id as xs:string := $request?parameters?id
+	let $level1 as xs:string* := $request?parameters?level1
+	let $line as xs:string* := $request?parameters?line
+	return (
 		let $log := log:add-log-message(
 			"/api/xml/" || $id || "/" || $level1 || "/" || $line,
 			sm:id()//sm:real/sm:username/string(),
@@ -122,7 +114,7 @@ function apiT:get-level1LineXML($id as xs:string, $level1 as xs:string*, $line a
 				}
 				{
 					if (number($line) = count($L1//t:l[@n eq substring-after($line, "-")])) then (
-					) else if ($L1//t:l[@n eq (number(substring-after($line, "-")) + 1)]) then
+					) else if ($L1//t:l[@n = (number(substring-after($line, "-")) + 1)]) then
 						<next>{ $config:appUrl }/api/xml/{ $id }/{ $level1 }/{ number(substring-after($line, "-")) + 1 }</next>
 					else (
 					)
@@ -158,7 +150,7 @@ function apiT:get-level1LineXML($id as xs:string, $level1 as xs:string*, $line a
 				}
 				{
 					if (number($line) = count($L1//t:l[@n eq $line])) then (
-					) else if ($L1//t:l[@n eq (number($line) + 1)]) then
+					) else if ($L1//t:l[@n = (number($line) + 1)]) then
 						<next>{ $config:appUrl }/api/xml/{ $id }/{ $level1 }/{ number($line) + 1 }</next>
 					else (
 					)
@@ -189,11 +181,12 @@ function apiT:get-level1LineXML($id as xs:string, $level1 as xs:string*, $line a
  :
  :)
 
-declare
-	%rest:GET %rest:path("/api/xml/{$id}/{$level1}/{$level2}/{$line}") %output:method("xml")
-function apiT:get-level2lineXML($id as xs:string, $level1 as xs:string*, $level2 as xs:string*, $line as xs:string*) {
-	(
-		$api:response200XML,
+declare function apiT:get-level2lineXML($request as map(*)) {
+	let $id as xs:string := $request?parameters?id
+	let $level1 as xs:string* := $request?parameters?level1
+	let $level2 as xs:string* := $request?parameters?level2
+	let $line as xs:string* := $request?parameters?line
+	return (
 		let $log := log:add-log-message(
 			"/api/xml/" || $id || "/" || $level1 || "/" || $level2 || "/" || $line,
 			sm:id()//sm:real/sm:username/string(),
@@ -229,7 +222,7 @@ function apiT:get-level2lineXML($id as xs:string, $level1 as xs:string*, $level2
 				}
 				{
 					if (number($line) = count($L2//t:l[@n eq substring-after($line, "-")])) then (
-					) else if ($L2//t:l[@n eq (number(substring-after($line, "-")) + 1)]) then
+					) else if ($L2//t:l[@n = (number(substring-after($line, "-")) + 1)]) then
 						<next>
 							{ $config:appUrl }/api/xml/{ $id }/{ $level1 }/{ $level2 }/{ number(substring-after($line, "-")) + 1 }
 						</next>
@@ -270,7 +263,7 @@ function apiT:get-level2lineXML($id as xs:string, $level1 as xs:string*, $level2
 				}
 				{
 					if (number($line) = count($L2//t:l[@n eq $line])) then (
-					) else if ($L2//t:l[@n eq (number($line) + 1)]) then
+					) else if ($L2//t:l[@n = (number($line) + 1)]) then
 						<next>{ $config:appUrl }/api/xml/{ $id }/{ $level1 }/{ $level2 }/{ number($line) + 1 }</next>
 					else (
 					)

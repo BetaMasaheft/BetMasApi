@@ -9,6 +9,7 @@
 			"url": "https://betamasaheft.eu"
 		}
 	},
+	"security": [],
 	"tags": [
 		{
 			"name": "SK"
@@ -559,7 +560,7 @@
 		},
 		"/api/SPARQL/versions/{id}/{chapterID}": {
 			"get": {
-				"operationId": "apisparql:sparqlQuery",
+				"operationId": "apisparql:sparqlQueryVersions",
 				"tags": ["apisparql"],
 				"parameters": [
 					{
@@ -935,7 +936,7 @@
 		},
 		"/api/dts/annotations/{coll}/items/{BMid}": {
 			"get": {
-				"operationId": "dts:WebAnnotationsIndex",
+				"operationId": "dts:WebAnnotationsItem",
 				"tags": ["dts"],
 				"summary": "annotations collection for a type of items (manuscripts, works or narrative units), and a specific item in that collection of resources. Returns a collection of annotation collections if available annotations are present in the item for each type 'persons', 'places','keywords', 'loci', 'works'.",
 				"parameters": [
@@ -999,7 +1000,7 @@
 		},
 		"/api/dts/annotations/{coll}/items/{BMid}/{indexName}": {
 			"get": {
-				"operationId": "dts:WebAnnotationsIndex",
+				"operationId": "dts:WebAnnotationsItemIndex",
 				"tags": ["dts"],
 				"summary": "annotations collection for a type of items (manuscripts, works or narrative units), and a specific item in that collection of resources and a specific index type among 'persons', 'places','keywords', 'loci', 'works'. The annotations in the single reference annotation collation are retrieved by adding an $id parameter with the full reference.",
 				"parameters": [
@@ -1804,7 +1805,7 @@
 		},
 		"/api/gazetteer/all": {
 			"get": {
-				"operationId": "places:placesGazetteer",
+				"operationId": "places:placesGazetteerAll",
 				"tags": ["places"],
 				"responses": {
 					"200": {

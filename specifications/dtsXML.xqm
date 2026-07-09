@@ -14,7 +14,6 @@ declare namespace s = "http://www.w3.org/2005/xpath-functions";
 declare namespace http = "http://expath.org/ns/http-client";
 declare namespace json = "http://www.json.org";
 
-import module namespace rest = "http://exquery.org/ns/restxq";
 import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
@@ -24,110 +23,108 @@ import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMas
 (:~
  : bespoke json format, former dts proposal draft, returns a list
  :)
-declare %rest:GET %rest:path("/api/dts/collections/{$id}") %output:method("json") function dtsXML:CollectionsID(
-	$id as xs:string*
-) {
-	let $login := xmldb:login($config:data-root, $config:ADMIN, $config:ppw)
-	return (
-		$config:response200Json,
-		log:add-log-message("/api/dts/collections/" || $id, sm:id()//sm:real/sm:username/string(), "dts"),
-		<json:value>
-			<context>
-				<perseus>http://perseus.org/terms</perseus>
-				<rdf>http://www.w3.org/1999/02/22-rdf-syntax-ns#</rdf>
-				<dts>http://ontology-dts.org/terms</dts>
-				<saws>http://purl.org/saws/ontology</saws>
-				<snap>http://data.snapdrgn.net/ontology/snap</snap>
-				<dcterms>http://purl.org/dc/terms</dcterms>
-				<bm>{ $config:appUrl }/</bm>
-				<ecrm>http://erlangen-crm.org/current/</ecrm>
-				<tei>http://www.tei-c.org/ns/1.0</tei>
-			</context>
-			<graph>
-				{
-					let $record := $exptit:col/id($id)[self::t:TEI]
-					return (
-						<id>urn:dts:betmas:{ string($record/@xml:id) }</id>,
-						<type>{ string($record/@type) }</type>,
-						<license>http://creativecommons.org/licenses/by-sa/4.0/</license>,
-						<size>1</size>,
-						<labels>
-							{
-								for $lang in $record//t:language
-								return <lang>{ string($lang/@ident) }</lang>
-							}
-							<value>{ exptit:printTitleID($id) }</value>
-							<description>{ $record//t:abstract//text() }</description>
-						</labels>,
-						<vocabulary>http://purl.org/dc/elements/1.1/</vocabulary>,
-						<capabilities><isOrdered>false</isOrdered><hasRoles>false</hasRoles></capabilities>,
-						<metadata>
-							{
-								if ($record//t:relation[@name = "dcterms:creator"]) then (
-									element dcterms:creator {
-										exptit:printTitleID($record//t:relation[@name = "dcterms:creator"]/string(@passive))
-									}
-								) else if ($record//t:relation[@name = "saws:isAttributedToAuthor"]) then (
-									element saws:isAttributedToAuthor {
-										exptit:printTitleID($record//t:relation[@name = "saws:isAttributedToAuthor"]/string(@passive))
-									}
-								) else if ($record//t:author) then
-									<t:author>{ $record//t:author/text() }</t:author>
-								else (
-								)
-							}
-						</metadata>,
-						<members>
-							<id>{ $config:appUrl }/{ $id }</id>
-							<id>{ $config:appUrl }/api/{ $id }/tei</id>
-							<id>{ $config:appUrl }/api/{ $id }/json</id>
-							<contents>
+declare function dtsXML:CollectionsID($request as map(*)) {
+	let $id as xs:string* := $request?parameters?id
+	return let $login := xmldb:login($config:data-root, $config:ADMIN, $config:ppw)
+		return (
+			log:add-log-message("/api/dts/collections/" || $id, sm:id()//sm:real/sm:username/string(), "dts"),
+			<json:value>
+				<context>
+					<perseus>http://perseus.org/terms</perseus>
+					<rdf>http://www.w3.org/1999/02/22-rdf-syntax-ns#</rdf>
+					<dts>http://ontology-dts.org/terms</dts>
+					<saws>http://purl.org/saws/ontology</saws>
+					<snap>http://data.snapdrgn.net/ontology/snap</snap>
+					<dcterms>http://purl.org/dc/terms</dcterms>
+					<bm>{ $config:appUrl }/</bm>
+					<ecrm>http://erlangen-crm.org/current/</ecrm>
+					<tei>http://www.tei-c.org/ns/1.0</tei>
+				</context>
+				<graph>
+					{
+						let $record := $exptit:col/id($id)[self::t:TEI]
+						return (
+							<id>urn:dts:betmas:{ string($record/@xml:id) }</id>,
+							<type>{ string($record/@type) }</type>,
+							<license>http://creativecommons.org/licenses/by-sa/4.0/</license>,
+							<size>1</size>,
+							<labels>
 								{
-									let $members :=
-										for $mem in ($record//t:relation/@passive)
-										let $name := string($mem/parent::t:*/@name)
-										return if (contains($mem, " ")) then
-											for $m in tokenize(normalize-space($mem), " ")
-											return <rels><id>{ $m }</id><n>{ $name }</n></rels>
-										else
-											<rels><id>{ data($mem) }</id><n>{ $name }</n></rels>
-									for $part in config:distinct-values($members//id)
-									return <json:value>
-										<id>urn:dts:betmas:{ string($part) }</id>
-										<type>work</type>
-										<mappings><role>{ $members//n[preceding-sibling::id = $part]/text() }</role></mappings>
-									</json:value>
+									for $lang in $record//t:language
+									return <lang>{ string($lang/@ident) }</lang>
 								}
-							</contents>
-						</members>,
-						<version>{ max($record//t:change/xs:date(@when)) }</version>,
-						<parents>
-							<json:value json:array="true">
+								<value>{ exptit:printTitleID($id) }</value>
+								<description>{ $record//t:abstract//text() }</description>
+							</labels>,
+							<vocabulary>http://purl.org/dc/elements/1.1/</vocabulary>,
+							<capabilities><isOrdered>false</isOrdered><hasRoles>false</hasRoles></capabilities>,
+							<metadata>
 								{
-									let $parents :=
-										for $par in ($record//t:relation[@name = "saws:formsPartOf"]/@passive)
-										return $par
-									for $parent in config:distinct-values($parents)
-									let $papa := $exptit:col/id($parent)[self::t:TEI]
-									return (
-										<id>urn:dts:betmas:{ string($papa/@xml:id) }</id>,
-										<type>{ string($papa/@type) }</type>,
-										<labels>
-											{
-												for $lang in $papa//t:language
-												return <lang>{ string($lang/@ident) }</lang>
-											}
-											<value>{ exptit:printTitleID($parent) }</value>
-										</labels>
+									if ($record//t:relation[@name = "dcterms:creator"]) then (
+										element dcterms:creator {
+											exptit:printTitleID($record//t:relation[@name = "dcterms:creator"]/string(@passive))
+										}
+									) else if ($record//t:relation[@name = "saws:isAttributedToAuthor"]) then (
+										element saws:isAttributedToAuthor {
+											exptit:printTitleID($record//t:relation[@name = "saws:isAttributedToAuthor"]/string(@passive))
+										}
+									) else if ($record//t:author) then
+										<t:author>{ $record//t:author/text() }</t:author>
+									else (
 									)
 								}
-							</json:value>
-						</parents>
-					)
-				}
-			</graph>
-		</json:value>
-	)
+							</metadata>,
+							<members>
+								<id>{ $config:appUrl }/{ $id }</id>
+								<id>{ $config:appUrl }/api/{ $id }/tei</id>
+								<id>{ $config:appUrl }/api/{ $id }/json</id>
+								<contents>
+									{
+										let $members :=
+											for $mem in ($record//t:relation/@passive)
+											let $name := string($mem/parent::t:*/@name)
+											return if (contains($mem, " ")) then
+												for $m in tokenize(normalize-space($mem), " ")
+												return <rels><id>{ $m }</id><n>{ $name }</n></rels>
+											else
+												<rels><id>{ data($mem) }</id><n>{ $name }</n></rels>
+										for $part in config:distinct-values($members//id)
+										return <json:value>
+											<id>urn:dts:betmas:{ string($part) }</id>
+											<type>work</type>
+											<mappings><role>{ $members//n[preceding-sibling::id = $part]/text() }</role></mappings>
+										</json:value>
+									}
+								</contents>
+							</members>,
+							<version>{ max($record//t:change/xs:date(@when)) }</version>,
+							<parents>
+								<json:value json:array="true">
+									{
+										let $parents :=
+											for $par in ($record//t:relation[@name = "saws:formsPartOf"]/@passive)
+											return $par
+										for $parent in config:distinct-values($parents)
+										let $papa := $exptit:col/id($parent)[self::t:TEI]
+										return (
+											<id>urn:dts:betmas:{ string($papa/@xml:id) }</id>,
+											<type>{ string($papa/@type) }</type>,
+											<labels>
+												{
+													for $lang in $papa//t:language
+													return <lang>{ string($lang/@ident) }</lang>
+												}
+												<value>{ exptit:printTitleID($parent) }</value>
+											</labels>
+										)
+									}
+								</json:value>
+							</parents>
+						)
+					}
+				</graph>
+			</json:value>
+		)
 };
 
 (:~
@@ -148,11 +145,9 @@ declare function dtsXML:citation($item as node()) {
  : XXX. 1
  :
  :)
-declare %rest:GET %rest:path("/api/dts/text/{$id}") %output:method("json") function dtsXML:get-workJSON(
-	$id as xs:string
-) {
-	(
-		$config:response200Json,
+declare function dtsXML:get-workJSON($request as map(*)) {
+	let $id as xs:string := $request?parameters?id
+	return (
 		log:add-log-message("/api/dts/text/" || $id, sm:id()//sm:real/sm:username/string(), "dts"),
 		let $collection := "works"
 		let $item := $exptit:col/id($id)[name() = "TEI"]
@@ -189,12 +184,10 @@ declare %rest:GET %rest:path("/api/dts/text/{$id}") %output:method("json") funct
  : XXX. 2, 4
  : XXX. 2, 4-7
  :)
-declare %rest:GET %rest:path("/api/dts/text/{$id}/{$level1}") %output:method("json") function dtsXML:get-toplevelJSON(
-	$id as xs:string,
-	$level1 as xs:string*
-) {
-	(
-		$config:response200Json,
+declare function dtsXML:get-toplevelJSON($request as map(*)) {
+	let $id as xs:string := $request?parameters?id
+	let $level1 as xs:string* := $request?parameters?level1
+	return (
 		log:add-log-message("/api/dts/text/" || $id || "/" || $level1, sm:id()//sm:real/sm:username/string(), "dts"),
 		let $collection := "works"
 		let $item := $exptit:col/id($id)[name() = "TEI"]
@@ -244,11 +237,11 @@ declare %rest:GET %rest:path("/api/dts/text/{$id}/{$level1}") %output:method("js
 (:~
  : returns the lines of the first level of subdivision (chapters)
  :)
-declare
-	%rest:GET %rest:path("/api/dts/text/{$id}/{$level1}/{$line}") %output:method("json")
-function dtsXML:get-level1JSON($id as xs:string, $level1 as xs:string*, $line as xs:string*) {
-	(
-		$config:response200Json,
+declare function dtsXML:get-level1JSON($request as map(*)) {
+	let $id as xs:string := $request?parameters?id
+	let $level1 as xs:string* := $request?parameters?level1
+	let $line as xs:string* := $request?parameters?line
+	return (
 		log:add-log-message(
 			"/api/dts/text/" || $id || "/" || $level1 || "/" || $line,
 			sm:id()//sm:real/sm:username/string(),
@@ -349,11 +342,12 @@ function dtsXML:get-level1JSON($id as xs:string, $level1 as xs:string*, $line as
 (:~
  : returns the lines of the second level of subdivision (chapters)
  :)
-declare
-	%rest:GET %rest:path("/api/dts/text/{$id}/{$level1}/{$level2}/{$line}") %output:method("json")
-function dtsXML:get-level2JSON($id as xs:string, $level1 as xs:string*, $level2 as xs:string*, $line as xs:string*) {
-	(
-		$config:response200Json,
+declare function dtsXML:get-level2JSON($request as map(*)) {
+	let $id as xs:string := $request?parameters?id
+	let $level1 as xs:string* := $request?parameters?level1
+	let $level2 as xs:string* := $request?parameters?level2
+	let $line as xs:string* := $request?parameters?line
+	return (
 		log:add-log-message(
 			"/api/dts/text/" || $id || "/" || $level1 || "/" || $level2 || "/" || $line,
 			sm:id()//sm:real/sm:username/string(),

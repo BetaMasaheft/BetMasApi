@@ -18,15 +18,7 @@ import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMas
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace api = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/api" at "xmldb:exist:///db/apps/BetMasApi/local/rest.xqm";
 
-declare variable $void:response200turtle := <rest:response>
-	<http:response status="200">
-		<http:header name="Content-Type" value="text/turtle; charset=utf-8" />
-		<http:header name="Access-Control-Allow-Origin" value="*" />
-	</http:response>
-</rest:response>;
-
-declare %rest:GET %rest:path("/api/void") %output:method("text") function void:general() {
-	$void:response200turtle,
+declare function void:general($request as map(*)) {
 	"
 @prefix : <" ||
 		$config:appUrl ||
@@ -76,11 +68,9 @@ declare %rest:GET %rest:path("/api/void") %output:method("text") function void:g
         ."
 };
 
-declare
-	%rest:GET %rest:path("/api/void/{$id}") %output:method("text") %test:arg("id", "LIT1719Bookso") %test:assertExists
-function void:entity($id as xs:string*) {
-	(
-		$void:response200turtle,
+declare %test:arg("id", "LIT1719Bookso") %test:assertExists function void:entity($request as map(*)) {
+	let $id as xs:string* := $request?parameters?id
+	return (
 		let $item := $exptit:col/id($id)
 		let $coll := switch2:col($item/@type)
 		let $dctermsContributor := ""
@@ -280,8 +270,7 @@ function void:entity($id as xs:string*) {
 	)
 };
 
-declare %rest:GET %rest:path("/api/dcat") %output:method("text") function void:DCAT() {
-	$void:response200turtle,
+declare function void:DCAT($request as map(*)) {
 	"
 @prefix : <" ||
 		$config:appUrl ||

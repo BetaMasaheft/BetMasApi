@@ -14,14 +14,10 @@ declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace json = "http://www.json.org";
 
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
-import module namespace rest = "http://exquery.org/ns/restxq";
 import module namespace kwic = "http://exist-db.org/xquery/kwic" at "resource:org/exist/xquery/lib/kwic.xql";
 import module namespace all = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm";
 import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
-(: namespaces of data used :)
-import module namespace http = "http://expath.org/ns/http-client";
-import module namespace console = "http://exist-db.org/xquery/console";
 
 (: declare variable $apiS:col := collection('/db/apps/expanded'); :)
 
@@ -51,19 +47,17 @@ declare function apiS:BuildSearchQuery2($element as xs:string, $query as xs:stri
 	return concat("t:", $element, "[ft:query(., '", $query, "', ", serialize($SearchOptions), ")]")
 };
 
-declare
-	%rest:GET %rest:path("/api/titleTest") %rest:query-param("id", "{$id}", "") %output:method("json")
-function apiS:titleTest($id) {
-	map {"title": exptit:printTitleID($id)}
+declare function apiS:titleTest($request as map(*)) {
+	let $id := $request?parameters?id
+	return map {"title": exptit:printTitleID($id)}
 };
 
 (:~
  : returns a map containing the KWIC hits from the evaluation of an xpath containing lucene full text index queries for the API search.
  :)
-declare
-	%rest:GET %rest:path("/api/kwicsearch") %rest:query-param("q", "{$q}", "") %output:method("json")
-function apiS:kwicSearch($q as xs:string*) {
-	if ($q = "" or $q = " ") then (
+declare function apiS:kwicSearch($request as map(*)) {
+	let $q as xs:string* := $request?parameters?q
+	return if ($q = "" or $q = " ") then (
 		<json:value>
 			<json:value json:array="true">
 				<info>you have to specify a query string and a list or elements, sorry</info>
@@ -103,7 +97,6 @@ function apiS:kwicSearch($q as xs:string*) {
 				for $ex in $expanded
 				for $match in subsequence($ex//exist:match, 1, 3)
 				return kwic:get-summary($ex, $match, <config width="40" />)
-			(: let $test := console:log($results) :)
 			let $pname := $expanded//exist:match[ancestor::t:div[@type eq "edition"]]
 			let $text := if ($pname) then
 				"text"
@@ -133,7 +126,7 @@ function apiS:kwicSearch($q as xs:string*) {
 			}
 		let $c := count($hits)
 		return if (count($hits) gt 0) then (
-			$config:response200Json, map {"items": $hi, "total": $c}
+			map {"items": $hi, "total": $c}
 		) else
 			<json:value><json:value json:array="true"><info>No results, sorry</info></json:value></json:value>
 };
@@ -141,28 +134,16 @@ function apiS:kwicSearch($q as xs:string*) {
 (:~
  : returns a json object containing the hits from the evaluation of an xpath containing lucene full text index queries for the API search.
  :)
-declare
-	%rest:GET
-	%rest:path("/api/search")
-	%rest:query-param("q", "{$q}", "")
-	%rest:query-param("element", "{$element}", "title")
-	%rest:query-param("collection", "{$collection}", "")
-	%rest:query-param("script", "{$script}", "")
-	%rest:query-param("material", "{$material}", "")
-	%rest:query-param("homophones", "{$homophones}", "true")
-	%rest:query-param("descendants", "{$descendants}", "true")
-	%output:method("json")
-function apiS:search(
-	$element as xs:string+,
-	$q as xs:string*,
-	$collection as xs:string*,
-	$script as xs:string*,
-	$material as xs:string*,
-	$term as xs:string*,
-	$homophones as xs:string*,
-	$descendants as xs:string*
-) {
-	if ($q = "" or $q = " " or $element = "") then (
+declare function apiS:search($request as map(*)) {
+	let $element as xs:string+ := $request?parameters?element
+	let $q as xs:string* := $request?parameters?q
+	let $collection as xs:string* := $request?parameters?collection
+	let $script as xs:string* := $request?parameters?script
+	let $material as xs:string* := $request?parameters?material
+	let $term as xs:string* := $request?parameters?term
+	let $homophones as xs:string* := $request?parameters?homophones
+	let $descendants as xs:string* := $request?parameters?descendants
+	return if ($q = "" or $q = " " or $element = "") then (
 		<json:value>
 			<json:value json:array="true">
 				<info>you have to specify a query string and a list or elements, sorry</info>
@@ -251,7 +232,7 @@ function apiS:search(
 
 		let $c := count($hits)
 		return if (count($hits) gt 0) then (
-			$config:response200Json, map {"items": $results, "total": $c}
+			map {"items": $results, "total": $c}
 		) else
 			<json:value><json:value json:array="true"><info>No results, sorry</info></json:value></json:value>
 };
