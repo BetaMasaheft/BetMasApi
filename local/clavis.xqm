@@ -64,8 +64,7 @@ se interrogato da titolo da gli id, altrimenti per id da gli altri id e il titol
 
  :) (:
     let $log := log:add-log-message('/api/clavis/' || $id , sm:id()//sm:real/sm:username/string() , 'REST')
-               :)
-		let $bibl := if ($type != "") then
+               :) let $bibl := if ($type != "") then
 			"[t:bibl[@type = '" || $type || "']]"
 		else (
 		)
