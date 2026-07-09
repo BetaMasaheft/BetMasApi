@@ -58,11 +58,13 @@ RUN java org.exist.start.Main jetty & \
 # this package: rebuilds fast on every local change
 COPY --from=build-stage /src/BetMasApi/build/*.xar /install/BetMasApi/
 COPY test/register-restxq.xq /install/register-restxq.xq
+COPY test/fixtures /install/fixtures
 
 RUN java org.exist.start.Main jetty & \
     EXIST_PID=$! && \
     timeout 120 bash -c 'until curl -sf http://localhost:8080/exist/rest/ > /dev/null 2>&1; do echo "Waiting..."; sleep 3; done' && \
     xst package install local-files /install/BetMasApi/*.xar && \
     xst execute --file /install/register-restxq.xq && \
+    xst upload /install/fixtures /db/apps/expanded && \
     kill $EXIST_PID && \
     wait $EXIST_PID; true

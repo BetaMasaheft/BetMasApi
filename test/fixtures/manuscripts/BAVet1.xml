@@ -1,0 +1,1033 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-model href="https://raw.githubusercontent.com/BetaMasaheft/Schema/master/tei-betamesaheft.rng" 
+schematypens="http://relaxng.org/ns/structure/1.0"
+?><?xml-model href="https://raw.githubusercontent.com/BetaMasaheft/Schema/master/tei-betamesaheft.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?><TEI xmlns="http://www.tei-c.org/ns/1.0" xml:lang="en" xml:id="BAVet1" type="mss">
+  <teiHeader xml:base="https://betamasaheft.eu/">
+      <fileDesc>
+         <titleStmt>
+            <title>Four Gospels, Book of Hours, Missal, Prayers, Sinodos </title>
+            <editor key="MV"/>
+            <editor role="generalEditor" key="AB"/>
+            <funder>Akademie der Wissenschaften in Hamburg</funder>
+         </titleStmt>
+         <publicationStmt>
+            <authority>Hiob-Ludolf-Zentrum für Äthiopistik</authority>
+            <pubPlace>Hamburg</pubPlace>
+            <publisher>Die Schriftkultur des christlichen Äthiopiens und Eritreas: Eine multimediale Forschungsumgebung / Beta maṣāḥǝft</publisher>
+            <availability>
+               <licence target="http://creativecommons.org/licenses/by-sa/4.0/">
+                  <p> This file is licensed
+            under the Creative Commons Attribution-ShareAlike 4.0. </p>
+               </licence>
+            </availability>
+            <date>2016-06-07T17:34:36.029+02:00</date>
+         </publicationStmt>
+         <sourceDesc>
+            <msDesc xml:id="ms">
+          
+               <msIdentifier>
+                  <repository ref="INS0003BAV"/>
+                  <collection>Aethiopici</collection>
+                  <idno facs="https://digi.vatlib.it/iiif/MSS_Vat.et.1/manifest.json">Aeth. 1</idno>
+               </msIdentifier>
+          
+               <msContents>
+                  <summary/>
+            
+                  <msItem xml:id="ms_i1">
+                     <locus from="3r" to="98v" facs="0004"/>
+                     <title type="complete" ref="LIT1560Gospel"/>
+                     <listRelation>
+                        <relation name="saws:isDirectCopyOf" active="BAVet1#ms_i1" passive="bm:Petrus1548Test"/>
+                     </listRelation>
+              
+
+                     <msItem xml:id="ms_i1.1">
+                        <locus from="3r" to="10v" facs="0004"/>
+                        <title type="complete" ref="LIT1560Gospel#IntroductionGospels">Introduction to the Gospels</title>
+
+                        <msItem xml:id="ms_i1.1.1">
+                           <locus from="3r" facs="0004"/>
+                           <title type="complete">Maqdǝma wangel (Introduction to the Gospels)</title>
+                        </msItem>
+                        <msItem xml:id="ms_i1.1.2">
+                           <title type="complete" ref="LIT1349EpistlEusebius">Letter of Eusebius to Carpianus</title>
+                        </msItem>
+                        <msItem xml:id="ms_i1.1.3">
+                           <locus from="4r" to="8v" facs="0005"/>
+                           <title type="complete" ref="LIT1560Gospel#IntroductionCanons">Canon tables</title>
+                        </msItem>
+                        <msItem xml:id="ms_i1.1.4">
+                           <locus from="9r" to="10v" facs="0010"/>
+                           <title type="complete" ref="LIT1560Gospel#IntroductionGessawe" evidence="conjecture"/>
+                        </msItem>
+                     </msItem>
+              
+                     <msItem xml:id="ms_i1.2">
+                        <locus from="13r" to="33v" facs="0014"/>
+                        <title type="complete" ref="LIT1558Matthew"/>
+
+                        <msItem xml:id="ms_i1.2.1">
+                           <locus from="13r" to="33v" facs="0014"/>
+                           <title type="complete" ref="LIT2709Matthew"/>
+                        </msItem>
+                     </msItem>
+            
+                     <msItem xml:id="ms_i1.3">
+                        <locus from="33v" to="48r" facs="0035"/>
+                        <title type="complete" ref="LIT1882MarkGo"/>
+        
+                        <msItem xml:id="ms_i1.3.1">
+                           <locus target="#33v" facs="0035"/>
+                           <title type="complete" ref="LIT1882MarkGo#TituliMark"/>
+                        </msItem>
+                        <msItem xml:id="ms_i1.3.2">
+                           <locus from="33v" to="48r" facs="0035"/>
+                           <title type="complete" ref="LIT2711Mark"/>
+                        </msItem>
+                     </msItem>
+            
+                     <msItem xml:id="ms_i1.4">
+                        <locus from="48r" to="78v" facs="0049"/>
+                        <title type="complete" ref="LIT1812GospelLuke"/>
+
+                        <msItem xml:id="ms_i1.4.1">
+                           <locus target="#48r" facs="0049"/>
+                           <title type="complete" ref="LIT1812GospelLuke#TituliLuke"/>
+                        </msItem>
+                        <msItem xml:id="ms_i1.4.2">
+                           <locus from="48v" to="78v" facs="0050"/>
+                           <title type="complete" ref="LIT2713Luke"/>
+                        </msItem>
+                     </msItem>
+            
+                     <msItem xml:id="ms_i1.5">
+                        <locus from="79r" to="98v" facs="0080"/>
+                        <title type="complete" ref="LIT1693John"/>
+
+                        <msItem xml:id="ms_i1.5.1">
+                           <locus from="79r" to="98vb" facs="0080"/>
+                           <title type="complete" ref="LIT2715John"/>
+                        </msItem>
+                     </msItem>
+                  </msItem>
+            
+                  <msItem xml:id="ms_i2">
+                     <locus from="99ra" to="110r" facs="0100"/>
+                     <title type="complete" ref="LIT2230Saatat"/>
+                  </msItem>
+            
+                  <msItem xml:id="ms_i3">
+                     <locus from="110v" to="125" facs="0112"/>
+                     <title type="incomplete" ref="LIT1960Mashaf"/>
+                     <listRelation>
+                        <relation name="saws:isDirectCopyOf" active="BAVet1#ms_i3" passive="bm:Petrus1548Test"/>
+                     </listRelation>
+                     
+                     <msItem xml:id="ms_i3.1">
+                        <locus from="110v" to="118v" facs="0112"/>
+                        <title ref="LIT1960Mashaf#SerataQeddase">Śǝrʿāta qǝddāse (Ordinary of the Mass)</title>
+                     </msItem>
+                     
+                     <msItem xml:id="ms_i3.2">
+                        <locus from="119r" to="121r" facs="0120"/>
+                        <title type="incomplete" ref="LIT1960Mashaf#AnaphoraLord">Anaphora of Our Lord Jesus Christ</title>
+                     </msItem>
+                     
+                     <msItem xml:id="ms_i3.3">
+                        <locus from="121v" to="125r" facs="0123"/>
+                        <title type="incomplete" ref="LIT1960Mashaf#AnaphoraMary" evidence="conjecture">Anaphora of Our Lady by St. Cyriacus of Behnesa</title>
+                     </msItem>
+                  </msItem>
+                  
+                  <msItem xml:id="ms_i4">
+                     <locus from="125r" to="144v" facs="0126"/>
+                     <title type="complete">Daily prayers</title>
+              
+                     <msItem xml:id="ms_i4.1">
+                        <locus target="#125r" facs="0126"/>
+                        <title type="complete" ref="LIT3125Saatat">ሰዓታት፡ ዘነግህ፡</title>
+                        <incipit xml:lang="gez">
+                           <locus target="#125r" facs="0126"/>ወአዘዙ፡ ሐዋርያት፡ በሲኖዶሶሙ፡ እንዘ፡ ይብሉ፡ ነግሀ፡ ይጼልዩ፡ ባቲ፡ ለሰሚአ፡ 
+                              <sic>ተምሕርት፡ ወተዓተቦ፡</sic>
+                            ፍጽመ፡ መስቀል፡ 
+                           ኵሎ<supplied reason="omitted">ሙ</supplied>፡ ምእምናን፡ ወምእምናት፤ ተንሢኦሙ፡ ነግሀ፡ እንዘ፡ ኢይገብሩ፡ ወኢምንተኒ፡ መፍቅዶሙ፡ ይትኀፀቡ፡ እደዊሆሙ፡ ወይጸልዩ፡ ኀበ፡ እግዚአብሔር።
+                        </incipit>
+                        <explicit xml:lang="gez">ስማዕ፡ እግዚኦ፡ ቃልየ፡ ወለቡ፡ ጽራሕየ፨ ተወከፈኒ፡ ጸሎትየ፡ ከመ፡ ዕጣን፡ በቅድሜከ፡ ዘይሰማዕ፡ ግበር፡ ሊተ፡ 
+                              <sic>ምሕረትከ፡ በጽብሕ።</sic>
+                           
+                        </explicit>
+                     </msItem>
+                     <msItem xml:id="ms_i4.2">
+                        <locus from="125r" to="126v" facs="0126"/>
+                        <title type="complete" ref="LIT1807Litonz">ሊጣን፡ ዘነግህ፡</title>
+                        <!-- Cp. BAVet108#ms_i1.3.1 -->
+                        <incipit xml:lang="gez">ወካዕበ፡ ናስተበቍዕ፡ ዘኵሎ፡ ይእኅዝ፡ እግዚአብሔር፡ <supplied reason="omitted">አቡሁ፡</supplied> ለእግዚእ፡ ወመድኀኒነ፡ ኢየሱስ፡ ክርስቶስ፨ 
+                           እንዘ፡ 
+                              <sic>ነአኵቶ፡</sic>
+                            እስመ፡ ዓቀበነ፡ 
+                              <sic>በኑኅ፡</sic>
+                            ሌሊት፡ ወአብጽኀነ፡ እምጽልመት፡ ውስተ፡ ብርሃን፡ እሙስና፡ ውስተ፡ 
+                           ዘኢይማሥን፡ እም፡ 
+                              <sic>ኢይእምሮ፡</sic>
+                            ውስተ፡ አእምሮ፡ አማን፨</incipit>
+                        <explicit xml:lang="gez">
+                           <locus target="#126v" facs="0128"/>ሰላም፡ ለኪ፡ ዳግሚት፡ ሰማይ፡ ሰላም፡ ለኪ፡ ሙጻአ፡ ጸሓይ፨ ሰላም፡ 
+                              <sic>ለከ፡</sic>
+                            ዓንቀጸ፡ መድኀኒት፤ ሰላም፡ ለኪ፡ ሙዳየ፡ ዕፍረት፤ 
+                           ሰላም፡ ለኪ፡ እመ፡ እግዚአብሔር፤ ሰላም፡ ለኪ፡ ዘምስለ፡ ሰጊድ፡ ንኤምሐኪ፡                               <sic>ለባርኮተነ፡</sic>
+                            ስፍሒ፡ እዴኪ፨</explicit>
+                     </msItem>
+                     <msItem xml:id="ms_i4.3">
+                        <locus from="126v" to="128r" facs="0128"/>
+                        <title type="complete" ref="LIT3126Prayer">Prayer for the third hour</title>
+                        <incipit xml:lang="gez">
+                           <locus target="#126v" facs="0128"/>በ፫፡ ሰዓት፡ መዝሙር፡ በ፮፨ ይቤ፡ እግዚእ፡ ሊቀ፡ 
+                              <sic>ከህናት፡</sic>
+                            ዘቦአ፡ ውሣጤ፡ መን<supplied reason="omitted">ጦ</supplied>ላዕት፡ 
+                           <gap reason="omitted" extent="unknown" resp="bm:GrebTiss1935Codices"/> ጸሎት፡ በ፫፡ ሰዓት፡ በ፭፨ መኑ፡ ደመሮ፡ 
+                              <sic>ለጸልመት፡</sic>
+                            
+                           ምስለ፡ ብርሃን፡ ወለጽድቅ፡ ምስለ፡ ኀጢአት፨</incipit>
+                        <explicit xml:lang="gez">
+                           <locus target="#128r" facs="0129"/>ሰላም፡ ለኪ፡ ሐመረ፡ ብዕልነ፨ ሰ፨ መዝገበ፡ ወርቅነ፡ ሰ፨ አስከሬ<supplied reason="omitted">ነ</supplied>፡ ሰርጕነ፡ ሰ፨ ቀፀላ፡ ርእስነ፡ ሰ፨ ታቦተ፡ ኅግነ፡ ሰ፨ 
+                           ድንግለ፡ እስራኤል፡ ጠባብ፡ ሰ፨ ዘምስለ፡ ሰጊድ፡ ንኤምሐኪ፡ 
+                              <sic>ለባርኮተነ፡</sic>
+                            ስፍሒ፡ እዴኪ፨
+                        </explicit>
+                     </msItem>
+                     <msItem xml:id="ms_i4.4">
+                        <locus from="128r" to="129r" facs="0129"/>
+                        <title type="complete" ref="LIT3127Prayer">Prayer for the sixth hour</title>
+                        <incipit xml:lang="gez">
+                           <locus target="#128r" facs="0129"/>ጸሎት፡ በ፮፡ ሰዓት፡ በ፪፨ ከመ፡ ዝ፡ ይቤ፡ ጰውሎስ፡ ለብሔረ፡ ሮሜ፡ በምንትኑ፡ እንከ፡ አኀውየ፡ ጸሎትነ፡ ለእመ፡ ኢና<supplied reason="omitted">አ</supplied>ምር፡ 
+                           ተስፋነ፨ ወባሕቱ፡ መንፈስ። ቅዱስ፡ 
+                              <sic>ይትዋቅሥ፡</sic>
+                            በእንቲአነ፡ በጸሎት፡ ዘኢይትአመር፨
+                        </incipit>
+                        <explicit xml:lang="gez">
+                           <locus target="#129r" facs="0130"/>ሰላም፡ 
+                              <sic>ለከ፡</sic>
+                            አትሮንሰ፡ መለኮት፡ ሰላም፡ 
+                              <sic>ለከ፨</sic>
+                            መንበረ፡ ስብሐት፡ 
+                           
+                              <sic>ሰለም፡ ለከ፨</sic>
+                            ደብተራ፡ ብርሃን፡ ስፍሐት፡ ሰላም፡ 
+                              <sic>ለከ፨</sic>
+                            ንግሥተ፡ ይሁዳ፡ ሰላም፡ 
+                              <sic>ለከ፨</sic>
+                            
+                           ጸሐየ፡ መርመዳ፡ ሰላም፡ 
+                              <sic>ለከ፨</sic>
+                            ድንግልናዊት፡ እም፡ ሰላም፡ ለኪ፨ ዘምስለ፡ ሰጊድ፡ ንኤምኀኪ፡ 
+                              <sic>ለባርኮተነ፡</sic>
+                            ስፍሒ፡ እዴኪ፨
+                        </explicit>
+                     </msItem>
+                     <msItem xml:id="ms_i4.5">
+                        <locus from="129r" to="130v" facs="0130"/>
+                        <title type="complete" ref="LIT3128Prayer">Prayer for the ninth hour</title>
+                        <incipit xml:lang="gez">
+                           <locus target="#129r" facs="0130"/>ጸሎ<supplied reason="omitted">ት፡</supplied> በ፱ ሰዓት፡ በ፪፨ መዝሙር፡ ሃሌ፡ ሉያ፡ ሃሌ፡ ሉያ፡ 
+                              <sic>ይቤሎ፡</sic>
+                            ሐዋርያት፡ በዲድስቅልያ፡ ገስጾሙኬ፡ 
+                           ኤጲስ፡ 
+                              <sic>ቆጰስ፡</sic>
+                            ለሕዝብከ፡ ወአዝዞሙ፡ ይምጽኡ፡ ቤተ፡ ክርስቲያን፨ መዓልተ፡ ወሌሊተ፡ 
+                              <sic>ወግሞራ፡</sic>
+                            
+                           ኢይርሐቁ፡ 
+                              <sic>እምኔሁ፡</sic>
+                           
+                        </incipit>
+                        <explicit xml:lang="gez">
+                           <locus target="#130v" facs="0131"/>በከመ፡ ተሠጠ፡ መንጦላዕተ፡ ቤተ፡ 
+                              <sic>መቅድስ፡</sic>
+                            ጊዜ፡ ተሱዓት፡ አመ፡ ፀአተ፡ ነፍስከ፨ ሥጥጥ፡ መጽሐፈ፡ ዕዳነ፡ በሕማመ፡ ሞትከ፤ 
+                           
+                              <sic>ወጽሐፍ፡</sic>
+                            አስማቲነ፡ ውስተ፡ ጕንደ፡ መስቀልከ፡ በቀለመ፡ ደምለ፨ ከመ፡ አንተ፡ በአብ፡ ወአብ፡ ብከ፨ ረስየኒ፡ ሱቱፋነ፡ ምስለ፡ አርዳኢከ፨ ወዝራእ፡ ውስተ፡ ልብነ፡ ወንጌለ፡ 
+                           ፀጋከ፡ ጊዜ፡ ምሴት፡ ጸግወነ፡ 
+                              <sic>ሰላምከ፤</sic>
+                            እግዚኦ፡ መሐረነ፡ ክርስቶስ፨ ፲፪፡ ጊዜ፡ ወአቡነ፡ ዘበሰማያት፨ =፨
+                        </explicit>
+                     </msItem>
+                     <msItem xml:id="ms_i4.6">
+                        <locus from="130v" to="132v" facs="0132"/>
+                        <title type="complete" ref="LIT1716Kidanz"/>
+                     </msItem>
+                     <msItem xml:id="ms_i4.7">
+                        <locus from="132v" to="133r" facs="0134"/>
+                        <title type="complete" ref="LIT3129Prayer">ጸሎተ፡ ፲፪ሰዓት፡ በጊዜ፡ ሰርክ፡</title>
+                        <incipit xml:lang="gez">
+                           <locus target="#132v" facs="0134"/>በ፭። 
+                              <sic>ህየነ፡</sic>
+                            እዴከ፡ ትመርሀኒ፡ ወታነብረኒ፡ 
+                              <sic>የማነከ።</sic>
+                            አይቴኑ፡ አኀውር፡ እመንፈስከ፡ 
+                           ወአይቴኑ፡ እጐይይ፡ እምቅድመ፡ ገፅከ፡ ብጹዕ፡ ዘኀረይኮ፡ ወዘተ<supplied reason="omitted">ወ</supplied>ከፍኮ፡ ወዘአሕደርኮ፡ ውስተ፡ አዕፃዲከ፨
+                        </incipit>
+                        <explicit xml:lang="gez">
+                           <locus target="#133r" facs="0134"/>ሰላም፡ ለኪ። ሐመረ፡ አድኅኖ፡ ዘጽድቅ፡ ሰለም፡ ለኪ። አስከሬነ፡ ወርቅ፡ ሰላም፡ ለኪ። ኮለ፡ ኢያሪኮ፡ ዘሐይቅ፡ ሰላም፡ ለኪ። ኖኅተ፡ ምሥራቅ፡ ሰላም፡ ለኪ። ሀገሪተ፡ ዕንቍ፡ ሰላም፡ ለኪ።
+                           ሐዳስ፡ ንድቅ፡ 
+                              <sic>መደበለ፡</sic>
+                            ማሕበር፡ ጽፉቅ፡ 
+                              <sic>ሰለም፡</sic>
+                            ለኪ። ዘምስለ፡ ሰጊድ፡ ንኤምኀኪ፡ ሱላሜ፡ እንተ፡ ሰርክ፡ ንትወፈይ፡ 
+                           ሕዝብኪ፨</explicit>
+                     </msItem>
+                     <msItem xml:id="ms_i4.8">
+                        <locus from="133r" to="134r" facs="0134"/>
+                        <title type="complete" ref="LIT3130Prayer">ጸሎተ፡ ፫ሰዓት፡ ሌሊት፡ በጊዜ፡ ንዋም፡</title>
+                        <incipit xml:lang="gez">
+                           <locus target="#133r" facs="0134"/>ሃሌ፡ ሉያ፡ ሃሌ፡ ሉያ፡ መኑ፡ ይትዔረዮ፡ ለእግዚአብሔር፡ በደመናት። ወመኑ፡ ይመስሎ፡ እምደቂቀ፡ አማልክት፡ መኑ፡ ሥሉጥ፡ በሩጸተ፡ ነፋ<supplied reason="omitted">ሳ</supplied>ት፡ 
+                           ወበነኰርኳረ፡ 
+                              <sic>መባርቀት፡</sic>
+                           
+                        </incipit>
+                        <explicit xml:lang="gez">
+                           <locus target="#134r" facs="0135"/>ሰላም፡ ለኪ፡ መዝገ<supplied reason="omitted">በ</supplied>፡ ስርናይ፤ ሰ፡ እመ፡ አዶናይ፨ ሰ፡ 
+                              <sic>ዕንቆ፡</sic>
+                            ባሕርይ፨ 
+                           ሰ፡ ዓጸደ፡ ተክህኖ፨ ሰ፡ ዓንቀጸ፡ አድኅኖ፨ ሰ፡ ወለተ፡ ብርሃን፨ ሰ፡ ዘምስለ፡ ሰጊድ፡ 
+                              <sic>ንኤመኃኪ፡ ለበርኮትነ፡ ስፍሕ፡</sic>
+                            እዴኪ፨</explicit>
+                     </msItem>
+                     <msItem xml:id="ms_i4.9">
+                        <locus from="134r" to="144v" facs="0135"/>
+                        <title type="complete" ref="LIT3131Prayer">ጸሎት፡ ዘመንፈቄ፡ ሌሊት፡</title>
+                        <incipit xml:lang="gez">
+                           <locus target="#134r" facs="0135"/>
+                           
+                              <sic>ጸሎተ፡</sic>
+                            ዘመ<supplied reason="omitted">ን</supplied>ፈቀ፡ ሌሊት፤ ሃሌ፡ ሉያ፡ በስመ፡ አብ፡ 
+                           <gap reason="omitted" extent="unknown" resp="bm:GrebTiss1935Codices"/> 
+                           
+                              <sic>ሰዳዴሆሙ፡</sic>
+                            ለአጋንንት፡ 
+                           ስድዶሙ፡ እግዚኦ፡ ለአጋንንት፡ እምየማንነ፡ ወ<supplied reason="omitted">እ</supplied>ምፀጋምነ፤
+                        </incipit>
+                        <note>
+                           On <locus from="136v" to="137r" facs="0138"/> the office contains the following invocations (cp. <ref type="item" corresp="BAVet24#ms_i5"/>): 
+                           <persName ref="PRS8974Stephen">St Stephen</persName>, <persName ref="PRS3249Cyriacus">St Cyriacus</persName>, 
+                           <persName ref="PRS10245Yared">Yāred</persName>, the Holy Church, <persName ref="PRS7049Michael">the archangel Michael</persName>, 
+                           <persName ref="PRS4377Gabriel">the archangel Gabriel</persName>, the Four Beasts, the Twenty-Four Elders, the prophets, the apostles, 
+                           the righteous, the martyrs and <persName ref="PRS6819Mary">Our Lady Mary</persName>. 
+                           The office also contains the following prayers (<ref type="work" corresp="LIT4711Mastabqwe"/>): for the sick, for the pilgrims, for the rain, <ref type="work" corresp="LIT1812GospelLuke"/> 7:36-50, prayers to 
+                           <persName ref="PRS6819Mary">Our Lady Mary</persName>, for the fruits of the earth, for the water of the rivers, for the king, excerpts from 
+                           an unidentified Psalm, <ref type="work" corresp="LIT1558Matthew"/> 25:31-46, 
+                           prayers for the sleepers, for the offerers, for the catechumens, for the peace, hymns to <persName ref="PRS6819Mary">Our Lady Mary</persName>, 
+                           <ref type="work" corresp="LIT1693John"/> 19:25-27, <ref type="work" corresp="LIT2968RepCh249"/>, a hymn to Mary erroneously entitled <q xml:lang="gez">፩ተአምሪሃ፡ 
+                                 <sic>ለእግዚአትነ፡</sic>
+                               ቅድስት፡ ድንግል፡ በክልኤ፨ ማርያም፡</q>, <ref type="work" corresp="LIT1812GospelLuke"/> 11:5-13.
+                        </note>
+                     </msItem>
+                  </msItem>
+            
+                  <msItem xml:id="ms_i5">
+                     <locus from="144va" to="146v" facs="0146"/>
+                     <title type="complete">Hymns in honour of Our Lady Mary</title> 
+                     <msItem xml:id="ms_i5.1">
+                        <locus from="144va" to="145r" facs="0146"/>
+                        <title type="complete" ref="LIT3124HymnMary"/>
+                        <incipit xml:lang="gez">
+                           <locus target="#144va" facs="0146"/>ሰላም፡ 
+                              <sic>ሰለም፡ አመደ፡</sic>
+                            ህርይ<supplied reason="omitted">ት፡</supplied> ዘኢትጽንን፡ ሰ። ሐመረ፡ ቅዱሳን፡ ማርያም፡ ሰ። 
+                           በሰጊድ፡ ንብለኪ፡ ንኤምሐኪ፡ ሀመረ፡ ክርስቲያን፡ ማርያም፡
+                        </incipit>
+                        <explicit xml:lang="gez">
+                           <locus target="#145r" facs="0146"/>ሰ፡ አብ፡ ወወልድ፡ ወመንፈስ፡ ቅዱስ። ለዝክርክሙ፡ ሕይወት። ሶበ፡ ከናፍ<supplied reason="omitted">ር</supplied>የ፡ እከስት፤ ስመ፡ ዚአክሙ፡ በኵሉ፡ ሰዓት። ይሰማዕ፡ እምአፉየ፡ 
+                           ወይደንግጽ፡ ሞት፨</explicit>
+                               </msItem>
+                     <msItem xml:id="ms_i5.2">
+                        <locus from="145rb" to="145v" facs="0146"/>
+                        <title type="complete" ref="LIT3023RepCh303"/>
+                        <incipit xml:lang="gez">
+                           <locus target="#145r" facs="0146"/>ተፈሥሒ፡ ማርያም፡ ድንግልተ፡ ሥጋ፡ ወህሊና፡ ተፈሥሒ፡ ማርያም፡ ወለተ፡ ኢያቄም፡ ውሐና፨ ጳጦስ፡ አንቲ፡ ዘአስተርአይከ፡ በደብረ፡ ሲና፨</incipit>
+                        <explicit xml:lang="gez">
+                           <locus target="#145v" facs="0147"/>ምንተ፡ አዓስየኪ፡ 
+                              <sic>እሴኪ፡</sic>
+                            በእንተ፡ ኵሉ፡ ዘገበርኪ፡ ሊተ፡ ማርያም፡ ድንግል፡ ዘታፈቅሪ፡ ምኅረተ። ሶበሰ፡ ትትዓቀቢ፡ ዘዚአየ፡ 
+                           
+                              <sic>ኀጢአት።</sic>
+                            እመ፡ ኢሐየ<supplied reason="omitted">ወ</supplied>ክ፡ አሓተ፡ ሰዓተ፨
+                        </explicit>
+                     </msItem>
+                     <msItem xml:id="ms_i5.3">
+                        <locus from="145v" to="146v" facs="0147"/>
+                        <title type="complete" ref="LIT2937RepCh218"/>
+                        <incipit xml:lang="gez">
+                           <locus target="#145v" facs="0147"/>ሰላም፡ ሰላም፡ 
+                              <sic>አብል፡</sic>
+                            ለኵሎን፡ መልክዕኪ። እመ፡ እግዚአብሔር፡ እምየ፡ እግዝእትየ፡ ማርያም፤ ዓዲ፡ ሰላም፡ ለክልኤ፡ ማኅተመ፡ ድንግልናኪ፡
+                        </incipit>
+                        <explicit xml:lang="gez">
+                           <locus target="#146v" facs="0148"/>ኦድንግል፡ ወለቱ፡ ለእስራኤል፡ ጽጌ፡ ከርስኪ፡ ልዑል፡ ኣማኑኤል፡ ጽጌ፡ ከርስኪ፡ ልዑል፡ ኣማኑኤል፨ <supplied reason="omitted">ሰ</supplied>ላም፡ ለድንግልና፡
+                        </explicit>
+                     </msItem>
+                  </msItem>
+            
+                  <msItem xml:id="ms_i6">
+                     <locus from="147r" to="198r" facs="0148"/>
+                     <title type="incomplete" ref="LIT2317Senodo"/>
+                     <listRelation>
+                        <relation name="saws:isDirectCopyOf" active="BAVet1#ms_i6" passive="BMLor148"/>
+                     </listRelation>
+
+                     <msItem xml:id="ms_i6.1">
+                        <locus from="147r" to="151r" facs="0148"/>
+                        <title type="complete" ref="LIT2673CanonsAscension">Canons of the Apostles, 30 in number</title>
+                        <note/>
+                     </msItem>
+                     <msItem xml:id="ms_i6.2">
+                        <locus from="151r" to="157v" facs="0153"/>
+                        <title type="complete" ref="LIT2679ACAbt2">Canons of Clement, 81 in number</title>
+                        <note/>
+                     </msItem>
+                     <msItem xml:id="ms_i6.3">
+                        <locus from="157v" to="163v" facs="0160"/>
+                        <title type="complete" ref="LIT2639CanonsSimon1">Canons of the Apostles, few in number</title>
+                        <note/>
+                     </msItem>
+                     <msItem xml:id="ms_i6.4">
+                        <locus target="#163v" facs="0166"/>
+                        <title type="complete" ref="LIT2672SenodosInMe">Melkite Index</title>
+                        <note/>
+                     </msItem>
+                     <msItem xml:id="ms_i6.5">
+                        <locus from="163v" to="166v" facs="0166"/>
+                        <title type="complete" ref="LIT2662Ancyra">Canons of Ancyra, 24 in number</title>
+                        <note/>
+                     </msItem>
+                     <msItem xml:id="ms_i6.6">
+                        <locus from="166v" to="168r" facs="0169"/>
+                        <title type="complete" ref="LIT2661Canons">Canons of Neocesarea, 14 in number</title>
+                        <note/>
+                     </msItem>
+                     <msItem xml:id="ms_i6.7">
+                        <locus from="168r" to="169vb13" facs="0170"/>
+                        <title type="incomplete" ref="LIT2651CanonsCouncils">Canons of Gangra, 20 in number</title>
+                        <note>The text breaks off after Canon 18, on <locus target="#169vb" n="13"/>.</note>
+                     </msItem>
+                     <msItem xml:id="ms_i6.8">
+                        <locus from="169vb13" to="173r" facs="0172"/>
+                        <title type="incomplete" ref="LIT2686CanonsLao">Canons of Laodicea, canons 19-59</title>
+                        <note>It is the continuation of <ref target="#ms_i6.14"/>.</note>
+                        <incipit xml:lang="gez">
+                           <locus target="#169vb13"  facs="0172"/>በእንተ፡ በዓል፡ ይጸውዖሙ፡ ለንኡስ፡ ክርስቲያን፡</incipit>
+                     </msItem>
+                     <msItem xml:id="ms_i6.9">
+                        <locus from="173r" to="176v" facs="0175"/>
+                        <title type="complete" ref="LIT2650CanonsNicaea1">Canons of Nicea, 20 in number</title>
+                        <note/>
+                     </msItem>
+                     <msItem xml:id="ms_i6.10">
+                        <locus from="176v" to="187v" facs="0180"/>
+                        <title type="complete" ref="LIT2688CanonsNicaea2">Canons of Nicea, 84 in number</title>
+                        <note/>
+                     </msItem>
+                     <msItem xml:id="ms_i6.11">
+                        <locus from="187v" to="189v" facs="0191"/>
+                        <title type="complete" ref="LIT2680ClemPeter">Canons of Clement, which he received in a letter from St Peter</title>
+                        <note/>
+                     </msItem>
+                     <msItem xml:id="ms_i6.12">
+                        <locus from="189v" to="192r" facs="0193"/>
+                        <title type="complete" ref="LIT2652CanonsCouncils"/>
+                        <note>Canons of Sardes, 21 in number</note>
+                     </msItem>
+                     <msItem xml:id="ms_i6.13">
+                        <locus from="192r" to="195v" facs="0195"/>
+                        <title type="complete" ref="LIT2653CanonsCouncils">Canons of Antioch, 25 in number</title>
+                     </msItem>
+                     <msItem xml:id="ms_i6.14">
+                        <locus from="195v" to="197v" facs="0199"/>
+                        <title type="incomplete" ref="LIT2686CanonsLao">Canons of Laodicea, canons 1-19</title>
+                        <note>It continues as <ref target="#ms_i6.8"/>.</note>
+                        <explicit xml:lang="gez">
+                           <locus target="#197va" facs="0201"/>በእንተ፡ ጸሎት፡ <gap reason="omitted" extent="unknown" resp="bm:GrebTiss1935Codices"/> ወይደልዎሙ፡ ለኤጲስ፡ ቆጶስ፡ ሶበ፡ ነበረ፡</explicit>
+                     </msItem>
+                     <colophon xml:lang="gez" xml:id="coloph1">
+                        <locus target="#198rb" facs="0201"/>
+                        ወተፈጸመ፡ ዝንቱ፡ ሴኖዶስ፡ በዋርኀ፡ ግንቦት፡ ፰፡ በሰርቀ፡ መልአት፡ ፫፡ በሰርቀ፡ 
+                           <sic>ሌሌት።</sic>
+                         በመዋዕለ፡ ወን<supplied reason="omitted">ጌ</supplied>ላዊ፡ ማቴዎስ፡ 
+                           <sic>፮፼፡</sic>
+                         ወ፭፻፡ ፹ወ፭፡ ዓመተ፡ 
+                           <sic>አደም።</sic>
+                        
+                        <note>The colophon is written in red ink and states that the Sinodos was completed on the 8th of Gǝnbot in the year of Adam <date>6585</date>, year of Matthew.
+                           The date can not be assessed with certainty: it might correspond to <date>1593 AD</date> or be incorrect.</note>
+                     </colophon>
+                  </msItem>
+            
+                  <msItem xml:id="ms_i7">
+                     <locus from="198rb" to="210v" facs="0201"/>
+                     <title type="complete"/>
+                     <note>On the computation of time.</note>
+                     <listRelation>
+                        <relation name="saws:isDirectCopyOf" active="BAVet1#ms_i7" passive="BMLor148" evidence="conjecture"/>
+                     </listRelation>
+              
+                     <msItem xml:id="ms_i7.1">
+                        <locus from="198rb" to="199r" facs="0201"/>
+                        <title type="complete" ref="NAR0002feasts"/>
+                        <incipit xml:lang="gez">
+                           <locus target="#198r"/>ወካዕበ፡ ለእመ፡ ጽህቀ፡ ታእምር፡ ለረኪበ፡ አበቅጤ። አሐዱ፡ በእንተ፡ 
+                              <sic>ዘይኀድጉ፡</sic>
+                            እስመ፡ 
+                              <sic>ቀዳሜሁ፡</sic>
+                            
+                           ለዓመት፡ 
+                              <sic>ኣልቦ፡</sic>
+                            ኣጳቅቴ፤</incipit>
+                        <explicit xml:lang="gez">
+                           <locus target="#199r" facs="0202"/>በከመ፡ ይቤ፡ ሰሎሞን፡ ወልድየ፡ ለእመ፡ ጠበብከ፡ ለርእስከ፡ ትጠብብ፡ ወለቢጽከ፡ ወይከውነከ፡ መዝገባ፡ ለምንግሥተ፡ ሰማያት፡ ወዲበ፡ ኰኵሕ፡ ቀዊመ፡ ታጽንዕ፡ ዘውእቱ፡ 
+                           
+                              <sic>በእእምሮ፡</sic>
+                            እንተ፡ ቅዱስ፡ ጴጥሮስ፡</explicit>
+                        <note>On the epact and the way to determine the moveable feasts in the 19-year cycle.</note>
+                     </msItem>
+                     <msItem xml:id="ms_i7.2">
+                        <locus from="199v" to="202r" facs="0203"/>
+                        <title type="complete" ref="NAR0004comput"/>
+                        <incipit xml:lang="gez">
+                           <locus target="#199v" facs="0203"/>በስመ፡ አብ፡ ወውልድ፡ ወመንፈስ፡ ቅዱስ፡ ጸሐፍነ፡ 
+                              <sic>ተዝከረ፡ አወደ፡ ዓመታተ፡</sic>
+                            እምቀዳሚ፡ ኵነኔ፡ እስከ፡ ዕዝራ፡ ፶፻፡ 
+                           
+                              <sic>ዓመታት፡</sic>
+                            ወእምዕዝራ፡ እስከ፡ ልደተ፡ መድኀኒነ፡ ፭፻፡ ፺፫፡ ዓመት፡ ወእምልደቱ፡ እስከ፡ ጥምቀቱ፡ ለመድኀኒነ፡ ፴፡ ዓመት፡ ወእምጥምቀቱ፡ እስከ፡ ቅትለቱ፡ ፬፡ ዓመት፡ 
+                           ወእምትንሣኤሁ፡ እስከ፡ ዓመተ፡ 
+                              <sic>ድዮቅልጠያኖስ፨</sic>
+                            ፪፻፡ ፹፭፡ ዓመት፡ ወእምድዮቅልጠ<supplied reason="omitted">ያ</supplied>ኖስ፡ እስከ፡ 
+                              <sic>ሠርዓተ፡</sic>
+                            
+                           ቅዱስ፨ ፫፻፡ ፲፰፡ ፵፩፡ ዓመት፡ ወኮነ፡ ኵሉ፡ ድሙር፡ እምቀዳሚ፡ ኵነኔ፡ እስከ፡ ዓመተ፡ ድዮቅልጠ<supplied reason="omitted">ያ</supplied>ኖስ፤ ፶፻፰፻፶፫፡
+                        </incipit>
+                        <explicit xml:lang="gez">
+                           <locus target="#202r" facs="0205"/>ወአመ፡ ፰አመቱ፡ ለዮናታን፡ ንጉሠ፡ ይሁዳ፡ እስከ፡ ፭፻፡ ወ፴ወ፪፡ ዓመቱ፡ ለድዮቅልጥያኖስ፡ ዓመተ፡ ፲፻፡ ወ፭<supplied reason="omitted">፻</supplied>፡ ወ፺ወ፮፡ ወአመ፡ ፭፻፡ ወ፴ወ፫፡ ዓመተ፡ 
+                           ድዮቅልጥ<supplied reason="omitted">ያ</supplied>ኖስ፡ እስከ፡ ፲፻፡ ወ፷ወ፭፡ ዓመቱ፡ ለድዮቅልጥ<supplied reason="omitted">ያ</supplied>ኖስ፡ ዓመተ፤ ፭፻፡ ወ፴፬፡ ወኮነ፡ 
+                           ኵሉ፡ ድሙሩ፡ ዘእምቀዳማይ፡ ዓመቱ፡ ለአዳም፡ እስከ፡ ፲፻፡ ወ፷ወ፮፡ ለድዮቅልጥ<supplied reason="omitted">ያ</supplied>ኖስ፡ ይከውን፡ ፷፻፡ ወ፱፻፡ ፲ወ፮፨
+                        </explicit>
+                        <note>Computation of the cycles of years according to several calendars (i.e., the Greek and Enoch systems) and chronological calculations.</note>
+                     </msItem>
+                     <msItem xml:id="ms_i7.3">
+                        <locus from="202v" to="209r" facs="0206"/>
+                        <title type="complete" ref="LIT3141Hassab">Maṣḥafa ḥassāb</title>
+                        <incipit xml:lang="gez">
+                           <locus target="#202v" facs="0206"/>
+                           
+                              <sic>መጽሐፍ፡ ሐሰብ። ቀዳሜሁ፡</sic>
+                            ውእቱ፡ ቃል፡ ወውእቱ፡ ቃል፡ እምኀበ፡ እግዚ<supplied reason="omitted">አ</supplied>ብሔር፡ ወእግዚአብሔር፡ ውእቱ፡ ቃል፡ 
+                           <gap reason="omitted" extent="unknown" resp="bm:GrebTiss1935Codices"/> 
+                           
+                              <sic>በቀደሚ፡</sic>
+                            ገብረ፡ እግዚአብሔር፡ ሰማየ፡ ወምድርሰ፡ ሀለወት፡ እምትካት፡ 
+                              <sic>ወኢተስተርኢ፡ ወኢከነት፡</sic>
+                            ድሉት፡ ወጽልመት፡ መልዕልተ፡ 
+                           
+                              <sic>ቃላይ፡</sic>
+                           
+                        </incipit>
+                        <explicit xml:lang="gez">
+                           <locus target="#209r" facs="0212"/>ወለእመ፡ ፈቀድከ፡ 
+                              <sic>ታአምር፡</sic>
+                            በ<supplied reason="omitted">እ</supplied>ንተ፡ ዘያአቱ፡ ፪፡ ዕለተ፡ ለረኪቦተ፡ ዕለተ፡ ዮሓንስ፡ እስመ፡ ቀዳሚሁ፡ 
+                              <sic>ለዓመት፡</sic>
+                            
+                           ዲዮቅልጥ<supplied reason="omitted">ያ</supplied>ኖስ፡ ዐርብ፡ 
+                              <sic>መለረኪበ፡</sic>
+                            ሰንበተ፡ ክርስቲያን፡ ያአቱ፡ ፪፡ ዓርብ፡ ወሰንበተ፡ 
+                           አይሁ<supplied reason="omitted">ድ</supplied>፡ ወይብልዋ፡ ኪያሃ፡ አሐቲ፡ 
+                              <sic>አለት፡</sic>
+                            ቅድመ፡ ሰንበተ፡ ክርስቲያን፨
+                        </explicit>
+                        <note>The text is preceded by a number of tables for determination of the year of indiction, the number of the epagomenal days, the epact and the ṭǝntyon since the origin of the world.</note>
+                     </msItem>
+                     <msItem xml:id="ms_i7.4">
+                        <locus from="209v" to="210v" facs="0213"/>
+                        <title type="complete" ref="NAR0003tables"/>
+                        <note>Tables for determination of the moveable feasts.</note>
+                     </msItem>
+                  </msItem>
+
+                  <msItem xml:id="ms_i8">
+                     <locus from="212r" to="214v" facs="0215"/>
+                     <title type="complete" ref="NAR0005calend"/>
+                     <note>Calendar of saints, arranged according to their feast day.</note>
+                     <incipit xml:lang="gez">
+                        <locus target="#212r" facs="0215"/>በስመ፡ አብ፡ ወወልደ፡ ወመንፈስ፡ ቅዱስ፡ በዘ፡ ንጽሕፍ፡ አርእስት፡ በዓላ<supplied reason="omitted">ት</supplied>፡ በወርሐ፡ መስከረም። ፩ዮሐንስ፡ መጥምቅ፡ 
+                        
+                           <sic>ወበርተሎሚወስ፡</sic>
+                         ሐዋርያ፡ 
+                           <sic>ወራጎኤል፡</sic>
+                         ሊቀ፡ መላእክት፡ ወኢዮብ፡ 
+                           <sic>ጸድቅ፨</sic>
+                         
+                        ውስተ፡ ኵሉ፡ ምድር፡ ወጽአ፡ ነገሮሙ፨
+                     </incipit>
+                     <explicit xml:lang="gez">
+                        <locus target="#214v" facs="0218"/>ኣመ፡ ፬፡ 
+                           <sic>በአማን።</sic>
+                         አመ፡ ፭፡ 
+                           <sic>አበ፡</sic>
+                         መግደር፡ 
+                           <sic>ኪየከ፡</sic>
+                         ተወከሉ፡ አበዊነ፨
+                     </explicit>
+                  </msItem>
+            
+                  <msItem xml:id="ms_i9">
+                     <locus from="214v" to="218r" facs="0218"/>
+                     <title type="complete" ref="LIT3120Anapho">Qǝddāse Yoḥannǝs ʾAfa Warq za-qʷǝrbān (Anaphora of John Chrysostom on the offering)</title>
+                     <note>The text follows the text edited in: <bibl>
+                           <ptr target="bm:Dillmann1866Chrestomathia"/>
+                           <citedRange unit="page">51-56</citedRange>
+                        </bibl> up to <locus target="#216vb4"/>, then few passages are added.</note>
+                     <explicit xml:lang="gez">
+                        <locus target="#218r" facs="0221"/>
+                        
+                           <sic>በላዓክሙ፡</sic>
+                         ጸገብክሙ፡ ሰተይክሙ፡ ረወይክሙ፡ በሰላም፡ 
+                           <sic>እትው፡</sic>
+                         ውስተ፡ አብያቲክሙ፡ እግዚአብሔር፡ 
+                           <sic>የሀሎ፡ መ<supplied reason="omitted">ስ</supplied>ሌክሙ፨</sic>
+                        
+                     </explicit>
+                  </msItem>
+            
+                  <msItem xml:id="ms_i10">
+                     <locus target="#218v"/>
+                     <title type="incomplete" ref="LIT3121HymnMary" facs="0222"/>
+                     <note>Hymn to Our Lady Mary with a commemoration of the Apostles.</note>
+                     <incipit xml:lang="gez">
+                        <locus target="#218v" facs="0222"/>ተዘኪረኪ፡ ማርያም፡ ስቅለተ፡ ጴጥሮስ፡ አምደ፡ ሮሜ፡ ኰኵ<supplied reason="omitted">ሕ</supplied>፡ ብሂል፡ ዘበትርጓሜ<supplied reason="omitted">ሁ</supplied>፡
+                     </incipit>
+                     <explicit xml:lang="gez">
+                        <locus target="#218v" facs="0222"/>፰ተዘኪረኪ፡ ማርያም፡ ዘአስጠምዎ፡ ውስተ፡ ባሕር፡ ለበርተሎሜዎ<supplied reason="omitted">ስ</supplied>፡ 
+                           <sic>ምምሕር፡</sic>
+                        
+                     </explicit>
+                  </msItem>
+               </msContents>
+          
+               <physDesc>
+                  <objectDesc form="Codex">
+                     <supportDesc>
+                        <support>
+                           <material key="parchment"/>
+                           
+                        </support>
+                        <extent>
+                           <measure unit="leaf">219</measure>
+                           <measure unit="leaf" type="blank">9</measure>
+                           <locus from="1v" to="2v"/>
+                           <locus target="#10v #211v #218v"/>
+                           <locus from="11v" to="12v"/>
+                           <locus from="56v" to="57v"/>
+                           <measure unit="quire">29</measure>
+                           <dimensions type="outer" unit="mm">
+                              <height>325</height>
+                              <width>233</width>
+                              <depth/>
+                           </dimensions>
+                        </extent>
+                        <foliation/>
+                        <collation>
+                           <signatures>
+                              Quires are numbered with Arabic numerals on the lower outer margin of the first folio of each quire. Most of them are abraded.
+                           </signatures>
+                           <list>
+                              <item xml:id="q1" n="a">
+                                 <dim unit="leaf">2</dim>
+                                 <locus from="1r" to="2v"/>
+                              </item>
+                              <item xml:id="q2" n="1">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="3r" to="10v"/>
+                              </item>
+                              <item xml:id="q3" n="2">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="11r" to="18v"/>
+                              </item>
+                              <item xml:id="q4" n="3">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="19r" to="26v"/>
+                              </item>
+                              <item xml:id="q5" n="4">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="27r" to="34v"/>
+                              </item>
+                              <item xml:id="q6" n="5">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="35r" to="42v"/>
+                              </item>
+                              <item xml:id="q7" n="6">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="43r" to="50v"/>
+                              </item>
+                              <item xml:id="q8" n="7">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="51r" to="58v"/>
+                              </item>
+                              <item xml:id="q9" n="8">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="59r" to="66v"/>
+                              </item>
+                              <item xml:id="q10" n="9">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="67r" to="74v"/>
+                              </item>
+                              <item xml:id="q11" n="10">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="75r" to="82v"/>
+                              </item>
+                              <item xml:id="q12" n="11">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="83r" to="90v"/>
+                              </item>
+                              <item xml:id="q13" n="12">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="91r" to="98v"/>
+                              </item>
+                              <item xml:id="q14" n="13">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="99r" to="106v"/>
+                              </item>
+                              <item xml:id="q15" n="14">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="107r" to="114v"/>
+                              </item>
+                              <item xml:id="q16" n="15">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="115r" to="122v"/>
+                              </item>
+                              <item xml:id="q17" n="16">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="123r" to="130v"/>
+                              </item>
+                              <item xml:id="q18" n="17">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="131r" to="138v"/>
+                              </item>
+                              <item xml:id="q19" n="18">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="139r" to="146v"/>
+                              </item>
+                              <item xml:id="q20" n="19">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="147r" to="154v"/>
+                              </item>
+                              <item xml:id="q21" n="20">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="155r" to="162v"/>
+                              </item>
+                              <item xml:id="q22" n="21">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="163r" to="170v"/>
+                              </item>
+                              <item xml:id="q23" n="22I">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="171r" to="178v"/>
+                              </item>
+                              <item xml:id="q24" n="23">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="179r" to="186v"/>
+                              </item>
+                              <item xml:id="q25" n="24">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="187r" to="194v"/>
+                              </item>
+                              <item xml:id="q26" n="25">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="195r" to="202v"/>
+                              </item>
+                              <item xml:id="q27" n="26">
+                                 <dim unit="leaf">3</dim>
+                                 <locus from="203r" to="205v"/>
+                                 <note/>s.l.: 3, stub before 1
+                              </item>
+                              <item xml:id="q28" n="27">
+                                 <dim unit="leaf">6</dim>
+                                 <locus from="206r" to="211v"/>
+                              </item>
+                              <item xml:id="q29" n="28">
+                                 <dim unit="leaf">8</dim>
+                                 <locus from="212r" to="219v"/>
+                              </item>
+                           </list>
+                         </collation>
+                        <condition key="good"/>
+                     </supportDesc>
+                     <layoutDesc>
+                        <layout columns="2" writtenLines="44"/>
+                     </layoutDesc>
+                  </objectDesc>
+                  <handDesc>
+                     <handNote xml:id="h1" script="Ethiopic">
+                        <seg type="script">Mediocre.</seg>
+                        <seg type="ink">Black, red</seg>
+                        <date/>
+                        <desc> It is the same hand as <ref type="hand" corresp="BAVet2#h2">hand 2</ref>
+                           <ref type="mss" corresp="BAVet2"/>. 
+                           The numerals are written without dashes; 
+                           ፮ has the loop open, looking like "compressed" ፯; 
+                           ፪ has angular and not separated loops.
+                        </desc>
+                        <seg type="rubrication">Nomina sacra, titles, liturgical admonishments; elements of the text dividers; Ethiopic numerals.</seg>
+                        <list type="abbreviations">
+                           <item>
+                              <abbr>ሰ፡</abbr> for <expan>ሰላም፡ ለኪ፡</expan> (e.g., <locus target="#128r #134r #144v"/>).
+                           </item>
+                        </list>
+                     </handNote>
+                  </handDesc>
+            
+                  <additions>
+                     <list>
+                        <item xml:id="a1">
+                           <desc type="Supplication"/>
+                           <q xml:lang="ar">اذكر يا رب عبدك الخاطي المسكين قسيس غبريال المصري قاصد البطرك الاسكندراني وراهب دير العذرى مريم جبل الطير واذكر يا رب كاللذين يذكرنا من الابهات الحبش</q>
+                           <q xml:lang="en">Remember, o my Lord, your servant, the poor sinner priest Ġabriyāl the Egyptian, delegate of the Alexandrine patriarch and monk of the Monastery of the Virgin Mary of Ǧabal al-Ṭayr; and remember, o Lord, those who will commemorate us amongst the Ethiopian fathers</q>
+                           <note>The note is written in Arabic on the front board on its inner side. It was drawn up by the Egyptian priest <persName ref="PRS10777Gabriyal">Ġabriyāl</persName>.</note>
+                        </item>
+                        <item xml:id="a2">
+                           <desc type="Record"/>
+                           <locus target="#217v" facs="0221"/>
+                           <q xml:lang="gez"/>
+                           <note>Historical note on the monastic community of <placeName ref="INS0302SanStefano"/>.</note>
+                        </item>
+                        <item xml:id="a3">
+                           <desc type="CalendaricNote"/>
+                           <locus target="#219r" facs="0222"/>
+                           <q xml:lang="gez">
+                              
+                                 <sic>፷፼ወ፮፻፲ወ፮ዓምት። ሰረቀ፡</sic>
+                               መስከረም፡ እሁድ፡ ሰረቀ፡ ጥቅምት፡ ሰሉስ። ኅዳር፡ ሐሙስ፡ 
+                                 <sic>ትሕሳስ፡ ቀደሚ፡</sic>
+                               ሰንበት። ጥር፡ ሰኑይ። የካቲት፡ ረቡዕ። 
+                              መጋቢተ፡ ዓርብ። 
+                                 <sic>ሚያዚያ፡</sic>
+                               እሁድ። ግንቦት፡ ሰሉስ። ሰኔ፡ ሐሙስ። ሐምሌ፡ ቀዳሚ፡ ሰንበት፡ ነሐሴ፡ 
+                                 <sic>ሰነይ። ጳጉሜን፡ </sic>
+                               ረቡዕ፡ በዘመነ፡ ዮሐንስ።</q>
+                           <note>The note refers to the year 6616, year of John. The date can not be assessed with certainty; it might correspond to <date>1624 AD</date> or be incorrect.</note>
+                        </item>
+                        <item xml:id="a4">
+                           <desc type="Unclear"/>
+                           <locus target="#219v" facs="0223"/>
+                           <q xml:lang="gez">እምኀበ፡ ለአከ፡ ... ማⶂⶂሮአም፡ (?) ዘሮማ፡ 
+                                 <sic>ትብጸሕ፡</sic>
+                               ኢ<supplied reason="omitted">የ</supplied>ሩሰሌ<supplied reason="omitted">ም፡</supplied>
+                           </q>
+                           <note>The note is hardly legible because of the faded ink. It mentions <placeName ref="LOC5374Rome"/> and <placeName ref="LOC3957Jerusa"/>.</note>
+                        </item>
+                        
+                        <item xml:id="e1">
+                           <locus target="#1r" facs="0002"/>
+                           <q xml:lang="la">Missale; n° 1. Aduerte Lector hunc Codicem esse Vitiosissime scriptum ejusq<supplied reason="explanation">ue</supplied> 
+                              autoritatem exigui valoris.</q>
+                           <q xml:lang="en">Missal; nr. 1. Be careful o reader, that this codex is very defective and its reliability is of low value.</q>
+                           <note>Note written by a later librarian and by <persName ref="PRS10036Wansleb"/> concerning the reliability of the manuscript. The note was probably written in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e2">
+                           <locus target="#1r" facs="0002"/>
+                           <q xml:lang="it">Etiopico.</q>
+                           <date>19th century.</date>
+                           <note>Note written by a later librarian.</note>
+                        </item>
+                        <item xml:id="e3">
+                           <locus target="#1r"/>
+                           <q xml:lang="gez">በስመ አብ ወውልድ ወመንፈስ ቅዱስ</q>
+                        </item>
+                        <item xml:id="e4">
+                           <locus target="#11r" facs="0012"/>
+                           <note>Two lines containing the incipit of <ref type="work" corresp="LIT1349EpistlEusebius"/>, as in <locus target="#3a">lines 3 እንዘ፡ - 7 እመትሎሆሙ፡</locus>.</note>
+                        </item>
+                        <item xml:id="e5">
+                           <desc/>
+                           <locus target="#99r" facs="0100"/>
+                           <q xml:lang="la">Officium Abissinorum.</q>
+                           <note>Note written on the upper margin by <persName ref="PRS10036Wansleb"/> probably in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e6">
+                           <desc/>
+                           <locus target="#147r" facs="0148"/>
+                           <q xml:lang="la">Incipiunt Canones S. Clementis.</q>
+                           <note>Note written on the upper margin by <persName ref="PRS10036Wansleb"/> probably in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e7">
+                           <locus target="#164r" facs="0166"/>
+                           <q xml:lang="la">Concil. Ancyranum.</q>
+                           <note>Note written on the upper margin by <persName ref="PRS10036Wansleb"/> probably in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e8">
+                           <locus target="#168r" facs="0172"/>
+                           <q xml:lang="la">Concil. Ga<supplied reason="explanation">n</supplied>gerense.</q>
+                           <note>Note written on the upper margin by <persName ref="PRS10036Wansleb"/> probably in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e9">
+                           <locus target="#167v" facs="0172"/>
+                           <q xml:lang="la">Nota b<supplied reason="explanation">ene</supplied> Maximum hic esse errore. confundit et miscet enim hic duo Concilia. 
+                              Stulte idem error et jam est in Cod<supplied reason="explanation">ice</supplied> Magni Duc<supplied reason="explanation">is</supplied> 
+                              Florentiae. Sed Cod<supplied reason="explanation">ex</supplied> Abiss<supplied reason="explanation">inoru</supplied>m et meus bene 
+                              habent o<supplied reason="explanation">mn)</supplied>a notauit a<supplied reason="explanation">utem</supplied> Fr<supplied reason="explanation">ater</supplied> 
+                              G<supplied reason="explanation">iovanni</supplied> M<supplied reason="explanation">ichahel</supplied> Vanslebius Ord. Praed.</q>
+                           <q xml:lang="en">"Nota bene: a serious error is here, as (the scribe) confuses and blends here two councils. The same error is also trivially attested in the manuscript of the Grand Duke of Florence (i.e, <ref type="mss" corresp="BMLor148"/>). However, the manuscript of the Ethiopians (i.e., of San Stefano dei Mori, (i.e, <ref type="mss" corresp="BAVborget2"/>) and mine display everything correctly. Brother Johann Michael Wansleben annotated (this)".</q>
+                           <note>Note written in the intercolum by <persName ref="PRS10036Wansleb"/> probably in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e10">
+                           <locus target="#172r" facs="0174"/>
+                           <q xml:lang="la">Concilii Laodiceni canones.</q>
+                           <note>Note written on the outer upper margin by <persName ref="PRS10036Wansleb"/> probably in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e11">
+                           <locus target="#173r" facs="0175"/>
+                           <q xml:lang="la">Concil. Nicaenum.</q>
+                           <note>Note written on the outer upper margin by <persName ref="PRS10036Wansleb"/> probably in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e12">
+                           <locus target="#176v" facs="0180"/>
+                           <q xml:lang="la">Concil. Nicaenum.</q>
+                           <note>Note written on the outer margin by <persName ref="PRS10036Wansleb"/> probably in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e13">
+                           <locus target="#183v" facs="0187"/>
+                           <q xml:lang="la">Deest canon 56.</q>
+                           <note>Note written on the outer margin by <persName ref="PRS10036Wansleb"/> probably in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e14">
+                           <locus target="#187v" facs="0191"/>
+                           <q xml:lang="la">Canones Petri Per S. Clementem.</q>
+                           <note>Note written on the outer margin by <persName ref="PRS10036Wansleb"/> probably in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e15">
+                           <locus target="#192r" facs="0195"/>
+                           <q xml:lang="la">Concil. Antiochaenum.</q>
+                           <note>Note written on the outer margin by <persName ref="PRS10036Wansleb"/> probably in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e16">
+                           <locus target="#195v" facs="0199"/>
+                           <q xml:lang="la">Concil. Laodicaenum.</q>
+                           <note>Note written on the outer margin by <persName ref="PRS10036Wansleb"/> probably in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e17">
+                           <locus target="#197v" facs="0201"/>
+                           <q xml:lang="la">Aduerte Lector huc referri debere illos Canones quos scriptor supra ad conciliu<supplied reason="explanation">m</supplied> 
+                              Gangerense annexuit.</q>
+                           <q xml:lang="en">Be careful o reader, that here you have to refer to those canons that the scribe previously appended to the council of Gangra.</q>
+                           <note>Note written by <persName ref="PRS10036Wansleb"/> probably in <date>1665</date>.</note>
+                        </item>
+                        <item xml:id="e18">
+                           <locus target="#211r" facs="0214"/>
+                           <desc>Doodles.</desc>
+                        </item>
+                        <item xml:id="e19">
+                           <locus target="#217r" facs="0220"/>
+                           <desc>Doodles.</desc>
+                        </item>
+                        <item xml:id="e20">
+                           <q>Salve Regina... ladi zet chgrafi uin nero agua materi guortelo eledo uiniga po pais do uai</q>
+                           <note>The note is written on the back board on its inner side, probably in a Vulgar language. The meaning is poorly understandable.</note>
+                        </item>
+                     </list>
+                  </additions>
+            
+                  <bindingDesc>
+                     <binding contemporary="true">
+                        <decoNote xml:id="b1">Two boards covered with reddish-brown tooled leather.</decoNote>
+                        <decoNote xml:id="b2" type="bindingMaterial">
+                           <material key="leather"/>
+                        </decoNote>
+                        <decoNote xml:id="b4" type="Other">Blind tooled ornament on the reddish-brown leather cover.</decoNote>
+                     </binding>
+                  </bindingDesc>
+               </physDesc>
+          
+               <history>
+                  <origin>
+                     <origPlace>
+                        <placeName ref="LOC5374Rome"/>
+                     </origPlace>
+                     <origDate notBefore="1500" notAfter="1599"/>
+                     <p>An origin from <placeName ref="LOC3957Jerusa"/> has been conjectured, together with Ms <ref type="mss" corresp="BMLor148"/>, cp. <bibl>
+                           <ptr target="bm:Bausi1989MssBNCF"/>
+                           <citedRange unit="page">12</citedRange>
+                        </bibl>
+                        <bibl>
+                           <ptr target="bm:Bausi2015Wansleben"/>
+                           <citedRange unit="page">215-216</citedRange>
+                        </bibl>.
+                        The Ms. had been preserved in <placeName ref="INS0302SanStefano"/> (cp. <ref target="#coloph1"/>) before being incorporated into the <placeName ref="INS0003BAV"/>.</p>
+                  </origin>
+               </history>
+          
+               <additional>
+                  <adminInfo>
+                     <recordHist>
+                        <source>
+                           <listBibl type="catalogue">
+                              <bibl>
+                                 <ptr target="bm:GrebTiss1935Codices"/>
+                                 <citedRange unit="page">1-11</citedRange>
+                              </bibl>
+                              <listBibl type="secondary">
+                                 <bibl>
+                                    <ptr target="bm:Bausi1989MssBNCF"/>
+                                    <citedRange unit="page">12</citedRange>
+                                 </bibl>
+                              </listBibl>
+                           </listBibl>
+                        </source>
+                     </recordHist>
+                  </adminInfo>
+               </additional>
+            </msDesc>
+         </sourceDesc>
+      </fileDesc>
+      <encodingDesc>
+         <projectDesc>
+            <p>Encoded according to TEI P5 Guidelines.</p>
+         </projectDesc>
+         <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="https://raw.githubusercontent.com/BetaMasaheft/Documentation/master/prefixDef.xml">
+            <xi:fallback>
+               <p>Definitions of prefixes used.</p>
+            </xi:fallback>
+         </xi:include>
+      </encodingDesc>
+      <profileDesc>
+         <particDesc>
+            <listPerson>
+               <person role="donor"/>
+               <person role="scribe" corresp="BAVet2#h1"/>
+               <person role="other"/>
+            </listPerson>
+         </particDesc>
+         <textClass>
+            <keywords scheme="#ethioauthlist">
+               <term key="NewTestament"/>
+               <term key="Liturgy"/>
+               <term key="Prayers"/>
+               <term key="Missal"/>
+               <term key="CanonLaw"/> 
+               <term key="ChristianLiterature"/>
+               <term key="Paks2"/>
+            </keywords>
+         </textClass>
+         <langUsage><language ident="gez">Gǝʿǝz</language><language ident="la">Latin</language><language ident="it">Italian</language></langUsage>
+      </profileDesc>
+      <revisionDesc>
+         <change who="MV" when="2016-04-29">Created catalogue entry</change>
+         <change who="DR" when="2016-09-13">Minor change</change>
+      </revisionDesc>
+  </teiHeader>
+  <text xml:base="https://betamasaheft.eu/">
+    
+      <body>
+         <ab/>
+      </body>
+    
+  </text>
+</TEI>
