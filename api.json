@@ -865,6 +865,292 @@
 				}
 			}
 		},
+		"/api/dts/annotations": {
+			"get": {
+				"operationId": "dts:WebAnnotationsMain",
+				"tags": ["dts"],
+				"summary": "annotations main collection, returns a list of collections of annotations, one for each resource type and one for all items in the db with indexable terms",
+				"parameters": [
+					{
+						"name": "version",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/dts/annotations/{coll}": {
+			"get": {
+				"operationId": "dts:WebAnnotationsColl",
+				"tags": ["dts"],
+				"summary": "annotations collection for a type of items (manuscripts, works or narrative units), returns a list of collections of annotations, one for which available index types 'persons', 'places','keywords', 'loci', 'works' if there are all indexable terms for that index, from items in that resources collection. An additiona Annotation Collaction for each item is added whcih is instead an annotation collection of annotation collections.",
+				"parameters": [
+					{
+						"name": "coll",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "version",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/dts/annotations/{coll}/items/{BMid}": {
+			"get": {
+				"operationId": "dts:WebAnnotationsIndex",
+				"tags": ["dts"],
+				"summary": "annotations collection for a type of items (manuscripts, works or narrative units), and a specific item in that collection of resources. Returns a collection of annotation collections if available annotations are present in the item for each type 'persons', 'places','keywords', 'loci', 'works'.",
+				"parameters": [
+					{
+						"name": "coll",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "BMid",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "begin",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 1
+						}
+					},
+					{
+						"name": "page",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 1
+						}
+					},
+					{
+						"name": "version",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/dts/annotations/{coll}/items/{BMid}/{indexName}": {
+			"get": {
+				"operationId": "dts:WebAnnotationsIndex",
+				"tags": ["dts"],
+				"summary": "annotations collection for a type of items (manuscripts, works or narrative units), and a specific item in that collection of resources and a specific index type among 'persons', 'places','keywords', 'loci', 'works'. The annotations in the single reference annotation collation are retrieved by adding an $id parameter with the full reference.",
+				"parameters": [
+					{
+						"name": "coll",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "BMid",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "indexName",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "id",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					},
+					{
+						"name": "begin",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 1
+						}
+					},
+					{
+						"name": "page",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 1
+						}
+					},
+					{
+						"name": "version",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/dts/annotations/{coll}/{indexName}": {
+			"get": {
+				"operationId": "dts:WebAnnotationsIndex",
+				"tags": ["dts"],
+				"summary": "annotations collection for a type of items (manuscripts, works or narrative units), and a specific index type among 'persons', 'places','keywords', 'loci', 'works' and 'items'. Indexed passages are grouped by their reference and one annotation collection with that id is provided. the annotations in the single reference annotation collation are retrieved by adding an $id parameter with the full reference",
+				"parameters": [
+					{
+						"name": "coll",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "indexName",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "begin",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 1
+						}
+					},
+					{
+						"name": "page",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 1
+						}
+					},
+					{
+						"name": "id",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					},
+					{
+						"name": "version",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
 		"/api/dts/collections": {
 			"get": {
 				"operationId": "dts:Collection",
@@ -1010,6 +1296,125 @@
 							"application/xml": {
 								"schema": {
 									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/dts/indexes": {
+			"get": {
+				"operationId": "dts:Indexes",
+				"tags": ["dts"],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					},
+					{
+						"name": "indexName",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					},
+					{
+						"name": "ref",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					},
+					{
+						"name": "level",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					},
+					{
+						"name": "begin",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 1
+						}
+					},
+					{
+						"name": "start",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					},
+					{
+						"name": "end",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					},
+					{
+						"name": "page",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 1
+						}
+					},
+					{
+						"name": "groupBy",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					},
+					{
+						"name": "max",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					},
+					{
+						"name": "version",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"default": ""
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
 								}
 							}
 						}
@@ -1472,6 +1877,35 @@
 				}
 			}
 		},
+		"/api/geoJson/places": {
+			"get": {
+				"operationId": "places:alljsonPl",
+				"tags": ["places"],
+				"parameters": [
+					{
+						"name": "start",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 1
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
 		"/api/geoJson/places/{id}": {
 			"get": {
 				"operationId": "places:json",
@@ -1580,6 +2014,24 @@
 						}
 					}
 				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/iiif/collections": {
+			"get": {
+				"operationId": "iiif:allManifests",
+				"tags": ["iiif"],
 				"responses": {
 					"200": {
 						"description": "Successful response",
@@ -2434,6 +2886,34 @@
 				}
 			}
 		},
+		"/api/witnessesOfContainer/{id}": {
+			"get": {
+				"operationId": "api:witnessesOfContainerWork",
+				"tags": ["api"],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
 		"/api/xml/{id}": {
 			"get": {
 				"operationId": "api:get-workXML",
@@ -2745,6 +3225,45 @@
 				"responses": {
 					"200": {
 						"description": "Successful response",
+						"content": {
+							"application/xml": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/{id}/author": {
+			"get": {
+				"operationId": "api:getauthorfromrelation",
+				"tags": ["api"],
+				"summary": "returns the relation element with the author attribution",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/xml": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "No attribution info found for the given id",
 						"content": {
 							"application/xml": {
 								"schema": {
