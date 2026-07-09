@@ -854,7 +854,7 @@ declare function iiif:canvas($request as map(*)) {
 		let $facs := iiif:facsSwitch($facsid)
 		let $iiifroot := $config:appUrl || "/api/iiif/" || $id
 		let $imagesbaseurl := $config:appUrl || "/iiif/" || $facs
-		let $imagefile := format-number($n, "000") || ".tif"
+		let $imagefile := format-number(number($n), "000") || ".tif"
 		let $resid := (
 			$imagesbaseurl ||
 				(

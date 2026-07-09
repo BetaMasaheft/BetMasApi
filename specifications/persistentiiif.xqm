@@ -176,7 +176,7 @@ declare function persiiif:canvas($request as map(*)) {
 		let $item := persiiif:fileingit($id, $sha)
 		let $iiifroot := $config:appUrl || "/api/iiif/" || $id
 		let $imagesbaseurl := $config:appUrl || "/iiif/" || string($item//t:msIdentifier/t:idno/@facs)
-		let $imagefile := format-number($n, "000") || ".tif"
+		let $imagefile := format-number(number($n), "000") || ".tif"
 		let $resid := (
 			$imagesbaseurl ||
 				(

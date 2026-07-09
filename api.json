@@ -3307,7 +3307,7 @@
 		},
 		"/api/{id}/tei": {
 			"get": {
-				"operationId": "api:get-tei-by-ID",
+				"operationId": "api:get-tei-by-ID-route",
 				"tags": ["api"],
 				"summary": "given the file id, returns the source TEI xml",
 				"parameters": [
