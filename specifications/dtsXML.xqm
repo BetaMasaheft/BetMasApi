@@ -9,10 +9,9 @@ module namespace dtsXML = "https://www.betamasaheft.uni-hamburg.de/BetMas/dtsXML
 
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace t = "http://www.tei-c.org/ns/1.0";
-declare namespace exist = "http://exist.sourceforge.net/NS/exist";
-declare namespace s = "http://www.w3.org/2005/xpath-functions";
-declare namespace http = "http://expath.org/ns/http-client";
 declare namespace json = "http://www.json.org";
+declare namespace dcterms = "http://purl.org/dc/terms";
+declare namespace saws = "http://purl.org/saws/ontology";
 
 import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
