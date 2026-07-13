@@ -40,7 +40,7 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
 
       # Builds BetMasWeb, BetMasService and this package into a fully
       # installed eXist image - see Dockerfile. Cached across runs, so a
