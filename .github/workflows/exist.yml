@@ -46,7 +46,7 @@ jobs:
       # installed eXist image - see Dockerfile. Cached across runs, so a
       # push that only touches this repo's source rebuilds fast.
       - name: Build eXist image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           build-args: EXISTDB_VERSION=${{ matrix.exist-version }}
