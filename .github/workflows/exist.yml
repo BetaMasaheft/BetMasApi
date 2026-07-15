@@ -80,7 +80,7 @@ jobs:
 
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: cypress-screenshots-${{ matrix.exist-version }}
           path: test/cypress/screenshots/
