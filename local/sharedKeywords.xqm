@@ -5,7 +5,7 @@ xquery version "3.1" encoding "UTF-8";
  :
  : @author Pietro Liuzzo
  :)
-module namespace SK = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/SK";
+module namespace SK = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/SK";
 
 (: namespaces of data used :)
 

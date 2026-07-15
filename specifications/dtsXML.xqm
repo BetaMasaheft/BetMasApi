@@ -5,7 +5,7 @@ xquery version "3.1" encoding "UTF-8";
  : SERVER
  : @author Pietro Liuzzo
  :)
-module namespace dtsXML = "https://www.betamasaheft.uni-hamburg.de/BetMas/dtsXML";
+module namespace dtsXML = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/dtsXML";
 
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace t = "http://www.tei-c.org/ns/1.0";

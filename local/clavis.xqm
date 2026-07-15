@@ -5,7 +5,7 @@ xquery version "3.1" encoding "UTF-8";
  :
  : @author Pietro Liuzzo
  :)
-module namespace clavis = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/clavis";
+module namespace clavis = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/clavis";
 
 (: namespaces of data used :)
 

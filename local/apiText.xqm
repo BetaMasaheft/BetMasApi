@@ -5,7 +5,7 @@ xquery version "3.1" encoding "UTF-8";
  :
  : @author Pietro Liuzzo
  :)
-module namespace apiT = "https://www.betamasaheft.uni-hamburg.de/BetMas/apiTexts";
+module namespace apiT = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/apiTexts";
 
 (: namespaces of data used :)
 declare namespace t = "http://www.tei-c.org/ns/1.0";
@@ -13,7 +13,7 @@ declare namespace test = "http://exist-db.org/xquery/xqsuite";
 (: For REST annotations :)
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
-import module namespace api = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/api" at "xmldb:exist:///db/apps/BetMasApi/local/rest.xqm";
+import module namespace api = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/api" at "./rest.xqm";
 import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
 

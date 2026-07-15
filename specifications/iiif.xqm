@@ -6,7 +6,7 @@ xquery version "3.1" encoding "UTF-8";
  :
  : @author Pietro Liuzzo
  :)
-module namespace iiif = "https://www.betamasaheft.uni-hamburg.de/BetMas/iiif";
+module namespace iiif = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/iiif";
 
 (: namespaces of data used :)
 declare namespace t = "http://www.tei-c.org/ns/1.0";
@@ -26,7 +26,7 @@ import module namespace roaster = "http://e-editiones.org/roaster";
 import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace all = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
-import module namespace api = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/api" at "xmldb:exist:///db/apps/BetMasApi/local/rest.xqm";
+import module namespace api = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/api" at "../local/rest.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
 import module namespace kwic = "http://exist-db.org/xquery/kwic" at "resource:org/exist/xquery/lib/kwic.xql";
 import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";

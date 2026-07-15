@@ -5,7 +5,7 @@ xquery version "3.1" encoding "UTF-8";
  :
  : @author Pietro Liuzzo
  :)
-module namespace att = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/att";
+module namespace att = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/att";
 
 declare namespace t = "http://www.tei-c.org/ns/1.0";
 (: For REST annotations :)
@@ -15,7 +15,7 @@ declare namespace test = "http://exist-db.org/xquery/xqsuite";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
 import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
-import module namespace what = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/what" at "xmldb:exist:///db/apps/BetMasApi/local/whatpointshere.xqm";
+import module namespace what = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/what" at "./whatpointshere.xqm";
 
 declare function att:stringDates($nodes) {
 	let $strings :=

@@ -1,6 +1,6 @@
 xquery version "3.1" encoding "UTF-8";
 
-module namespace shine = "https://www.betamasaheft.uni-hamburg.de/BetMas/shine";
+module namespace shine = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/shine";
 
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace t = "http://www.tei-c.org/ns/1.0";
