@@ -6,7 +6,7 @@ xquery version "3.1" encoding "UTF-8";
  : the KML is used by the dariah de Geo Browser
  : @author Pietro Liuzzo
  :)
-module namespace places = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/places";
+module namespace places = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/places";
 
 (: namespaces of data used :)
 declare namespace t = "http://www.tei-c.org/ns/1.0";

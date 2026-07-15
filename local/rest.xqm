@@ -23,7 +23,7 @@ declare namespace json = "http://www.json.org";
 
 import module namespace roaster = "http://e-editiones.org/roaster";
 import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
-import module namespace dts = "https://www.betamasaheft.uni-hamburg.de/BetMas/dts" at "xmldb:exist:///db/apps/BetMasApi/specifications/dts.xqm";
+import module namespace dts = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/dts" at "../specifications/dts.xqm";
 import module namespace editors = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";

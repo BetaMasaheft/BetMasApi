@@ -5,7 +5,7 @@ xquery version "3.1" encoding "UTF-8";
  : @author Pietro Liuzzo
  :)
 
-module namespace void = "https://www.betamasaheft.uni-hamburg.de/BetMas/void";
+module namespace void = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/void";
 
 declare namespace t = "http://www.tei-c.org/ns/1.0";
 declare namespace http = "http://expath.org/ns/http-client";
@@ -16,7 +16,7 @@ declare namespace test = "http://exist-db.org/xquery/xqsuite";
 import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2" at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
-import module namespace api = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/api" at "xmldb:exist:///db/apps/BetMasApi/local/rest.xqm";
+import module namespace api = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/api" at "../local/rest.xqm";
 
 declare function void:general($request as map(*)) {
 	"

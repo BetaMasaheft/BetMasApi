@@ -5,7 +5,7 @@ xquery version "3.1" encoding "UTF-8";
  : called by gnisci.js
  : @author Pietro Liuzzo
  :)
-module namespace chojnacki = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/chojnacki";
+module namespace chojnacki = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/chojnacki";
 
 declare namespace marc = "http://www.loc.gov/MARC21/slim";
 (: For REST annotations :)

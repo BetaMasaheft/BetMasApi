@@ -5,7 +5,7 @@ xquery version "3.1" encoding "UTF-8";
  :
  : @author Pietro Liuzzo
  :)
-module namespace roles = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/roles";
+module namespace roles = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/roles";
 
 (: namespaces of data used :)
 declare namespace t = "http://www.tei-c.org/ns/1.0";

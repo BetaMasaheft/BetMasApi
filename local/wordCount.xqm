@@ -5,7 +5,7 @@ xquery version "3.1" encoding "UTF-8";
  :
  : @author Pietro Liuzzo
  :)
-module namespace WC = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/WC";
+module namespace WC = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/WC";
 
 declare namespace t = "http://www.tei-c.org/ns/1.0";
 (: For REST annotations :)

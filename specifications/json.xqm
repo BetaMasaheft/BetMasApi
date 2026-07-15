@@ -6,7 +6,7 @@ https://jsonapi.org/format/
 for
 https://github.com/BetaMasaheft/Documentation/issues/1109
  :)
-module namespace jsonapi = "https://www.betamasaheft.uni-hamburg.de/BetMas/jsonapi";
+module namespace jsonapi = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/jsonapi";
 
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace t = "http://www.tei-c.org/ns/1.0";
@@ -25,7 +25,7 @@ import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMas
 import module namespace sparql = "http://exist-db.org/xquery/sparql" at "java:org.exist.xquery.modules.rdf.SparqlModule";
 import module namespace switch2 = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/switch2" at "xmldb:exist:///db/apps/BetMasWeb/modules/switch2.xqm";
 import module namespace editors = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
-import module namespace what = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/what" at "xmldb:exist:///db/apps/BetMasApi/local/whatpointshere.xqm";
+import module namespace what = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/what" at "../local/whatpointshere.xqm";
 
 declare function jsonapi:maintest($request as map(*)) {
 	let $id as xs:string+ := $request?parameters?id

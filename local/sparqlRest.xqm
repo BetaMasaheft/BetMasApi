@@ -5,7 +5,7 @@ xquery version "3.1" encoding "UTF-8";
  :
  : @author Pietro Liuzzo
  :)
-module namespace apisparql = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/apisparql";
+module namespace apisparql = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/apisparql";
 
 (: namespaces of data used :)
 declare namespace test = "http://exist-db.org/xquery/xqsuite";

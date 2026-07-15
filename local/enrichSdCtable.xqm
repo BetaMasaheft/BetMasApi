@@ -7,7 +7,7 @@ xquery version "3.1" encoding "UTF-8";
  :
  : @author Pietro Liuzzo
  :)
-module namespace enrich = "https://www.betamasaheft.uni-hamburg.de/BetMas/enrich";
+module namespace enrich = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/enrich";
 
 (: namespaces of data used :)
 
