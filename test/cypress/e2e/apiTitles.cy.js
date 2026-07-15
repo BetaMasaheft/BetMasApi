@@ -1,6 +1,6 @@
 // generated from local/apiTitles.xqm
 
-describe.only("apiTitles.xqm", () => {
+describe("apiTitles.xqm", () => {
 	it("GET /api/LIT1367Exodus/title", () => {
 		cy.request({
 			url: "/api/LIT1367Exodus/title",
