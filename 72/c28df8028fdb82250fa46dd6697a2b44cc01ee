@@ -1,0 +1,35 @@
+test/cypress/e2e/validate.cy.js
+  s_0dabbf63aaf7ab::t_be8d8e6881f8a8 1-27
+test/cypress/support/e2e.js
+  s_0dabbf63aaf7ab::t_38d05791bc559b 1-2
+.prettierignore
+  s_0dabbf63aaf7ab::t_009547e2e1f522 4-5
+cypress.config.cjs
+  s_0dabbf63aaf7ab::t_06bbbcfcc66993 9
+.github/workflows/format-check.yml
+  s_0dabbf63aaf7ab::t_09bc5b6927f5ba 29-32
+package.json
+  s_0dabbf63aaf7ab::t_ff523561dc3982 22
+test/cypress/support/commands.js
+  s_0dabbf63aaf7ab::t_f0456598cd6ddb 1-31
+package-lock.json
+  s_0dabbf63aaf7ab::t_9d6f2eb90e7e03 12-14,16,23-72,170-176,235-244,266-422,933-945,968-974,1030-1059,1373-1385,1471-1477,1549-1555,1573-1589,1922-1931,2154-2160,2402-2411,2545-2563,2677-2683,2707-2735,2792-2801,2878-2887,2988-2994,3124-3133,3392-3398,3447-3468
+schema/openapi-3.0.json
+  s_0dabbf63aaf7ab::t_d11eff493639b2 1-1662
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "72c28df8028fdb82250fa46dd6697a2b44cc01ee",
+  "prompts": {},
+  "sessions": {
+    "s_0dabbf63aaf7ab": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "bdda7cb8-1b76-43de-91b1-0cdab99da3f4",
+        "model": "default"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
