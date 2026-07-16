@@ -1,3 +1,5 @@
 node_modules/
 package-lock.json
 build/
+# Vendored from eeditiones/jinks (OpenAPI 3.0 meta-schema)
+schema/openapi-3.0.json

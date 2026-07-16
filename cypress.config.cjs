@@ -7,6 +7,7 @@ module.exports = defineConfig({
 		// redirects for some paths
 		baseUrl: "http://localhost:8080/exist/apps/BetMasApi",
 		supportFile: false,
+		allowCypressEnv: false,
 		specPattern: "test/cypress/e2e/**/*.cy.js",
 		screenshotsFolder: "test/cypress/screenshots",
 		videosFolder: "test/cypress/videos",

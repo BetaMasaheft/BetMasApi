@@ -5,6 +5,9 @@
 	"private": true,
 	"devDependencies": {
 		"@existdb/xst": "^4.1.2",
+		"ajv": "^8.20.0",
+		"ajv-draft-04": "^1.0.0",
+		"ajv-formats": "^3.0.1",
 		"cypress": "^15.18.1",
 		"husky": "^9.1.7",
 		"lint-staged": "^17.0.8",
@@ -15,9 +18,11 @@
 		"format:check": "prettier --check .",
 		"format:write": "prettier --write .",
 		"test": "cypress run",
+		"validate:openapi": "node scripts/validate-openapi.cjs",
 		"prepare": "husky"
 	},
 	"lint-staged": {
-		"*": "prettier --write --ignore-unknown"
+		"*": "prettier --write --ignore-unknown",
+		"api.json": "node scripts/validate-openapi.cjs"
 	}
 }
