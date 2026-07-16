@@ -731,10 +731,9 @@
 					{
 						"name": "q",
 						"in": "query",
-						"required": false,
+						"required": true,
 						"schema": {
-							"type": "string",
-							"default": ""
+							"type": "string"
 						}
 					}
 				],
