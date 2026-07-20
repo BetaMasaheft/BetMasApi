@@ -1,0 +1,24 @@
+.github/workflows/exist.yml
+  s_0dabbf63aaf7ab::t_9f32cb2034a149 43
+  s_0dabbf63aaf7ab::t_6ac36364c759d1 91
+  s_0dabbf63aaf7ab::t_d2d722eac8e68e 35
+  s_0dabbf63aaf7ab::t_dbf80cfd1167a8 56
+.github/workflows/format-check.yml
+  s_0dabbf63aaf7ab::t_22b3f76cf1158a 19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "af97f0f504c415441eff9d41d3b1162630cd7f52",
+  "prompts": {},
+  "sessions": {
+    "s_0dabbf63aaf7ab": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "bdda7cb8-1b76-43de-91b1-0cdab99da3f4",
+        "model": "default"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
