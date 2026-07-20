@@ -17,7 +17,7 @@ jobs:
           - exist-version: 6.4.1
             experimental: false
           # unstable dev build; failures here are early warnings, not blockers
-          - exist-version: 7.0.0-beta3
+          - exist-version: latest
             experimental: true
 
     env:
@@ -32,21 +32,28 @@ jobs:
           sudo apt-get -y install bats
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Install npm dependencies
         run: npm ci
 
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
+
+      # Full seed.xq (includes BetaMasaHeftAdmin password). Configure under
+      # Settings → Secrets → Actions as SEED_XQ (see docker/seed.xq.example).
+      - name: Write seed.xq
+        run: printf '%s\n' "$SEED_XQ" > docker/seed.xq
+        env:
+          SEED_XQ: ${{ secrets.SEED_XQ }}
 
       # Builds BetMasWeb, BetMasService and this package into a fully
       # installed eXist image - see Dockerfile. Cached across runs, so a
       # push that only touches this repo's source rebuilds fast.
       - name: Build eXist image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           build-args: EXISTDB_VERSION=${{ matrix.exist-version }}
@@ -54,6 +61,7 @@ jobs:
           load: true
           cache-from: type=gha,scope=exist-${{ matrix.exist-version }}
           cache-to: type=gha,mode=max,scope=exist-${{ matrix.exist-version }}
+          secret-files: seed=docker/seed.xq
 
       - name: Start the stack
         run: docker compose up -d
@@ -80,7 +88,7 @@ jobs:
 
       - name: Upload Cypress screenshots
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: cypress-screenshots-${{ matrix.exist-version }}
           path: test/cypress/screenshots/

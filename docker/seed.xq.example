@@ -1,0 +1,18 @@
+xquery version "3.1";
+
+(: Copy to docker/seed.xq for local builds, then set the account password.
+   CI writes docker/seed.xq from the SEED_XQ repository secret.
+   Used as a Docker build secret (id=seed); not copied into the image. :)
+
+if (sm:user-exists("BetaMasaHeftAdmin")) then () else
+  sm:create-account("BetaMasaHeftAdmin", "changeme", "dba"),
+
+if (xmldb:collection-available("/db/apps/expanded")) then () else
+  xmldb:create-collection("/db/apps", "expanded"),
+
+for $c in (
+  "authority-files", "manuscripts", "institutions", "narratives",
+  "persons", "places", "studies", "works"
+)
+where not(xmldb:collection-available("/db/apps/expanded/" || $c))
+return xmldb:create-collection("/db/apps/expanded", $c)

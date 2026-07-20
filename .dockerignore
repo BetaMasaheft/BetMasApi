@@ -1,5 +1,12 @@
 node_modules
 build
 .git
+.github
+.claude
+.moderne
+.husky
+.notes
 test/cypress/screenshots
 test/cypress/videos
+*.md
+docker/seed.xq
