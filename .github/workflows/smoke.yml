@@ -1,0 +1,152 @@
+name: Install smoke
+
+# Two signals, deliberately separate jobs:
+#   1. compile - does `ant` produce a xar at all? Fast, fails loud on its own.
+#   2. smoke   - install that xar (and its dependencies, via xst's own
+#      registry-based resolution) into a clean duncdrum/existdb:release-slim
+#      with no data, then run the jinks-template checks.
+#
+# The full stack + Cypress integration lane lives in exist.yml, which pulls
+# the published BetMas app image (real corpus included) instead.
+
+on: [push, pull_request]
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: 21
+
+      - run: ant
+
+  smoke:
+    needs: compile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install bats
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install bats
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Install Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: 21
+
+      - run: ant
+
+      # BetMasWeb/BetMasService aren't expath-registry packages, so they're
+      # built from source here; monex and functx aren't declared as a
+      # dependency of anything installed below (BetMasWeb needs both at
+      # runtime - functx via a direct module import, monex for eXist's
+      # built-in console module - without either declaring it in
+      # expath-pkg.xml), so xst's --registry resolution never reaches them
+      # on its own and they're fetched explicitly instead.
+      - name: Build BetMasWeb and BetMasService from source
+        run: |
+          git clone --depth 1 https://github.com/BetaMasaheft/BetMasWeb.git /tmp/BetMasWeb
+          ant -f /tmp/BetMasWeb/build.xml
+          git clone --depth 1 https://github.com/BetaMasaheft/BetMas.git /tmp/BetMas
+          ant -f /tmp/BetMas/db/apps/BetMasService/build.xml
+
+      - name: Start a clean eXist instance
+        run: |
+          docker run -dit -p 8080:8080 --name exist --rm \
+            --health-interval=2s --health-start-period=8s \
+            duncdrum/existdb:release-slim
+
+      - name: Wait for server to start
+        timeout-minutes: 2
+        run: |
+          until docker logs exist 2>&1 | grep -q "Server has started"; do
+            echo "Still waiting..."
+            sleep 2
+          done
+          # Fixed sleep, not a wait-for-healthy loop: settles within
+          # start_period+interval+timeout=15s, and bats should always get
+          # to report the real status rather than hang behind a timeout.
+          sleep 15
+
+      # Install order matters: BetMasWeb's post-install calls BetMasService's
+      # RestXQ registration script directly (not a declared dependency, just
+      # how it's written), so BetMasService has to exist first. shared-
+      # resources and roaster ARE declared dependencies, so --registry
+      # resolves them automatically instead of being fetched by hand.
+      - name: Install packages
+        env:
+          EXISTDB_SERVER: http://localhost:8080
+          EXISTDB_USER: admin
+          EXISTDB_PASS: ""
+        run: |
+          REGISTRY=https://exist-db.org/exist/apps/public-repo/public
+
+          curl -fsSL -o /tmp/monex.xar "$REGISTRY/monex-4.2.4.xar"
+          npx xst package install local-files /tmp/monex.xar
+
+          curl -fsSL -L -o /tmp/functx.xar \
+            "https://exist-db.org/exist/apps/public-repo/find?abbrev=functx&processor=http://exist-db.org&semver-min=1.0"
+          npx xst package install local-files /tmp/functx.xar
+
+          npx xst package install local-files /tmp/BetMas/db/apps/BetMasService/build/*.xar --registry "$REGISTRY"
+
+          # BetMasWeb's post-install creates /db/apps/expanded/<coll>/new,
+          # which needs the parent collection to already exist - normally
+          # true because the full corpus (betmas-data's expanded.xar)
+          # already provides it; here there's no data, so create the
+          # placeholders it expects first.
+          curl -sf -u admin: -G "$EXISTDB_SERVER/exist/rest/db" \
+            --data-urlencode "_query=if (xmldb:collection-available('/db/apps/expanded')) then () else xmldb:create-collection('/db/apps', 'expanded')" \
+            --data-urlencode "_wrap=no" >/dev/null
+          for c in authority-files manuscripts institutions narratives persons places studies works; do
+            curl -sf -u admin: -G "$EXISTDB_SERVER/exist/rest/db" \
+              --data-urlencode "_query=if (xmldb:collection-available('/db/apps/expanded/$c')) then () else xmldb:create-collection('/db/apps/expanded', '$c')" \
+              --data-urlencode "_wrap=no" >/dev/null
+          done
+
+          npx xst package install local-files /tmp/BetMasWeb/build/*.xar --registry "$REGISTRY"
+          npx xst package install local-files build/*.xar --registry "$REGISTRY"
+
+      # Automatic RestXQ discovery (RestXqTrigger, fired on every document
+      # store during install) isn't reliable here - BetMas works around the
+      # same thing with an explicit, hand-maintained module list
+      # (BetMasService/modules/registerRESTXQ.xql). Do the same but scoped
+      # to this repo's own modules and built from the actual directory
+      # listing instead of a list that goes stale.
+      - name: Register this repo's RestXQ routes
+        env:
+          EXISTDB_SERVER: http://localhost:8080
+        run: |
+          curl -sf -u admin: -G "$EXISTDB_SERVER/exist/rest/db" \
+            --data-urlencode '_query=
+              count(
+                for $dir in ("local", "specifications")
+                for $m in xmldb:get-child-resources("/db/apps/BetMasApi/" || $dir)[ends-with(., ".xqm")]
+                let $uri := xs:anyURI("/db/apps/BetMasApi/" || $dir || "/" || $m)
+                return (exrest:deregister-module($uri), exrest:register-module($uri))
+              )' \
+            --data-urlencode "_wrap=no"
+
+      - name: Run smoke test
+        run: bats --tap test/connect_spec.bats
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker logs exist

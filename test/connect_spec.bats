@@ -23,9 +23,12 @@
   [ "$result" == 'Server has started' ]
 }
 
-# Make sure the package has been deployed
+# Make sure the package has been deployed. Matches the "Deploying package"
+# line specifically, not a bare count of the package URI anywhere in the
+# log - a fresh install also logs "depends on <this URI>" once per
+# dependency, which would otherwise inflate the count.
 @test "logs show package deployment" {
-  result=$(docker logs exist | grep -ow -c 'https://betamasaheft.eu/BetMasApi')
+  result=$(docker logs exist | grep -ow -c 'Deploying package https://betamasaheft.eu/BetMasApi')
   [ "$result" -eq 1 ]
 }
 
