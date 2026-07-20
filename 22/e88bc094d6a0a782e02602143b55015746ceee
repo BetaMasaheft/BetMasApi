@@ -1,0 +1,21 @@
+.github/workflows/smoke.yml
+  s_f621eb37f8854e::t_2203560c69e201 92-93,95-96
+  s_f621eb37f8854e::t_2e7b078f64aab9 3-10,15,17-24,26-30,47-54,58-59,61,63-64,79-91,94,97-136
+  s_f621eb37f8854e::t_1880cb4e687203 137
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "22e88bc094d6a0a782e02602143b55015746ceee",
+  "prompts": {},
+  "sessions": {
+    "s_f621eb37f8854e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "50c55e94-39a7-4bfc-8532-53c810e8d334",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
