@@ -1,0 +1,20 @@
+test/cypress/e2e/places.cy.js
+  s_f621eb37f8854e::t_431ce1cf13b317 69-75,81-82
+  s_f621eb37f8854e::t_32e477841dddc4 39-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "4e8e8b09cc630b843221e5f31da864145fff1856",
+  "prompts": {},
+  "sessions": {
+    "s_f621eb37f8854e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "50c55e94-39a7-4bfc-8532-53c810e8d334",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
