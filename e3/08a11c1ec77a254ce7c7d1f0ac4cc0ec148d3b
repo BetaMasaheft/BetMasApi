@@ -1,0 +1,68 @@
+.dockerignore
+  s_0dabbf63aaf7ab::t_a93097ff44ecdd 4-8,11
+  s_0dabbf63aaf7ab::t_db37da61c54710 12
+.github/workflows/format-check.yml
+  s_0dabbf63aaf7ab::t_22b3f76cf1158a 19
+.github/workflows/exist.yml
+  s_0dabbf63aaf7ab::t_dbf80cfd1167a8 56
+  s_0dabbf63aaf7ab::t_9f32cb2034a149 43
+  s_0dabbf63aaf7ab::t_d2d722eac8e68e 35
+  s_0dabbf63aaf7ab::t_6ac36364c759d1 91
+  s_0dabbf63aaf7ab::t_cb349167e068b5 64
+  s_0dabbf63aaf7ab::t_46bc39a31d2701 45-50
+  s_f621eb37f8854e::t_f75c8fb7a56446 20,37,44
+docker-compose.yml
+  s_0dabbf63aaf7ab::t_5e6d189fcdf4b1 7-8,29-32
+readme.md
+  s_0dabbf63aaf7ab::t_58922a72412415 9,11-42
+build.xml
+  s_0dabbf63aaf7ab::t_f96ab9790f3e1a 9
+docker/seed.xq.example
+  s_0dabbf63aaf7ab::t_5e20bb9bc88129 1-18
+Dockerfile
+  s_0dabbf63aaf7ab::t_e166e0d3bdc4b9 57
+  s_0dabbf63aaf7ab::t_a0a940e1132832 1
+  s_0dabbf63aaf7ab::t_9ad40160abf79d 10,52,55
+  s_0dabbf63aaf7ab::t_9748cdd0640e8a 7-8
+  s_0dabbf63aaf7ab::t_9d9e68881554d1 64-65,67
+  s_0dabbf63aaf7ab::t_4fb5c388661589 31
+  s_0dabbf63aaf7ab::t_d37ff7561f91ef 61-63,70-72,74
+  s_0dabbf63aaf7ab::t_28c77e25536944 2-3,5,17-19,22-25,27,33-39,51,54,69
+  s_0dabbf63aaf7ab::t_4296e3dbe93eab 21
+  s_0dabbf63aaf7ab::t_9d8c98dffbbd31 43-48
+  s_0dabbf63aaf7ab::t_ab170cb1333ae7 58-59
+  s_0dabbf63aaf7ab::t_e2648c71e0237f 12
+  s_0dabbf63aaf7ab::t_d5f14cca880dba 68
+  s_0dabbf63aaf7ab::t_dc70dbbb3527ca 29
+  s_0dabbf63aaf7ab::t_f9ea94e52b78e2 6,11,30
+  s_f621eb37f8854e::t_56f7c0c85a6f96 14,20
+.gitignore
+  s_0dabbf63aaf7ab::t_bd944c9e65a8c0 5
+  s_0dabbf63aaf7ab::t_6e460af0a7187e 4
+.notes
+  s_f621eb37f8854e::t_52b2067538af63 1-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "e308a11c1ec77a254ce7c7d1f0ac4cc0ec148d3b",
+  "prompts": {},
+  "sessions": {
+    "s_0dabbf63aaf7ab": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "bdda7cb8-1b76-43de-91b1-0cdab99da3f4",
+        "model": "default"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    },
+    "s_f621eb37f8854e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "50c55e94-39a7-4bfc-8532-53c810e8d334",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
