@@ -1,0 +1,22 @@
+docker-compose.yml
+  s_f621eb37f8854e::t_2db5897a3f1257 13-39
+.github/workflows/exist.yml
+  s_f621eb37f8854e::t_35b053820777c0 73-76
+  s_f621eb37f8854e::t_baa2ed02b2dd3c 77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "103b3a5bd3e5ee8ffdce11df10eb7670d67f1625",
+  "prompts": {},
+  "sessions": {
+    "s_f621eb37f8854e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "50c55e94-39a7-4bfc-8532-53c810e8d334",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
