@@ -19,6 +19,7 @@
 		"format:write": "prettier --write .",
 		"test": "cypress run",
 		"validate:openapi": "node scripts/validate-openapi.cjs",
+		"deploy:dev": "ant && EXISTDB_SERVER=http://localhost:8080 EXISTDB_USER=admin EXISTDB_PASS= xst package install local-files build/*.xar",
 		"prepare": "husky"
 	},
 	"lint-staged": {

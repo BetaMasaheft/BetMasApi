@@ -3,10 +3,10 @@ services:
     build:
       context: .
       args:
-        EXISTDB_VERSION: ${EXISTDB_VERSION:-6.4.1}
+        BETMAS_APP_IMAGE: ${BETMAS_APP_IMAGE:-ghcr.io/betamasaheft/betamasaheft:release-expanded}
       secrets:
         - seed
-    image: betmasapi-exist:${EXISTDB_VERSION:-6.4.1}
+    image: betmasapi-exist:local
     container_name: exist
     ports:
       - "8080:8080"
