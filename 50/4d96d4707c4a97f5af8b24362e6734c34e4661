@@ -1,0 +1,25 @@
+test/connect_spec.bats
+  s_f621eb37f8854e::t_b06018580d1726 26-29,31
+.github/workflows/smoke.yml
+  s_f621eb37f8854e::t_2e7b078f64aab9 3-10,15,17-30,56-63,67-68,70,72-73,88-100,103,106-145
+  s_f621eb37f8854e::t_2203560c69e201 101-102,104-105
+  s_f621eb37f8854e::t_1880cb4e687203 146
+  s_f621eb37f8854e::t_5e1ad6ef56cc24 39-47
+  s_f621eb37f8854e::t_5676e253022177 1-2,11-14,16,31-38,48-55,64-66,69,71,74-87,147-152
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "504d96d4707c4a97f5af8b24362e6734c34e4661",
+  "prompts": {},
+  "sessions": {
+    "s_f621eb37f8854e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "50c55e94-39a7-4bfc-8532-53c810e8d334",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
