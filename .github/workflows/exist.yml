@@ -70,6 +70,11 @@ jobs:
             echo "Still waiting..."
             sleep 2
           done
+          # Fixed sleep, not a wait-for-healthy loop: docker-compose.yml's
+          # healthcheck settles within start_period+interval+timeout=15s,
+          # and bats should always get to report the real status, not hang
+          # behind a step timeout if the container is genuinely unhealthy.
+          sleep 15
 
       - name: Run bats smoke tests
         run: bats --tap test/*.bats

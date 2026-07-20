@@ -10,6 +10,33 @@ services:
     container_name: exist
     ports:
       - "8080:8080"
+    # The base image ships a HEALTHCHECK with no explicit timing, so it
+    # inherits Docker's defaults (30s interval, 0s start_period) - the first
+    # probe can take up to 30s to even run. Everything this image needs is
+    # already baked in (no install happens at this boot), so tighten it:
+    # CI waits a fixed, deterministic period sized from these same numbers
+    # (see exist.yml) instead of polling for "healthy", so a genuinely
+    # unhealthy container still gets the full smoke-test diagnosis rather
+    # than an opaque hang.
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "java",
+          "org.exist.start.Main",
+          "client",
+          "--no-gui",
+          "--user",
+          "guest",
+          "--password",
+          "guest",
+          "--xpath",
+          "system:get-version()",
+        ]
+      interval: 2s
+      timeout: 5s
+      start_period: 8s
+      retries: 3
 
   # in-memory SPARQL store for the RDF/SPARQL endpoints (local/sparqlRest.xqm).
   # Not persisted - fine for testing, not for real data.
