@@ -1,0 +1,32 @@
+readme.md
+  s_f621eb37f8854e::t_a39904924d6342 15-20,24-28,46-62
+package.json
+  s_f621eb37f8854e::t_f865ea3d9ca4ce 22
+docker/seed.xq.example
+  s_f621eb37f8854e::t_a2c4286a8192d8 5,7-11,13-14
+.github/workflows/exist.yml
+  s_f621eb37f8854e::t_4d8589f442ae4d 39-42,47,49-50
+  s_f621eb37f8854e::t_94eccc896d4924 32
+  s_f621eb37f8854e::t_2858aa3b0b6bf7 80
+Dockerfile
+  s_f621eb37f8854e::t_7ffd4658d8673f 2,5-10,16,19,26-27,29
+  s_f621eb37f8854e::t_bf31daafe3fed9 31-32,34-41
+docker-compose.yml
+  s_f621eb37f8854e::t_426a2f9cba5559 6,9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "1ee6696911b9d41a5b887a3fc51e8d88be9b4e2b",
+  "prompts": {},
+  "sessions": {
+    "s_f621eb37f8854e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "50c55e94-39a7-4bfc-8532-53c810e8d334",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
