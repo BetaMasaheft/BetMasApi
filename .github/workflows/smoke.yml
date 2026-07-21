@@ -25,33 +25,31 @@ jobs:
 
       - run: ant
 
+      - uses: actions/upload-artifact@v7
+        with:
+          name: betmasapi-xar
+          path: build/*.xar
+          retention-days: 1
+
   smoke:
     needs: compile
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
-      - name: Install bats
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install bats
+      - uses: ./.github/actions/setup-test-toolchain
 
-      - name: Setup Node
-        uses: actions/setup-node@v7
+      - name: Download this repo's xar built by the compile job
+        uses: actions/download-artifact@v7
         with:
-          node-version: 24
-          cache: npm
-
-      - name: Install npm dependencies
-        run: npm ci
+          name: betmasapi-xar
+          path: build
 
       - name: Install Java
         uses: actions/setup-java@v5
         with:
           distribution: "temurin"
           java-version: 21
-
-      - run: ant
 
       # BetMasWeb/BetMasService aren't expath-registry packages, so they're
       # built from source here; monex and functx aren't declared as a
@@ -60,12 +58,20 @@ jobs:
       # built-in console module - without either declaring it in
       # expath-pkg.xml), so xst's --registry resolution never reaches them
       # on its own and they're fetched explicitly instead.
+      #
+      # The two builds don't depend on each other's output (only *install*
+      # order matters, below), so they run in the background concurrently
+      # instead of one after the other.
       - name: Build BetMasWeb and BetMasService from source
         run: |
-          git clone --depth 1 https://github.com/BetaMasaheft/BetMasWeb.git /tmp/BetMasWeb
+          git clone --depth 1 https://github.com/BetaMasaheft/BetMasWeb.git /tmp/BetMasWeb &
+          web=$!
+          git clone --depth 1 https://github.com/BetaMasaheft/BetMas.git /tmp/BetMas && \
+            ant -f /tmp/BetMas/db/apps/BetMasService/build.xml &
+          service=$!
+          wait "$web"
           ant -f /tmp/BetMasWeb/build.xml
-          git clone --depth 1 https://github.com/BetaMasaheft/BetMas.git /tmp/BetMas
-          ant -f /tmp/BetMas/db/apps/BetMasService/build.xml
+          wait "$service"
 
       - name: Start a clean eXist instance
         run: |
@@ -74,16 +80,8 @@ jobs:
             duncdrum/existdb:release-slim
 
       - name: Wait for server to start
+        uses: ./.github/actions/wait-for-exist
         timeout-minutes: 2
-        run: |
-          until docker logs exist 2>&1 | grep -q "Server has started"; do
-            echo "Still waiting..."
-            sleep 2
-          done
-          # Fixed sleep, not a wait-for-healthy loop: settles within
-          # start_period+interval+timeout=15s, and bats should always get
-          # to report the real status rather than hang behind a timeout.
-          sleep 15
 
       # Install order matters: BetMasWeb's post-install calls BetMasService's
       # RestXQ registration script directly (not a declared dependency, just
@@ -112,12 +110,11 @@ jobs:
           # true because the full corpus (betmas-data's expanded.xar)
           # already provides it; here there's no data, so create the
           # placeholders it expects first, in one round trip.
-          curl -sf -u admin: -G "$EXISTDB_SERVER/exist/rest/db" \
-            --data-urlencode '_query=
-              let $root := if (xmldb:collection-available("/db/apps/expanded")) then () else xmldb:create-collection("/db/apps", "expanded")
-              for $c in ("authority-files", "manuscripts", "institutions", "narratives", "persons", "places", "studies", "works")
-              return if (xmldb:collection-available("/db/apps/expanded/" || $c)) then () else xmldb:create-collection("/db/apps/expanded", $c)' \
-            --data-urlencode "_wrap=no" >/dev/null
+          npx xst execute '
+            let $root := if (xmldb:collection-available("/db/apps/expanded")) then () else xmldb:create-collection("/db/apps", "expanded")
+            for $c in ("authority-files", "manuscripts", "institutions", "narratives", "persons", "places", "studies", "works")
+            return if (xmldb:collection-available("/db/apps/expanded/" || $c)) then () else xmldb:create-collection("/db/apps/expanded", $c)
+          ' >/dev/null
 
           npx xst package install local-files /tmp/BetMasWeb/build/*.xar --registry "$REGISTRY"
           npx xst package install local-files build/*.xar --registry "$REGISTRY"
@@ -131,16 +128,17 @@ jobs:
       - name: Register this repo's RestXQ routes
         env:
           EXISTDB_SERVER: http://localhost:8080
+          EXISTDB_USER: admin
+          EXISTDB_PASS: ""
         run: |
-          curl -sf -u admin: -G "$EXISTDB_SERVER/exist/rest/db" \
-            --data-urlencode '_query=
-              count(
-                for $dir in ("local", "specifications")
-                for $m in xmldb:get-child-resources("/db/apps/BetMasApi/" || $dir)[ends-with(., ".xqm")]
-                let $uri := xs:anyURI("/db/apps/BetMasApi/" || $dir || "/" || $m)
-                return (exrest:deregister-module($uri), exrest:register-module($uri))
-              )' \
-            --data-urlencode "_wrap=no"
+          npx xst execute '
+            count(
+              for $dir in ("local", "specifications")
+              for $m in xmldb:get-child-resources("/db/apps/BetMasApi/" || $dir)[ends-with(., ".xqm")]
+              let $uri := xs:anyURI("/db/apps/BetMasApi/" || $dir || "/" || $m)
+              return (exrest:deregister-module($uri), exrest:register-module($uri))
+            )
+          '
 
       - name: Run smoke test
         run: bats --tap test/connect_spec.bats

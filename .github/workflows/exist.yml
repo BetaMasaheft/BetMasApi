@@ -13,19 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Install bats
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install bats
-
-      - name: Setup Node
-        uses: actions/setup-node@v7
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install npm dependencies
-        run: npm ci
+      - uses: ./.github/actions/setup-test-toolchain
 
       - uses: docker/setup-buildx-action@v4
 
@@ -64,17 +52,8 @@ jobs:
         run: docker compose up -d
 
       - name: Wait for eXist to start
+        uses: ./.github/actions/wait-for-exist
         timeout-minutes: 2
-        run: |
-          until docker logs exist 2>&1 | grep -q "Server has started"; do
-            echo "Still waiting..."
-            sleep 2
-          done
-          # Fixed sleep, not a wait-for-healthy loop: docker-compose.yml's
-          # healthcheck settles within start_period+interval+timeout=15s,
-          # and bats should always get to report the real status, not hang
-          # behind a step timeout if the container is genuinely unhealthy.
-          sleep 15
 
       - name: Run bats smoke tests
         run: bats --tap test/*.bats

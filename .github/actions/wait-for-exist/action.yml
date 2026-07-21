@@ -1,0 +1,16 @@
+name: Wait for eXist to start
+description: Waits for the "Server has started" log line from a container named "exist", then a fixed sleep - not a wait-for-healthy loop, so a genuinely unhealthy container still gets the full bats diagnosis instead of hanging behind a step timeout.
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        until docker logs exist 2>&1 | grep -q "Server has started"; do
+          echo "Still waiting..."
+          sleep 2
+        done
+        # Fixed sleep, not a wait-for-healthy loop: both docker-compose.yml's
+        # healthcheck and smoke.yml's bare `docker run --health-*` flags
+        # settle within start_period+interval+timeout=15s.
+        sleep 15
