@@ -46,7 +46,7 @@ jobs:
       - uses: ./.github/actions/setup-test-toolchain
 
       - name: Download this repo's xar built by the compile job
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: betmasapi-xar
           path: build
