@@ -1,0 +1,28 @@
+.github/workflows/smoke.yml
+  s_f621eb37f8854e::t_8786f374c91591 28-33,40,42-43,45-46,61-64,67-72,74,83
+  s_f621eb37f8854e::t_b7fdf8f6a75078 131-132,134-141
+  s_f621eb37f8854e::t_88e7b42d6b1c53 113-117
+.github/workflows/exist.yml
+  s_f621eb37f8854e::t_a3c4e18325631f 55
+  s_f621eb37f8854e::t_ed23b2c34030ef 16
+.github/actions/setup-test-toolchain/action.yml
+  s_f621eb37f8854e::t_7aee254e64bf90 1-21
+.github/actions/wait-for-exist/action.yml
+  s_f621eb37f8854e::t_80c8f0ef7debf8 1-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3044f7a719580503eeb93498974d0088db28cc47",
+  "prompts": {},
+  "sessions": {
+    "s_f621eb37f8854e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "50c55e94-39a7-4bfc-8532-53c810e8d334",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
