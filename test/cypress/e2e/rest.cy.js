@@ -1,5 +1,5 @@
 // generated from local/rest.xqm
-// happy-path checks use real fixture data from test/fixtures/ (manuscript BAVet1, work LIT1367Exodus)
+// happy-path checks target real corpus records (manuscript BAVet1, work LIT1367Exodus) - no fixture upload, see Dockerfile
 
 it("GET /api/loadmsItems/BAVet1/m1", () => {
 	cy.request({ url: "/api/loadmsItems/BAVet1/ms_i1", failOnStatusCode: false }).then((res) => {
