@@ -42,6 +42,7 @@ it("GET /api/KML/place/test", () => {
 // image's real corpus (thousands of manuscripts) it both times out and
 // hammers a third-party service - not something CI should do. Needs a
 // scope/mocking decision before re-enabling, not a one-line fix.
+// Tracked: https://github.com/BetaMasaheft/BetMasApi/issues/34
 it.skip("GET /api/KML/manuscripts/places", () => {
 	cy.request({ url: "/api/KML/manuscripts/places", failOnStatusCode: false }).then((res) => {
 		expect(res.status).to.eq(200);
@@ -72,6 +73,7 @@ it("GET /api/KML/manuscripts/datePlace", () => {
 // against the old fixture-only dataset. Call site not pinned down yet - not
 // in annotations.xqm, api.xql or places.xqm directly, so it's a few imports
 // deeper. Needs real debugging, not a guess-patch.
+// Tracked: https://github.com/BetaMasaheft/BetMasApi/issues/33
 it.skip("GET /api/gazetteer", () => {
 	cy.request({ url: "/api/gazetteer", failOnStatusCode: false }).then((res) => {
 		expect(res.status).to.eq(200);
@@ -79,6 +81,7 @@ it.skip("GET /api/gazetteer", () => {
 });
 
 // Skipped: same range:field cardinality error as /api/gazetteer above.
+// Tracked: https://github.com/BetaMasaheft/BetMasApi/issues/33
 it.skip("GET /api/gazetteer/all", () => {
 	cy.request({ url: "/api/gazetteer/all", failOnStatusCode: false }).then((res) => {
 		expect(res.status).to.eq(200);
