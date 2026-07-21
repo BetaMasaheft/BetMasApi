@@ -46,6 +46,11 @@ To build the image without Compose:
 docker build --secret id=seed,src=docker/seed.xq -t betmasapi-exist:local .
 ```
 
+Running that image directly with `docker run` skips `docker-compose.yml`'s
+healthcheck override, so it falls back to the base image's own HEALTHCHECK
+timing (Docker's 30s-interval default) instead of the faster settings tuned
+for CI.
+
 To build against a locally-built app image instead of the published one (e.g.
 while iterating on BetMasWeb), pass `BETMAS_APP_IMAGE`:
 

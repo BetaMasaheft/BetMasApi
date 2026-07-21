@@ -18,6 +18,11 @@ services:
     # (see exist.yml) instead of polling for "healthy", so a genuinely
     # unhealthy container still gets the full smoke-test diagnosis rather
     # than an opaque hang.
+    #
+    # Compose can only replace a HEALTHCHECK wholesale, not retime it in
+    # place, so the `test` below is a copy of the base image's own probe
+    # command - if BETMAS_APP_IMAGE ever changes how it checks health
+    # (different auth, different xpath call), this needs updating to match.
     healthcheck:
       test:
         [
