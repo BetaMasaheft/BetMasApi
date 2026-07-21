@@ -97,13 +97,13 @@ jobs:
           EXISTDB_PASS: ""
         run: |
           REGISTRY=https://exist-db.org/exist/apps/public-repo/public
+          install_from_url() {
+            curl -fsSL -o /tmp/pkg.xar "$1"
+            npx xst package install local-files /tmp/pkg.xar
+          }
 
-          curl -fsSL -o /tmp/monex.xar "$REGISTRY/monex-4.2.4.xar"
-          npx xst package install local-files /tmp/monex.xar
-
-          curl -fsSL -L -o /tmp/functx.xar \
-            "https://exist-db.org/exist/apps/public-repo/find?abbrev=functx&processor=http://exist-db.org&semver-min=1.0"
-          npx xst package install local-files /tmp/functx.xar
+          install_from_url "$REGISTRY/monex-4.2.4.xar"
+          install_from_url "https://exist-db.org/exist/apps/public-repo/find?abbrev=functx&processor=http://exist-db.org&semver-min=1.0"
 
           npx xst package install local-files /tmp/BetMas/db/apps/BetMasService/build/*.xar --registry "$REGISTRY"
 
@@ -111,15 +111,13 @@ jobs:
           # which needs the parent collection to already exist - normally
           # true because the full corpus (betmas-data's expanded.xar)
           # already provides it; here there's no data, so create the
-          # placeholders it expects first.
+          # placeholders it expects first, in one round trip.
           curl -sf -u admin: -G "$EXISTDB_SERVER/exist/rest/db" \
-            --data-urlencode "_query=if (xmldb:collection-available('/db/apps/expanded')) then () else xmldb:create-collection('/db/apps', 'expanded')" \
+            --data-urlencode '_query=
+              let $root := if (xmldb:collection-available("/db/apps/expanded")) then () else xmldb:create-collection("/db/apps", "expanded")
+              for $c in ("authority-files", "manuscripts", "institutions", "narratives", "persons", "places", "studies", "works")
+              return if (xmldb:collection-available("/db/apps/expanded/" || $c)) then () else xmldb:create-collection("/db/apps/expanded", $c)' \
             --data-urlencode "_wrap=no" >/dev/null
-          for c in authority-files manuscripts institutions narratives persons places studies works; do
-            curl -sf -u admin: -G "$EXISTDB_SERVER/exist/rest/db" \
-              --data-urlencode "_query=if (xmldb:collection-available('/db/apps/expanded/$c')) then () else xmldb:create-collection('/db/apps/expanded', '$c')" \
-              --data-urlencode "_wrap=no" >/dev/null
-          done
 
           npx xst package install local-files /tmp/BetMasWeb/build/*.xar --registry "$REGISTRY"
           npx xst package install local-files build/*.xar --registry "$REGISTRY"
