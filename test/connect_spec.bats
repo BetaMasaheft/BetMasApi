@@ -23,12 +23,14 @@
   [ "$result" == 'Server has started' ]
 }
 
-# Make sure the package has been deployed. Matches the "Deploying package"
-# line specifically, not a bare count of the package URI anywhere in the
-# log - a fresh install also logs "depends on <this URI>" once per
-# dependency, which would otherwise inflate the count.
+# Make sure the package has been deployed. Two valid signals depending on
+# when install happened: a fresh deploy (smoke.yml, xst installs after the
+# container is already running) or "already installed" at this boot because
+# it was deployed once at image build time and persisted (exist.yml). Either
+# way, exactly one of these two lines - not a bare URI count, which a fresh
+# install also inflates via one "depends on <this URI>" line per dependency.
 @test "logs show package deployment" {
-  result=$(docker logs exist | grep -ow -c 'Deploying package https://betamasaheft.eu/BetMasApi')
+  result=$(docker logs exist | grep -ocE 'Deploying package https://betamasaheft\.eu/BetMasApi|Application package https://betamasaheft\.eu/BetMasApi already installed')
   [ "$result" -eq 1 ]
 }
 
