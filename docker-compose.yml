@@ -3,11 +3,45 @@ services:
     build:
       context: .
       args:
-        EXISTDB_VERSION: ${EXISTDB_VERSION:-6.4.1}
-    image: betmasapi-exist:${EXISTDB_VERSION:-6.4.1}
+        BETMAS_APP_IMAGE: ${BETMAS_APP_IMAGE:-ghcr.io/betamasaheft/betamasaheft:release-expanded}
+      secrets:
+        - seed
+    image: betmasapi-exist:local
     container_name: exist
     ports:
       - "8080:8080"
+    # The base image ships a HEALTHCHECK with no explicit timing, so it
+    # inherits Docker's defaults (30s interval, 0s start_period) - the first
+    # probe can take up to 30s to even run. Everything this image needs is
+    # already baked in (no install happens at this boot), so tighten it:
+    # CI waits a fixed, deterministic period sized from these same numbers
+    # (see exist.yml) instead of polling for "healthy", so a genuinely
+    # unhealthy container still gets the full smoke-test diagnosis rather
+    # than an opaque hang.
+    #
+    # Compose can only replace a HEALTHCHECK wholesale, not retime it in
+    # place, so the `test` below is a copy of the base image's own probe
+    # command - if BETMAS_APP_IMAGE ever changes how it checks health
+    # (different auth, different xpath call), this needs updating to match.
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "java",
+          "org.exist.start.Main",
+          "client",
+          "--no-gui",
+          "--user",
+          "guest",
+          "--password",
+          "guest",
+          "--xpath",
+          "system:get-version()",
+        ]
+      interval: 2s
+      timeout: 5s
+      start_period: 8s
+      retries: 3
 
   # in-memory SPARQL store for the RDF/SPARQL endpoints (local/sparqlRest.xqm).
   # Not persisted - fine for testing, not for real data.
@@ -24,3 +58,7 @@ services:
       - ./fuseki/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - fuseki
+
+secrets:
+  seed:
+    file: ./docker/seed.xq

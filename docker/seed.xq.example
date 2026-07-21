@@ -1,0 +1,14 @@
+xquery version "3.1";
+
+(: Copy to docker/seed.xq for local builds, then set the account password.
+   CI writes docker/seed.xq from the SEED_XQ repository secret.
+   Used as a Docker build secret (id=seed); not copied into the image.
+
+   BetaMasaheftAdmin must exist before BetMasApi's own package installs:
+   repo.xml declares <permissions user="BetaMasaheftAdmin" group="dba" .../>
+   for its own collection, and the base image (BETMAS_APP_IMAGE) does not
+   create this account. Nothing else needs seeding here: /db/apps/expanded
+   and its data are already provided by the base image's own corpus. :)
+
+if (sm:user-exists("BetaMasaheftAdmin")) then () else
+  sm:create-account("BetaMasaheftAdmin", "changeme", "dba")

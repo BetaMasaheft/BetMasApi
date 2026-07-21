@@ -1,68 +1,42 @@
-# Local dev image: eXist + BetMasWeb + BetMasService + this package, all
-# pre-installed at build time so `docker run` serves immediately.
+# syntax=docker/dockerfile:1
+# Local/CI image: the published BetMas app image + this repo's own package.
+# `docker compose up --build` should serve without a cold package install.
 #
-# Staged slow-to-fast so editing BetMasApi source only invalidates the last
-# two steps - BetMasWeb/BetMasService stay cached.
+# BetMasWeb/BetMasService/data are NOT built from source here anymore - they
+# are already published, indexed and tested in BETMAS_APP_IMAGE (BetMas's own
+# CI publishes it in minutes: BetaMasaheft/BetMas#124). This repo only builds
+# its own xar; roaster is already pinned >= 1.12.1 in the base, so there is
+# nothing left to resolve here either. Point BETMAS_APP_IMAGE at a local tag
+# to test against an unpublished base image.
+#
+# Base image is distroless (no shell). All exist-stage RUNs use exec form.
 #
 #   docker compose up --build
-#
 
-ARG EXISTDB_VERSION=6.4.1
+ARG BETMAS_APP_IMAGE=ghcr.io/betamasaheft/betamasaheft:release-expanded
+ARG BUILDER_IMAGE=ghcr.io/eeditiones/builder:latest
 
-# ---- build xars from source (needs ant, not present in the eXist image) ----
-FROM node:latest AS build-stage
-RUN apt-get update && apt-get install -y --no-install-recommends ant && rm -rf /var/lib/apt/lists/*
-
-ADD https://github.com/BetaMasaheft/BetMasWeb.git /src/BetMasWeb
-RUN ant -f /src/BetMasWeb/build.xml
-
-ADD https://github.com/BetaMasaheft/BetMas.git /src/BetMas
-RUN ant -f /src/BetMas/db/apps/BetMasService/build.xml
+# ---- build this repo's xar ----
+FROM ${BUILDER_IMAGE} AS build-stage
 
 WORKDIR /src/BetMasApi
 COPY . .
 RUN ant
 
-# ---- eXist, with everything installed ----
-FROM existdb/existdb:${EXISTDB_VERSION}-DEBUG
+# ---- the published app image + this repo's package ----
+FROM ${BETMAS_APP_IMAGE}
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && \
-    curl -fsSL https://deb.nodesource.com/setup_26.x | bash - && \
-    apt-get install -y --no-install-recommends nodejs && \
-    npm install --global @existdb/xst@4 && \
-    rm -rf /var/lib/apt/lists/*
+COPY --from=build-stage /src/BetMasApi/build/*.xar /exist/autodeploy/
 
-ENV EXISTDB_SERVER=http://localhost:8080 \
-    EXISTDB_USER=admin \
-    EXISTDB_PASS=
-
-# explode: pre-extract jars into their own cached layer
-RUN [ "java", "org.exist.start.Main", "client", "--no-gui", "-l", "-u", "admin", "-P", "", "-x", "'HelloWorld!'" ]
-
-# slow-changing deps: shared-resources, BetMasService, BetMasWeb
-COPY --from=build-stage /src/BetMasWeb/build/*.xar /install/BetMasWeb/
-COPY --from=build-stage /src/BetMas/db/apps/BetMasService/build/*.xar /install/BetMasService/
-
-RUN java org.exist.start.Main jetty & \
-    EXIST_PID=$! && \
-    timeout 120 bash -c 'until curl -sf http://localhost:8080/exist/rest/ > /dev/null 2>&1; do echo "Waiting..."; sleep 3; done' && \
-    xst package install from-registry shared-resources && \
-    xst execute "if (sm:user-exists('BetaMasaHeftAdmin')) then () else sm:create-account('BetaMasaHeftAdmin', 'test', 'dba')" && \
-    xst execute "if (xmldb:collection-available('/db/apps/expanded')) then () else xmldb:create-collection('/db/apps', 'expanded')" && \
-    xst execute "for \$c in ('authority-files','manuscripts','institutions','narratives','persons','places','studies','works') where not(xmldb:collection-available('/db/apps/expanded/' || \$c)) return xmldb:create-collection('/db/apps/expanded', \$c)" && \
-    xst package install local-files /install/BetMasService/*.xar && \
-    xst package install local-files /install/BetMasWeb/*.xar && \
-    kill $EXIST_PID && \
-    wait $EXIST_PID; true
-
-# this package: rebuilds fast on every local change
-COPY --from=build-stage /src/BetMasApi/build/*.xar /install/BetMasApi/
-COPY test/fixtures /install/fixtures
-
-RUN java org.exist.start.Main jetty & \
-    EXIST_PID=$! && \
-    timeout 120 bash -c 'until curl -sf http://localhost:8080/exist/rest/ > /dev/null 2>&1; do echo "Waiting..."; sleep 3; done' && \
-    xst package install local-files /install/BetMasApi/*.xar && \
-    xst upload /install/fixtures /db/apps/expanded && \
-    kill $EXIST_PID && \
-    wait $EXIST_PID; true
+# Client boot: autodeploy BetMasApi (its declared deps - betmasweb, roaster -
+# are already installed in the base) and seed the test admin account.
+# seed.xq (admin password) is a build secret.
+#
+# No fixture upload: the base already ships the real corpus (betmas-data's
+# expanded.xar), and test/fixtures/ are trimmed copies of real records under
+# the same IDs (LIT1367Exodus, BAVet1, ...) - uploading them on top produced
+# two documents with the same xml:id at different collection paths (the real
+# corpus nests by ID range, e.g. works/1001-2000/..., the fixture uploader
+# does not), breaking every id()-based lookup. The real corpus already
+# satisfies what the fixtures were standing in for.
+RUN --mount=type=secret,id=seed,target=/run/secrets/seed.xq,required=true ["java", "org.exist.start.Main", "client", "--no-gui", "-l", "-u", "admin", "-P", "", "-F", "/run/secrets/seed.xq"]
