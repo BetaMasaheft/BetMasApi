@@ -1,0 +1,23 @@
+.github/workflows/exist.yml
+  s_f621eb37f8854e::t_01e68032a551fa 3-13
+.prettierignore
+  s_f621eb37f8854e::t_4e8f4b1c3ad7d1 4
+.github/workflows/smoke.yml
+  s_f621eb37f8854e::t_7f0fef79494122 12-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "071ffdcfa5f88189f7ff746239681fe0d598c3b3",
+  "prompts": {},
+  "sessions": {
+    "s_f621eb37f8854e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "50c55e94-39a7-4bfc-8532-53c810e8d334",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
