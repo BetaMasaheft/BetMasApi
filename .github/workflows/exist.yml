@@ -1,6 +1,16 @@
 name: exist-db CI
 
-on: [push, pull_request]
+# push+pull_request both matching a PR branch double-triggers this workflow
+# for the same commit; concurrency then cancels one of the two, which shows
+# up as a red "failed" check for no real reason. Scoping push to main/master
+# means a PR branch push only ever fires the pull_request event, so there's
+# nothing left to race - concurrency now only cancels a genuinely superseded
+# run (a second push to the same PR before the first run finished).
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
 
 concurrency:
   group: betmasapi-ci-${{ github.head_ref || github.ref_name }}

@@ -9,7 +9,13 @@ name: Install smoke
 # The full stack + Cypress integration lane lives in exist.yml, which pulls
 # the published BetMas app image (real corpus included) instead.
 
-on: [push, pull_request]
+# Scoped like exist.yml: push+pull_request both matching a PR branch would
+# otherwise double-trigger this workflow for the same commit.
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
 
 jobs:
   compile:
