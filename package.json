@@ -8,11 +8,11 @@
 		"ajv": "^8.20.0",
 		"ajv-draft-04": "^1.0.0",
 		"ajv-formats": "^3.0.1",
-		"cypress": "^15.18.1",
+		"cypress": "^15.19.0",
 		"husky": "^9.1.7",
-		"lint-staged": "^17.0.8",
-		"prettier": "^3.9.4",
-		"prettier-plugin-xquery": "^1.6.2"
+		"lint-staged": "^17.1.1",
+		"prettier": "^3.9.6",
+		"prettier-plugin-xquery": "^1.6.3"
 	},
 	"scripts": {
 		"format:check": "prettier --check .",

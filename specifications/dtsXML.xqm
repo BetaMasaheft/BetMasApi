@@ -17,6 +17,9 @@ import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:/
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
 
+declare option output:method "json";
+declare option output:indent "yes";
+
 (: the old ones, still in use. :)
 
 (:~
@@ -421,6 +424,3 @@ declare function dtsXML:get-level2JSON($request as map(*)) {
 			<json:value><json:value json:array="true"><info>No results, sorry</info></json:value></json:value>
 	)
 };
-
-declare option output:method "json";
-declare option output:indent "yes";
