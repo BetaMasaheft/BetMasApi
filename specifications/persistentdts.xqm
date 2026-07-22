@@ -37,6 +37,9 @@ import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMas
 import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
 import module namespace dts = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/dts" at "xmldb:exist:///db/apps/BetMasWeb/modules/dts.xqm";
 
+declare option output:method "json";
+declare option output:indent "yes";
+
 declare variable $persdts:collection-rootMS := collection($config:data-rootMS);
 
 declare variable $persdts:collection-root := $exptit:col;
@@ -324,6 +327,3 @@ declare function persdts:fileingit($id, $bmID, $sha) {
 		"https://raw.githubusercontent.com/BetaMasaheft/" || $collection || "/" || $sha || "/" || $permapath
 	)//t:TEI
 };
-
-declare option output:method "json";
-declare option output:indent "yes";

@@ -27,6 +27,9 @@ import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:/
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
 
+declare option output:method "json";
+declare option output:indent "yes";
+
 (:~
  : Main access point to DTS style API returning passages from text
  :)
@@ -678,6 +681,3 @@ declare function dts:WebAnnotationsItemIndex($request as map(*)) {
 		let $response := map {"@context": $dts:context, "view": $v, "member": $indexes, "dts:dublincore": $dts:publisher}
 		return (map:merge(($topinfo, $response)))
 };
-
-declare option output:method "json";
-declare option output:indent "yes";
