@@ -19,7 +19,6 @@ module namespace dts = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/dts";
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace t = "http://www.tei-c.org/ns/1.0";
 declare namespace s = "http://www.w3.org/2005/xpath-functions";
-declare namespace http = "http://expath.org/ns/http-client";
 
 import module namespace roaster = "http://e-editiones.org/roaster";
 import module namespace dtslib = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/dtslib" at "xmldb:exist:///db/apps/BetMasWeb/modules/dtslib.xqm";
