@@ -4,7 +4,6 @@
 	"description": "API for BetMas - Exist-db application",
 	"private": true,
 	"devDependencies": {
-		"@existdb/xst": "^4.1.2",
 		"ajv": "^8.20.0",
 		"ajv-draft-04": "^1.0.0",
 		"ajv-formats": "^3.0.1",
