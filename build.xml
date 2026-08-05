@@ -6,6 +6,9 @@
     <property name="build.dir" value="build"/>
     <target name="xar">
         <mkdir dir="${build.dir}"/>
-        <zip basedir="." destfile="${build.dir}/${project.app}-${project.version}.xar" excludes="${build.dir}/* .github/** test/** docker/** .gitignore node_modules"/>
+        <!-- node_modules needs the /** suffix to recurse - a bare "node_modules"
+             pattern only excludes the directory entry itself, not its contents,
+             and silently ships every dev dependency into the .xar. -->
+        <zip basedir="." destfile="${build.dir}/${project.app}-${project.version}.xar" excludes="${build.dir}/** .github/** test/** docker/** node_modules/** .husky/** .gitignore"/>
     </target>
 </project>
