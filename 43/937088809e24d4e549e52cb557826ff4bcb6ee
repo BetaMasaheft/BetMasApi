@@ -1,0 +1,20 @@
+.gitignore
+  h_ff0005bef58c9d 6-9
+.dockerignore
+  h_ff0005bef58c9d 13
+package-lock.json
+  h_ff0005bef58c9d 14,591-593
+package.json
+  h_ff0005bef58c9d 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "43937088809e24d4e549e52cb557826ff4bcb6ee",
+  "prompts": {},
+  "humans": {
+    "h_ff0005bef58c9d": {
+      "author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
