@@ -247,6 +247,13 @@ declare function places:JSONfile($item as node(), $id as xs:string) {
 	}
 };
 
+(:~
+ : Public contract: BetMasWeb's controller.xql forwards bare {id}.json requests
+ : here (path hardcoded on that side as /apps/BetMasApi/api/geoJson/places/{id},
+ : guarded by xmldb:collection-available("/db/apps/BetMasApi") so a deployment
+ : without this package degrades gracefully - see BetMasWeb#36). Renaming or
+ : moving this route requires a matching update in BetMasWeb's controller.xql.
+ :)
 declare function places:json($request as map(*)) {
 	let $id as xs:string* := $request?parameters?id
 	return if (starts-with($id, "LOC") or starts-with($id, "INS") or starts-with($id, "ETH")) then (
