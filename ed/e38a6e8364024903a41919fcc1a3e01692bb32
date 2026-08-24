@@ -1,0 +1,22 @@
+local/places.xqm
+  s_bb26d03d17ba5a::t_6a6db2df1e2887 250-256
+test/cypress/e2e/places.cy.js
+  s_bb26d03d17ba5a::t_497bf79123c1a8 3-7,17-19,22-25
+  s_bb26d03d17ba5a::t_d2943565d21cf4 8-16,20-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "ede38a6e8364024903a41919fcc1a3e01692bb32",
+  "prompts": {},
+  "sessions": {
+    "s_bb26d03d17ba5a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "64773ba2-9cdd-4c86-9562-e18db4f2140c",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
