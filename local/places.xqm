@@ -137,7 +137,11 @@ declare function places:JSONfile($item as node(), $id as xs:string) {
 		for $latlng in tokenize($item//t:geo[@rend eq "polygon"], "\n")
 		return replace(normalize-space($latlng), " ", ",")
 	) else
-		for $c in tokenize(coord:invertCoord(coord:getCoords($id)), ",")
+		(: coord:getCoords branches on a full BMurl-prefixed uri, not a bare
+		xml:id - passing $id here always misses every branch and falls through
+		to an external-gazetteer-ref lookup that can't match it either, so this
+		always produced XPath NaN (BetMasApi#47). :)
+		for $c in tokenize(coord:invertCoord(coord:getCoords($uri)), ",")
 		return number($c)
 	return map {
 		"@context":
