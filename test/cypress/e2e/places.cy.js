@@ -1,6 +1,28 @@
 // generated from local/places.xqm
 
-it("GET /api/geoJson/places/LIT1367Exodus", () => {
+// LIT1367Exodus is a work id, not a LOC/INS/ETH place id - places:json
+// returns an empty body for it (still 200), so this only proved the route
+// doesn't error, not that it produces real geoJSON. Use the LOC5374Rome
+// fixture and assert on content - this is the route BetMasWeb's
+// controller.xql forwards {id}.json requests to (BetMasWeb#36).
+//
+// Asserting on res.body as a string, not a parsed object: places:JSONfile
+// calls coord:getCoords($id) with the bare xml:id, but getCoords expects a
+// full BMurl-prefixed uri to match its own branches (LOC5374Rome has no
+// <geo> but does have @sameAs="wd:Q220" - getCoords never reaches that
+// branch with a bare id) - coordinates/bbox/reprPoint come back XPath NaN,
+// which JSON-serializes as the bare token NaN, so the response isn't valid
+// JSON and cy.request leaves res.body as unparsed text. Separate,
+// pre-existing bug, out of scope here - not touching it in this PR.
+it("GET /api/geoJson/places/LOC5374Rome", () => {
+	cy.request({ url: "/api/geoJson/places/LOC5374Rome", failOnStatusCode: false }).then((res) => {
+		expect(res.status).to.eq(200);
+		expect(res.body).to.include('"id" : "LOC5374Rome"');
+		expect(res.body).to.include('"type" : "Feature"');
+	});
+});
+
+it("GET /api/geoJson/places/LIT1367Exodus (non-place id, empty but not an error)", () => {
 	cy.request({ url: "/api/geoJson/places/LIT1367Exodus", failOnStatusCode: false }).then((res) => {
 		expect(res.status).to.eq(200);
 	});

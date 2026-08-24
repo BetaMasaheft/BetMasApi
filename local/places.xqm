@@ -137,7 +137,11 @@ declare function places:JSONfile($item as node(), $id as xs:string) {
 		for $latlng in tokenize($item//t:geo[@rend eq "polygon"], "\n")
 		return replace(normalize-space($latlng), " ", ",")
 	) else
-		for $c in tokenize(coord:invertCoord(coord:getCoords($id)), ",")
+		(: coord:getCoords branches on a full BMurl-prefixed uri, not a bare
+		xml:id - passing $id here always misses every branch and falls through
+		to an external-gazetteer-ref lookup that can't match it either, so this
+		always produced XPath NaN (BetMasApi#47). :)
+		for $c in tokenize(coord:invertCoord(coord:getCoords($uri)), ",")
 		return number($c)
 	return map {
 		"@context":
@@ -247,6 +251,15 @@ declare function places:JSONfile($item as node(), $id as xs:string) {
 	}
 };
 
+(:~
+ : Public contract: BetMasWeb's own Roaster router resolves bare {id}.json
+ : requests to this function (operationId "places:json", registered in
+ : BetMasWeb's routes.json/api.json) via modules/crossapp.xqm's dynamic
+ : cross-app lookup, since this package is an optional add-on not installed
+ : in BetMasWeb's own standalone/test image - see BetMasWeb#36. Renaming
+ : this function, its namespace, or its collection path requires a matching
+ : update to the registry entry in BetMasWeb's modules/crossapp.xqm.
+ :)
 declare function places:json($request as map(*)) {
 	let $id as xs:string* := $request?parameters?id
 	return if (starts-with($id, "LOC") or starts-with($id, "INS") or starts-with($id, "ETH")) then (
