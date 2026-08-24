@@ -248,11 +248,13 @@ declare function places:JSONfile($item as node(), $id as xs:string) {
 };
 
 (:~
- : Public contract: BetMasWeb's controller.xql forwards bare {id}.json requests
- : here (path hardcoded on that side as /apps/BetMasApi/api/geoJson/places/{id},
- : guarded by xmldb:collection-available("/db/apps/BetMasApi") so a deployment
- : without this package degrades gracefully - see BetMasWeb#36). Renaming or
- : moving this route requires a matching update in BetMasWeb's controller.xql.
+ : Public contract: BetMasWeb's own Roaster router resolves bare {id}.json
+ : requests to this function (operationId "places:json", registered in
+ : BetMasWeb's routes.json/api.json) via modules/crossapp.xqm's dynamic
+ : cross-app lookup, since this package is an optional add-on not installed
+ : in BetMasWeb's own standalone/test image - see BetMasWeb#36. Renaming
+ : this function, its namespace, or its collection path requires a matching
+ : update to the registry entry in BetMasWeb's modules/crossapp.xqm.
  :)
 declare function places:json($request as map(*)) {
 	let $id as xs:string* := $request?parameters?id
