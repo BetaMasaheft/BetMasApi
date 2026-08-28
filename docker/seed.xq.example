@@ -7,7 +7,8 @@ xquery version "3.1";
    BetaMasaheftAdmin must exist before BetMasApi's own package installs:
    repo.xml declares <permissions user="BetaMasaheftAdmin" group="dba" .../>
    for its own collection, and the base image (BETMAS_APP_IMAGE) does not
-   create this account. Nothing else needs seeding here: /db/apps/expanded
+   create this account. overlay-api.xq evals this seed from the build secret
+   then overlays the package (CI overwrites seed.xq from SEED_XQ). /db/apps/expanded
    and its data are already provided by the base image's own corpus. :)
 
 if (sm:user-exists("BetaMasaheftAdmin")) then () else
