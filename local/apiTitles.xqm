@@ -13,7 +13,8 @@ declare namespace t = "http://www.tei-c.org/ns/1.0";
 (: For REST annotations :)
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
-import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/titles" at "xmldb:exist:///db/apps/BetMasWeb/modules/titles.xqm";
+(: titles.xqm was deleted in BetMasWeb#99; titlesData.xqm is the surviving module (same retarget as dts.xqm). :)
+import module namespace titles = "https://www.betamasaheft.uni-hamburg.de/BetMas/titles" at "xmldb:exist:///db/apps/BetMasWeb/modules/titlesData.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
 
 declare variable $apiTit:TUList := doc("/db/apps/lists/textpartstitles.xml");
@@ -27,11 +28,11 @@ declare function apiTit:get-FormattedTitle($request as map(*)) {
 		let $id := replace($id, "_", ":")
 
 		return if (not(contains($id, ":"))) then
-			normalize-space(string-join(exptit:printTitleMainID($id)))
+			normalize-space(string-join(titles:printTitleMainID($id)))
 		else if (
 			starts-with($id, "wd:") or starts-with($id, "pleaides:") or starts-with($id, "sdc:") or starts-with($id, "gn:")
 		) then
-			normalize-space(exptit:printTitleMainID($id))
+			normalize-space(titles:printTitleMainID($id))
 		else
 			$id
 	)
@@ -45,11 +46,11 @@ declare function apiTit:get-FormattedTitleJson($request as map(*)) {
 	return (
 		let $id := replace($id, "_", ":")
 		let $titletext := if (not(contains($id, ":"))) then
-			normalize-space(string-join(exptit:printTitleMainID($id)))
+			normalize-space(string-join(titles:printTitleMainID($id)))
 		else if (
 			starts-with($id, "wd:") or starts-with($id, "pleaides:") or starts-with($id, "sdc:") or starts-with($id, "gn:")
 		) then
-			normalize-space(exptit:printTitleMainID($id))
+			normalize-space(titles:printTitleMainID($id))
 		else
 			$id
 
@@ -68,7 +69,7 @@ declare function apiTit:get-FormattedTitleandID($request as map(*)) {
 		return if ($apiTit:TUList//t:item[@corresp eq $fullid]) then (
 			$apiTit:TUList//t:item[@corresp eq $fullid]/node()
 		) else (
-			exptit:printTitleID($fullid)
+			titles:printTitleID($fullid)
 		)
 	)
 };
