@@ -1,0 +1,21 @@
+expath-pkg.xml
+  s_4157e799fd6089::t_04578ee86ab180 2
+api.json
+  s_4157e799fd6089::t_08a77dc5f88ba7 6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "9931006c9fd79fa14726d9e04cb564d7c63f2830",
+  "prompts": {},
+  "sessions": {
+    "s_4157e799fd6089": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "896d708a-933b-4a29-9666-698048585053",
+        "model": "grok-4.6"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
