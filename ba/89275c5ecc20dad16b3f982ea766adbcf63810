@@ -1,0 +1,25 @@
+docker/seed.xq.example
+  s_4157e799fd6089::t_2103bdf5a500bd 10-12
+docker/overlay-api.xq
+  s_4157e799fd6089::t_e094b804f52845 1-24
+.github/workflows/exist.yml
+  s_4157e799fd6089::t_7fac3ee27b1731 48-51
+Dockerfile
+  s_4157e799fd6089::t_4489f586a642e1 24,29-33,35-36,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ba89275c5ecc20dad16b3f982ea766adbcf63810",
+  "prompts": {},
+  "sessions": {
+    "s_4157e799fd6089": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "896d708a-933b-4a29-9666-698048585053",
+        "model": "grok-4.6"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
