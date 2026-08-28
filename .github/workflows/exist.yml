@@ -45,10 +45,9 @@ jobs:
           SEED_XQ: ${{ secrets.SEED_XQ }}
 
       # Layers this repo's own package onto the published BetMas app image
-      # (BETMAS_APP_IMAGE, see Dockerfile) via repo:install-and-deploy-from-db
-      # (exist-db/exist#5579: autodeploy will not replace an installed name).
-      # Cached across runs, so a push that only touches this repo's source
-      # rebuilds fast.
+      # (BETMAS_APP_IMAGE, see Dockerfile) in one exist client -F via
+      # repo:install-and-deploy-from-db (exist-db/exist#5579). Cached across
+      # runs, so a push that only touches this repo's source rebuilds fast.
       - name: Build eXist image
         uses: docker/build-push-action@v7
         with:
