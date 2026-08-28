@@ -1,0 +1,21 @@
+local/apiTitles.xqm
+  s_4157e799fd6089::t_d50c30dc5af103 16-17
+  s_4157e799fd6089::t_49e1b8fac2484d 31,35,49,53
+  s_4157e799fd6089::t_0d3f1e64ae7e8a 72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d2bb77703374eb35c7514913092bf161a25acdab",
+  "prompts": {},
+  "sessions": {
+    "s_4157e799fd6089": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "896d708a-933b-4a29-9666-698048585053",
+        "model": "grok-4.6"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
