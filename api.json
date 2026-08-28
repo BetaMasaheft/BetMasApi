@@ -3,7 +3,7 @@
 	"info": {
 		"title": "BetMasApi",
 		"description": "API for Beta maṣāḥəft: Manuscripts of Ethiopia and Eritrea. Generated from the existing RESTXQ (%rest:*) annotations in local/ and specifications/ as a first step towards migrating this app to the eXist-db 'roaster' OpenAPI router.",
-		"version": "0.1.0",
+		"version": "0.2.0",
 		"contact": {
 			"name": "Beta maṣāḥəft",
 			"url": "https://betamasaheft.eu"
