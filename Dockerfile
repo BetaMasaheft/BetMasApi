@@ -21,16 +21,19 @@ FROM ${BUILDER_IMAGE} AS build-stage
 
 WORKDIR /src/BetMasApi
 COPY . .
-RUN ant
+RUN ant && mv build/*.xar build/BetMasApi.xar
 
 # ---- the published app image + this repo's package ----
 FROM ${BETMAS_APP_IMAGE}
 
-COPY --from=build-stage /src/BetMasApi/build/*.xar /exist/autodeploy/
+# Not autodeploy: exist-db/exist#5579 skips already-installed package names
+# even when the xar version is newer (enforceDeps=false). Overlay via repo:*
+# in overlay-api.xq after the admin account exists (repo.xml permissions).
+COPY --from=build-stage /src/BetMasApi/build/BetMasApi.xar /exist/overlay/BetMasApi.xar
+COPY docker/overlay-api.xq /exist/overlay/overlay-api.xq
 
-# Client boot: autodeploy BetMasApi (its declared deps - betmasweb, roaster -
-# are already installed in the base) and seed the test admin account.
-# seed.xq (admin password) is a build secret.
+# seed.xq (admin password) is a build secret. CI writes it from SEED_XQ;
+# it is not this overlay script.
 #
 # No fixture upload: the base already ships the real corpus (betmas-data's
 # expanded.xar), and test/fixtures/ are trimmed copies of real records under
@@ -40,3 +43,4 @@ COPY --from=build-stage /src/BetMasApi/build/*.xar /exist/autodeploy/
 # does not), breaking every id()-based lookup. The real corpus already
 # satisfies what the fixtures were standing in for.
 RUN --mount=type=secret,id=seed,target=/run/secrets/seed.xq,required=true ["java", "org.exist.start.Main", "client", "--no-gui", "-l", "-u", "admin", "-P", "", "-F", "/run/secrets/seed.xq"]
+RUN ["java", "org.exist.start.Main", "client", "--no-gui", "-l", "-u", "admin", "-P", "", "-F", "/exist/overlay/overlay-api.xq"]
