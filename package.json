@@ -7,9 +7,9 @@
 		"ajv": "^8.20.0",
 		"ajv-draft-04": "^1.0.0",
 		"ajv-formats": "^3.0.1",
-		"cypress": "^15.21.0",
+		"cypress": "^15.21.1",
 		"husky": "^9.1.7",
-		"lint-staged": "^17.3.0",
+		"lint-staged": "^17.4.1",
 		"prettier": "^3.9.6",
 		"prettier-plugin-xquery": "^1.6.3"
 	},
