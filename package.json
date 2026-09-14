@@ -9,9 +9,9 @@
 		"ajv-formats": "^3.0.1",
 		"cypress": "^15.21.1",
 		"husky": "^9.1.7",
-		"lint-staged": "^17.4.1",
+		"lint-staged": "^17.5.1",
 		"prettier": "^3.9.6",
-		"prettier-plugin-xquery": "^1.6.3"
+		"prettier-plugin-xquery": "^1.6.4"
 	},
 	"scripts": {
 		"format:check": "prettier --check .",
