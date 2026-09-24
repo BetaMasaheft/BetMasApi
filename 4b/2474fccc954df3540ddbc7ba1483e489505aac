@@ -1,0 +1,19 @@
+.gitignore
+  s_7b37dbbc0b8114::t_4b091357e2ebbd 6-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4b2474fccc954df3540ddbc7ba1483e489505aac",
+  "prompts": {},
+  "sessions": {
+    "s_7b37dbbc0b8114": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1ec9ed33-e2f6-407f-998f-c2c9c448bde0",
+        "model": "unknown"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
