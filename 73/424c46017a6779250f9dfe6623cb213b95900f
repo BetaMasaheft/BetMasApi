@@ -1,0 +1,19 @@
+scripts/check-no-serving-writes.sh
+  s_f9baaa830868ac::t_dbb96f0d59e17a 16-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "73424c46017a6779250f9dfe6623cb213b95900f",
+  "prompts": {},
+  "sessions": {
+    "s_f9baaa830868ac": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "93f24fe4-b60f-4020-b15a-1b0dfcfd2743",
+        "model": "claude-opus-5-thinking-high"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
