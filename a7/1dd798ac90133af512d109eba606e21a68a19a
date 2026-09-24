@@ -1,0 +1,25 @@
+scripts/check-no-serving-writes.sh
+  s_14589ac82c1122::t_01c80079261900 1-18
+local/apiTitles.xqm
+  s_14589ac82c1122::t_0719eb077bcbb3 16,18,29,33,47,51,67-69,71
+local/rest.xqm
+  s_14589ac82c1122::t_02a96efd2e6639 29,182
+.github/workflows/static-checks.yml
+  s_14589ac82c1122::t_3557a277372819 9-11,35-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a71dd798ac90133af512d109eba606e21a68a19a",
+  "prompts": {},
+  "sessions": {
+    "s_14589ac82c1122": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "9a15a842-3e45-447d-9253-ea0040f9af8e",
+        "model": "gpt-5.6-sol-medium"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
