@@ -13,6 +13,9 @@ while IFS= read -r file; do
 		printf 'Disallowed database write in serving module: %s\n' "$file" >&2
 		status=1
 	fi
-done < <(rg -l 'update[[:space:]]+(insert|value|delete)|xmldb:store' --glob '*.xq' --glob '*.xql' --glob '*.xqm' . || true)
+done < <(
+	rg -lU 'update[[:space:]]+(insert|value|delete|replace|rename)\b|xmldb:store' \
+		--glob '*.xq' --glob '*.xql' --glob '*.xqm' . || true
+)
 
 exit "$status"
