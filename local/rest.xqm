@@ -26,6 +26,7 @@ import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:/
 import module namespace dts = "https://www.betamasaheft.uni-hamburg.de/BetMasApi/dts" at "../specifications/dts.xqm";
 import module namespace editors = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/editors" at "xmldb:exist:///db/apps/BetMasWeb/modules/editors.xqm";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
+import module namespace catalog = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/catalog" at "xmldb:exist:///db/apps/BetMasWeb/modules/catalog.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
 import module namespace viewItem = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/viewItem" at "xmldb:exist:///db/apps/BetMasWeb/modules/viewItem.xqm";
 import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
@@ -178,7 +179,7 @@ declare function api:loadmsItems($request as map(*)) {
 };
 
 declare function api:listRepositoriesName($request as map(*)) {
-	for $i in doc("/db/apps/lists/institutions.xml")//t:item
+	for $i in catalog:institutions(catalog:backend("api-rest"))
 	let $name := $i/text()
 	order by $name
 	return <option value="{ string($i/@xml:id) }">{ $name }</option>
