@@ -1,0 +1,19 @@
+specifications/shine.xqm
+  s_dae66551291d09::t_9a6cde3d495193 34-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c80014a08f79e6128bc4dc70202b3a82fdd651a2",
+  "prompts": {},
+  "sessions": {
+    "s_dae66551291d09": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2bb85727-c242-4eb5-b24e-afb6acb6fbdb",
+        "model": "unknown"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
