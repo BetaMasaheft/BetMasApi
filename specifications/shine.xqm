@@ -31,10 +31,8 @@ declare variable $shine:all := ($shine:TU, $shine:MS);
 
 declare function shine:main($request as map(*)) {
 	(
-		(
-			map {"uuid": "betmas", "name": "Beta maṣāḥǝft Textual Units", "resourceCount": count($shine:TU)},
-			map {"uuid": "betmasMS", "name": "Beta maṣāḥǝft Manuscripts", "resourceCount": count($shine:MS)}
-		)
+		map {"uuid": "betmas", "name": "Beta maṣāḥǝft Textual Units", "resourceCount": count($shine:TU)},
+		map {"uuid": "betmasMS", "name": "Beta maṣāḥǝft Manuscripts", "resourceCount": count($shine:MS)}
 	)
 };
 
