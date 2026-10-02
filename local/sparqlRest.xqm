@@ -394,7 +394,7 @@ WHERE {
 					return map {"version": $version}
 				)
 				return $texts
-			return map {"versions": $versions, "total": count($versions)}
+			return map {"versions": array { $versions }, "total": count($versions)}
 		) else (
 			map {"info": "sorry, no relations available in our RDF data"}
 		)
