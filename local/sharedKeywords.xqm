@@ -107,5 +107,5 @@ declare function SK:SharedKeyword($request as map(*)) {
 
 			return map {"id": $id, "title": $title}
 
-		return (map {"hits": $hits, "total": $total})
+		return (map {"hits": array { $hits }, "total": $total})
 };

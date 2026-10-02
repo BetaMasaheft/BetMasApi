@@ -19,6 +19,18 @@ import module namespace all = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb
 import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 
+(:~
+ : Upper bound on the number of hits serialised by one response.
+ :
+ : A full-text query can match tens of thousands of documents, and each hit
+ : costs a keyword expansion plus a title lookup. Both search functions
+ : therefore truncate *before* building the per-hit payload rather than
+ : afterwards, so a broad query stays a cheap request. The true match count is
+ : still reported as "total", together with "returned" and "truncated", so a
+ : caller can always tell a truncated page from a complete result set.
+ :)
+declare variable $apiS:MAX-HITS := 100;
+
 (: declare variable $apiS:col := collection('/db/apps/expanded'); :)
 
 (:~
@@ -68,8 +80,10 @@ declare function apiS:kwicSearch($request as map(*)) {
 		let $login := xmldb:login($config:data-root, $config:ADMIN, $config:ppw)
 
 		let $hits := collection($config:data-root)/t:TEI[ft:query(., $q)]
+		let $c := count($hits)
+		let $shown := subsequence($hits, 1, $apiS:MAX-HITS)
 		let $hi :=
-			for $hit in $hits
+			for $hit in $shown
 			let $expanded := kwic:expand($hit)
 			let $root := root($hit)/t:TEI
 			group by $R := $root
@@ -124,9 +138,8 @@ declare function apiS:kwicSearch($request as map(*)) {
 				"hitsCount": $count,
 				"results": $results
 			}
-		let $c := count($hits)
-		return if (count($hits) gt 0) then (
-			map {"items": $hi, "total": $c}
+		return if ($c gt 0) then (
+			map {"items": array { $hi }, "total": $c, "returned": count($hi), "truncated": $c gt count($hi)}
 		) else
 			<json:value><json:value json:array="true"><info>No results, sorry</info></json:value></json:value>
 };
@@ -219,9 +232,11 @@ declare function apiS:search($request as map(*)) {
 			$script ||
 			$term
 		let $hits := util:eval($queryhits)
+		let $c := count($hits)
+		let $shown := subsequence($hits, 1, $apiS:MAX-HITS)
 
 		let $results :=
-			for $hit in $hits
+			for $hit in $shown
 			let $expanded := kwic:expand($hit)
 			let $id := string($hit/ancestor-or-self::t:TEI/@xml:id)
 			let $t := normalize-space(exptit:printTitleID($id))
@@ -230,9 +245,8 @@ declare function apiS:search($request as map(*)) {
 				return normalize-space(string-join($x//text(), " "))
 			return map {"id": $id, "title": $t, "result": $r}
 
-		let $c := count($hits)
-		return if (count($hits) gt 0) then (
-			map {"items": $results, "total": $c}
+		return if ($c gt 0) then (
+			map {"items": array { $results }, "total": $c, "returned": count($results), "truncated": $c gt count($results)}
 		) else
 			<json:value><json:value json:array="true"><info>No results, sorry</info></json:value></json:value>
 };
