@@ -1,0 +1,39 @@
+test/cypress/e2e/responseContracts.cy.js
+  s_01d21a79f6288a::t_3cf85d3bba08b8 105-108
+  s_01d21a79f6288a::t_e9930bab4042a8 104
+  s_01d21a79f6288a::t_e822fbb35d4892 1-19,23,25-103
+  s_01d21a79f6288a::t_181d42ccf7040b 20-22,24
+local/apiSearch.xqm
+  s_01d21a79f6288a::t_fbb38622488ff9 83-84,86
+  s_01d21a79f6288a::t_761451a56f0e5d 248
+  s_01d21a79f6288a::t_4afc295ae906e9 235-236,239
+  s_01d21a79f6288a::t_a63a80c0f1a435 141-142
+  s_01d21a79f6288a::t_3df625c5c4b4e0 22-33
+  s_01d21a79f6288a::t_8b6106a23788f7 249
+local/apilists.xqm
+  s_01d21a79f6288a::t_3f2e60ed36f3f0 224
+local/attestations.xqm
+  s_01d21a79f6288a::t_54245863353bdf 176,178
+local/roles.xqm
+  s_01d21a79f6288a::t_11dc0159971aef 142
+local/sharedKeywords.xqm
+  s_01d21a79f6288a::t_4634dfa74ba0a6 110
+local/sparqlRest.xqm
+  s_01d21a79f6288a::t_3512d2e72372f5 397
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fe8143e7bdf462bbd285f8444d75fe1786f8f20e",
+  "prompts": {},
+  "sessions": {
+    "s_01d21a79f6288a": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f03f3e26effe3xUGvV3hLXAHR1",
+        "model": "big-pickle"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
