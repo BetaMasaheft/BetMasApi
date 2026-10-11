@@ -139,7 +139,7 @@ function roles:role($request as map(*)) {
 
 			return map {"pwl": $ID, "title": exptit:printTitleID($ID), "hits": count($pwl)}
 
-		return (map {"role": $role, "hits": $hits, "total": count($hits), "referring": $total})
+		return (map {"role": $role, "hits": array { $hits }, "total": count($hits), "referring": $total})
 };
 
 (:~

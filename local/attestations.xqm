@@ -173,7 +173,7 @@ declare %test:args("PRS8249Ruppell", "person") %test:assertExists function att:a
 						"occurrences": $occurrences
 					}
 
-				return map {"result": $atts, "title": $titleRoot, "id": $MAINID}
+				return map {"result": array { $atts }, "title": $titleRoot, "id": $MAINID}
 
-		return (map {"query": $id, "results": $hits})
+		return (map {"query": $id, "results": array { $hits }})
 };

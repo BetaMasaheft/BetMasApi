@@ -221,6 +221,6 @@ declare function apiL:listRepoJSON($request as map(*)) {
 				let $id := string($resource/@xml:id)
 				let $title := exptit:printTitleID($id)
 				return map {"id": $id, "title": $title}
-			return map {"items": $items, "total": $total}
+			return map {"items": array { $items }, "total": $total}
 		)
 };
