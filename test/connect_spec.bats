@@ -37,18 +37,7 @@
 }
 
 @test "logs are error free" {
-  # BetMas 3b2ec76 dropped shared-resources from betmas-data while
-  # guidelinesApp (19-guidelinesApp.xar in release-expanded) still depends on
-  # http://exist-db.org/apps/shared — AutoDeploymentTrigger ERROR on every
-  # boot until BetMas restores shared or guidelines drops the dep. Ignore
-  # that one known line so Api CI is not blocked on upstream image skew.
-  result=$(
-    docker logs exist 2>&1 \
-      | grep -E '\] ERROR \(' \
-      | grep -vF '19-guidelinesApp.xar: Missing dependency: package http://exist-db.org/apps/shared could not be resolved.' \
-      | wc -l \
-      | tr -d ' '
-  )
+  result=$(docker logs exist | grep -ow -c 'ERROR' || true)
   [ "$result" -eq 0 ]
 }
 
