@@ -1,0 +1,27 @@
+.github/workflows/static-checks.yml
+  s_ddd04c3c0f7267::t_fc5b1e04ea1d3a 36-38
+package.json
+  s_ddd04c3c0f7267::t_6d31d9a45eb333 21
+readme.md
+  s_ddd04c3c0f7267::t_05c2545ecde539 74-76
+scripts/check-no-serving-writes.sh
+  s_ddd04c3c0f7267::t_50dc4f57f69a1d 6-34,38-44,46-48
+docs/NO_WRITES.md
+  s_ddd04c3c0f7267::t_e4ff4d4c95e28a 1-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8a28e17b08ffa9a94d1ee786f15f467edab4cd6b",
+  "prompts": {},
+  "sessions": {
+    "s_ddd04c3c0f7267": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "74e23787-6e10-456a-8084-b87ab09ba7a4",
+        "model": "composer-2.5-fast"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
