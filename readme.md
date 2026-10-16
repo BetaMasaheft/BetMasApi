@@ -71,6 +71,9 @@ npm run deploy:dev
 
 GitHub Actions writes `docker/seed.xq` from the repository secret **`SEED_XQ`** (full file contents, same shape as `docker/seed.xq.example`) before building the image. Configure it under **Settings → Secrets and variables → Actions**.
 
+Static checks reject database writes in OpenAPI-serving XQuery modules; see
+[docs/NO_WRITES.md](docs/NO_WRITES.md). Run locally with `npm run gate:no-writes`.
+
 ## Compiling from Source
 
 1. Download, fork or clone this GitHub repository
