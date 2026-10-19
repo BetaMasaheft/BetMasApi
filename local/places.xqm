@@ -65,8 +65,6 @@ declare variable $places:placeprefixes :=
 @prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
 @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema&gt; .";
 
-declare variable $places:bmurl := $config:appUrl;
-
 declare variable $places:collection-rootMS := collection($config:data-rootMS);
 
 declare variable $places:collection-rootW := collection($config:data-rootW);
@@ -79,7 +77,36 @@ declare variable $places:collection-rootPlIn := collection($config:data-rootPl, 
 
 declare variable $places:collection-root := $exptit:col;
 
+(:~
+ : Numeric values of a comma separated coordinate string such as
+ : "39.60,11.83". Tokens that are not finite numbers (including the literals
+ : NaN and INF) are dropped, since JSON cannot represent them (BetMasApi#47).
+ :
+ : @param $csv one or more comma separated coordinate strings
+ : @return the finite numeric tokens, in order
+ :)
+declare function places:doubles($csv as xs:string*) as xs:double* {
+	for $c in $csv!tokenize(., ",")
+	let $tok := normalize-space($c)
+	where $tok castable as xs:double
+	let $d := xs:double($tok)
+	where $d = $d and abs($d) ne xs:double("INF")
+	return $d
+};
+
+(:~
+ : GeoJSON Feature for a place or institution record. A record without
+ : resolvable coordinates gets a null geometry and no bbox, as allowed by
+ : RFC 7946, instead of a Point without coordinates.
+ :
+ : @param $item the TEI record
+ : @param $id its xml:id
+ : @return the Feature as a map, for JSON serialization
+ :)
 declare function places:JSONfile($item as node(), $id as xs:string) {
+	(: coord:getCoords only resolves canonical BMurl-prefixed ids; $config:appUrl
+	   is empty on local and new infra (BetMasWeb#214, BetMasApi#47). :)
+	let $uri := $config:BMurl || $id
 	let $regions := if ($item//t:region[@ref]) then
 		for $region in $item//t:region[@ref]
 		return ann:getannotationbody($region/@ref)
@@ -115,7 +142,7 @@ declare function places:JSONfile($item as node(), $id as xs:string) {
 			"transcription_completeness": "complete",
 			"uri":
 				if ($name/@xml:id) then (
-					$places:bmurl || "/" || $id || "#" || $name/@xml:id
+					$uri || "#" || $name/@xml:id
 				) else (
 				)
 		}
@@ -132,18 +159,23 @@ declare function places:JSONfile($item as node(), $id as xs:string) {
 			"work_uri": concat("https://www.zotero.org/groups/ethiostudies/items/tag/", $b/t:ptr/@target)
 		}
 	let $title := exptit:printTitleID($id)
-	let $uri := ($places:bmurl || "/" || $id)
-	let $coords := if ($item//t:geo[@rend eq "polygon"]) then (
+	let $polygon := exists($item//t:geo[@rend eq "polygon"])
+	let $coords := if ($polygon) then (
 		for $latlng in tokenize($item//t:geo[@rend eq "polygon"], "\n")
 		return replace(normalize-space($latlng), " ", ",")
 	) else
-		(: coord:getCoords branches on a full BMurl-prefixed uri, not a bare
-		xml:id - passing $id here always misses every branch and falls through
-		to an external-gazetteer-ref lookup that can't match it either, so this
-		always produced XPath NaN (BetMasApi#47). :)
-		for $c in tokenize(coord:invertCoord(coord:getCoords($uri)), ",")
-		return number($c)
-	return map {
+		places:doubles(coord:invertCoord(coord:getCoords($uri)))
+	let $bbox := if ($polygon) then
+		places:doubles(subsequence($coords, 1, 2))
+	else (
+		$coords, $coords
+	)
+	let $geometry := if (empty($coords)) then (
+	) else if ($polygon) then
+		map {"type": "Polygon", "coordinates": array { array { $coords!array { places:doubles(.) } } }}
+	else
+		map {"type": "Point", "coordinates": array { $coords }}
+	let $feature := map {
 		"@context":
 			map {
 				"geojson": "http://ld.geojson.org/vocab#",
@@ -173,16 +205,6 @@ declare function places:JSONfile($item as node(), $id as xs:string) {
 				"title": "http://purl.org/dc/terms/title",
 				"type": "@type"
 			},
-		"bbox":
-			if (count($coords) gt 2) then
-				for $firstandsecond in subsequence($coords, 1, 2)
-				return (
-					for $c in tokenize($firstandsecond, ",")
-					return number($c)
-				)
-			else (
-				$coords, $coords
-			),
 		"citation":
 			"Location based on Encyclopaedia Aethiopica, from the Beta maṣāḥǝft: Manuscripts of Ethiopia and Eritrea project",
 		"connectsWith": [$connects],
@@ -198,31 +220,7 @@ declare function places:JSONfile($item as node(), $id as xs:string) {
 				normalize-space(string-join(string:tei2string($item//t:ab[@type eq "history"]), ""))
 			else (
 			),
-		"geometry":
-			map {
-				"coordinates":
-					if ($item//t:geo[@rend eq "polygon"]) then
-						array
-							{
-								array
-									{
-										for $latlng in $coords
-										return let $array := array
-												{
-													for $c in tokenize($latlng, ",")
-													return number($c)
-												}
-											return $array
-									}
-							}
-					else
-						$coords,
-				"type":
-					if ($item//t:geo[@rend eq "polygon"]) then
-						"Polygon"
-					else
-						"Point"
-			},
+		"geometry": $geometry,
 		"id": $id,
 		"properties":
 			map {
@@ -243,12 +241,16 @@ declare function places:JSONfile($item as node(), $id as xs:string) {
 		"provenance": "Encyclopedia Aethiopica",
 		"references": $bibls,
 		"reprPoint":
-			if ($item//t:geo[@rend eq "polygon"]) then (
+			if ($polygon) then (
 			) else
 				$coords,
 		"title": $title,
 		"uri": $uri
 	}
+	return if (exists($bbox)) then
+		map:put($feature, "bbox", array { $bbox })
+	else
+		$feature
 };
 
 (:~
