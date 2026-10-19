@@ -1,0 +1,21 @@
+local/places.xqm
+  s_e98fb2299e704f::t_b51bdb1fb45a41 182-184,186,188
+  s_e98fb2299e704f::t_e98a2ba5823906 217-219
+  s_e98fb2299e704f::t_91d46781b16b5b 135-138,144-146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0739c0248789f0d3ed7d6df01fe9e7081f99aacb",
+  "prompts": {},
+  "sessions": {
+    "s_e98fb2299e704f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "fe63e19d-7812-4cd3-8078-f384be04c806",
+        "model": "default"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
