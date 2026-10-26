@@ -65,7 +65,7 @@ declare function apiTit:get-FormattedTitleandID($request as map(*)) {
 	return (
 		let $fullid := ($id || "#" || $SUBid)
 		let $known := catalog:textparts($fullid, $apiTit:backend)[@corresp = $fullid]
-		return if ($known) then (
+		return if (starts-with($id, 'LIT') and $known) then (
 			$known/node()
 		) else (
 			catalog:label($fullid, $apiTit:backend)
