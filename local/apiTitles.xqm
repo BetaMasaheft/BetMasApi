@@ -28,7 +28,7 @@ declare function apiTit:get-FormattedTitle($request as map(*)) {
 		return if (not(contains($id, ":"))) then
 			normalize-space(string-join(catalog:label($id, $apiTit:backend)))
 		else if (
-			starts-with($id, "wd:") or starts-with($id, "pleaides:") or starts-with($id, "sdc:") or starts-with($id, "gn:")
+			starts-with($id, "wd:") or starts-with($id, "pleiades:") or starts-with($id, "sdc:") or starts-with($id, "gn:")
 		) then
 			normalize-space(catalog:label($id, $apiTit:backend))
 		else
@@ -46,7 +46,7 @@ declare function apiTit:get-FormattedTitleJson($request as map(*)) {
 		let $titletext := if (not(contains($id, ":"))) then
 			normalize-space(string-join(catalog:label($id, $apiTit:backend)))
 		else if (
-			starts-with($id, "wd:") or starts-with($id, "pleaides:") or starts-with($id, "sdc:") or starts-with($id, "gn:")
+			starts-with($id, "wd:") or starts-with($id, "pleiades:") or starts-with($id, "sdc:") or starts-with($id, "gn:")
 		) then
 			normalize-space(catalog:label($id, $apiTit:backend))
 		else
@@ -65,7 +65,7 @@ declare function apiTit:get-FormattedTitleandID($request as map(*)) {
 	return (
 		let $fullid := ($id || "#" || $SUBid)
 		let $known := catalog:textparts($fullid, $apiTit:backend)[@corresp = $fullid]
-		return if ($known) then (
+		return if (starts-with($id, "LIT") and $known) then (
 			$known/node()
 		) else (
 			catalog:label($fullid, $apiTit:backend)
