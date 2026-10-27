@@ -62,7 +62,8 @@ declare %private function api:namedEntityTitleNoLink($entity) {
 
 declare %private function api:msItem($mainID, $msItem) {
 	let $id := string($msItem/@xml:id)
-	let $msItemsCount := count($msItem/ancestor::t:TEI//t:msItem)
+	let $root := root($msItem)
+	let $msItemsCount := count($root//t:msItem)
 	let $trimid := if ($msItem/parent::t:msContents) then
 		concat(replace($id, "\.", "-"), "N", $msItem/position())
 	else
@@ -96,9 +97,10 @@ declare %private function api:msItem($mainID, $msItem) {
 				<hr align="left" class="msItems" />
 				{
 					let $anchor := concat("#", $id)
-					return if ($msItem//ancestor::t:TEI//t:div[@corresp = $anchor]) then
-						let $number := if ($msItem/ancestor::t:TEI//t:div[@corresp = $anchor]/@n) then
-							$msItem/ancestor::t:TEI//t:div[@corresp = $anchor]/@n
+					let $matchingDiv := $root//t:div[@corresp = $anchor]
+					return if ($matchingDiv) then
+						let $number := if ($matchingDiv/@n) then
+							$matchingDiv/@n
 						else
 							1
 						return <a
@@ -110,9 +112,8 @@ declare %private function api:msItem($mainID, $msItem) {
 					)
 				}
 				{
-					let $allChildren := $msItem/t:msItem
-					let $countChildren := count($allChildren)
-					return if (($msItemsCount gt 100) and ($countChildren gt 10)) then (
+					let $hasManyChildren := exists($msItem/t:msItem[11])
+					return if ($hasManyChildren) then (
 						viewItem:TEI2HTML($msItem/node()[not(name() = "msItem")]),
 						<div>
 							<a
@@ -121,17 +122,20 @@ declare %private function api:msItem($mainID, $msItem) {
 								data-msitem="{ replace($msItem/@xml:id, "\.", "-") }"
 								data-start="1"
 							>
-                                       Click here to load the first 10 of {
-									$countChildren
-								} items.
-                                   </a>
-							<div id="msitemloadcontainer{ replace($msItem/@xml:id, "\.", "-") }" />
+								Click here to load content items.
+							</a>
+							<div id="msitemloadcontainer{ replace($msItem/@xml:id, "\.", "-") }">&#160;</div>
 						</div>
-					) else if ($countChildren gt 0) then (
+					) else if (count($msItem/t:msItem) gt 0) then (
 						viewItem:TEI2HTML($msItem/node()[not(name() = "msItem")]),
 						for $m in $msItem/t:msItem
+						let $innerId := string($m/@xml:id)
+						let $innerTrimid := if ($m/parent::t:msContents) then
+							concat(replace($innerId, "\.", "-"), "N", $m/position())
+						else
+							replace($innerId, "\.", "-")
 						let $innerMsItem := api:msItem($mainID, $m)
-						return <div class="w3-container" id="contentItem{ $trimid }" rel="http://purl.org/dc/terms/hasPart">
+						return <div class="w3-container" id="contentItem{ $innerTrimid }" rel="http://purl.org/dc/terms/hasPart">
 							{ $innerMsItem }
 						</div>
 					) else
@@ -155,8 +159,17 @@ declare function api:loadmsItems($request as map(*)) {
 		let $subset := subsequence($allChildren, $start, $limit)
 		let $next := $start + $limit
 		let $items :=
-			for $ms in $subset
-			return api:msItem($mainid, $ms)
+			for $ms at $i in $subset
+			let $absPos := $start + $i - 1
+			let $id := string($ms/@xml:id)
+			let $trimid := if ($ms/parent::t:msContents) then
+				concat(replace($id, "\.", "-"), "N", $absPos)
+			else
+				replace($id, "\.", "-")
+			return <div class="w3-container" id="contentItem{ $trimid }" rel="http://purl.org/dc/terms/hasPart">
+				{ api:msItem($mainid, $ms) }
+			</div>
+
 		let $loader := if ($next le $countChildren) then
 			<a
 				class="w3-button msitemloader w3-yellow"
@@ -164,10 +177,11 @@ declare function api:loadmsItems($request as map(*)) {
 				data-msitem="{ replace($msItem/@xml:id, "\.", "-") }"
 				data-start="{ $next }"
 			>
-         Load more items...
-    </a>
+				Load more items...
+			</a>
 		else (
 		)
+
 		return map {
 			"msitems": $items,
 			"hasMore": $next le $countChildren,
