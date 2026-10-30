@@ -166,21 +166,13 @@ declare function api:loadmsItems($request as map(*)) {
 				concat(replace($id, "\.", "-"), "N", $absPos)
 			else
 				replace($id, "\.", "-")
-			return <div class="w3-container" id="contentItem{ $trimid }" rel="http://purl.org/dc/terms/hasPart">
-				{ api:msItem($mainid, $ms) }
-			</div>
 
-		let $loader := if ($next le $countChildren) then
-			<a
-				class="w3-button msitemloader w3-yellow"
-				data-mainid="{ $mainid }"
-				data-msitem="{ replace($msItem/@xml:id, "\.", "-") }"
-				data-start="{ $next }"
-			>
-				Load more items...
-			</a>
-		else (
-		)
+			return fn:serialize(
+				<div class="w3-container" id="contentItem{ $trimid }" rel="http://purl.org/dc/terms/hasPart">
+					{ api:msItem($mainid, $ms) }
+				</div>,
+				map {"method": "html", "version": "5.0"}
+			)
 
 		return map {
 			"msitems": $items,
