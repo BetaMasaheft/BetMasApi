@@ -59,6 +59,21 @@ declare function apiS:BuildSearchQuery2($element as xs:string, $query as xs:stri
 	return concat("t:", $element, "[ft:query(., '", $query, "', ", serialize($SearchOptions), ")]")
 };
 
+(:~
+ : Serializes HTML nodes to a string for embedding in a JSON value. The JSON
+ : serializer would otherwise write nodes as XML, turning an empty
+ : <span class="previous"></span> into a self-closing <span class="previous"/>,
+ : which HTML parsers treat as an open tag.
+ :)
+declare %private function apiS:html-string($nodes as node()*) as xs:string {
+	replace(
+		serialize($nodes, map {"method": "html", "html-version": 5.0, "indent": false()}),
+		"^<!DOCTYPE html>\s*",
+		"",
+		"i"
+	)
+};
+
 declare function apiS:titleTest($request as map(*)) {
 	let $id := $request?parameters?id
 	return map {"title": exptit:printTitleID($id)}
@@ -110,7 +125,7 @@ declare function apiS:kwicSearch($request as map(*)) {
 			let $results :=
 				for $ex in $expanded
 				for $match in subsequence($ex//exist:match, 1, 3)
-				return kwic:get-summary($ex, $match, <config width="40" />)
+				return apiS:html-string(kwic:get-summary($ex, $match, <config width="40" />))
 			let $pname := $expanded//exist:match[ancestor::t:div[@type eq "edition"]]
 			let $text := if ($pname) then
 				"text"
