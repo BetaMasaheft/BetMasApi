@@ -5,7 +5,7 @@
 # BetMasWeb/BetMasService/data are NOT built from source here anymore - they
 # are already published, indexed and tested in BETMAS_APP_IMAGE (BetMas's own
 # CI publishes it in minutes: BetaMasaheft/BetMas#124). This repo only builds
-# its own xar; roaster is already pinned >= 1.12.1 in the base, so there is
+# its own xar; roaster is already pinned >= 2.1.4 in the base, so there is
 # nothing left to resolve here either. Point BETMAS_APP_IMAGE at a local tag
 # to test against an unpublished base image.
 #
