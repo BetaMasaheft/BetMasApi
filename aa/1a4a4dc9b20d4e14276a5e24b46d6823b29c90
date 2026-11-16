@@ -1,0 +1,18 @@
+.github/workflows/exist.yml
+  h_ff0005bef58c9d 21
+.github/workflows/smoke.yml
+  h_ff0005bef58c9d 21
+.github/workflows/static-checks.yml
+  h_ff0005bef58c9d 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "aa1a4a4dc9b20d4e14276a5e24b46d6823b29c90",
+  "prompts": {},
+  "humans": {
+    "h_ff0005bef58c9d": {
+      "author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
