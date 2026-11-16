@@ -18,7 +18,7 @@ on:
 
 jobs:
   build-extra-xars:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Install Java
         uses: actions/setup-java@v6
