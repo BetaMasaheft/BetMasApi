@@ -30,7 +30,6 @@ import module namespace catalog = "https://www.betamasaheft.uni-hamburg.de/BetMa
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
 import module namespace viewItem = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/viewItem" at "xmldb:exist:///db/apps/BetMasWeb/modules/viewItem.xqm";
 import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
-import module namespace expand = "https://www.betamasaheft.uni-hamburg.de/BetMas/expand" at "xmldb:exist:///db/apps/BetMasWeb/modules/expand.xqm";
 import module namespace batchExpand = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/batchExpand" at "xmldb:exist:///db/apps/BetMasWeb/modules/batchExpand.xqm";
 
 declare %private function api:namedEntityTitleNoLink($entity) {
@@ -478,8 +477,13 @@ declare function api:get-tei-by-ID($id as xs:string, $enrich as item()*) as node
 	let $doc := api:get-tei-rec-by-ID($id)
 	let $tei := ($doc[self::t:TEI])[1]
 	let $opts := batchExpand:enrich-opts($enrich)
-	return if (map:get($opts, "enrich-bibl") = true() and exists($tei)) then
-		expand:enrich-bibl-tei($tei)
+	(: function-lookup: compiles against older BetMasWeb until Task 2b lands in the image :)
+	let $enrich-fn := function-lookup(
+		QName("https://www.betamasaheft.uni-hamburg.de/BetMas/expand", "enrich-bibl-tei"),
+		1
+	)
+	return if (map:get($opts, "enrich-bibl") = true() and exists($tei) and exists($enrich-fn)) then
+		$enrich-fn($tei)
 	else
 		$doc
 };
