@@ -3308,12 +3308,21 @@
 			"get": {
 				"operationId": "api:get-tei-by-ID-route",
 				"tags": ["api"],
-				"summary": "given the file id, returns the source TEI xml",
+				"summary": "Returns expanded TEI. Default is raw passthrough; ?enrich=bibl fills bm: bibl from EthioStudies on the response only.",
 				"parameters": [
 					{
 						"name": "id",
 						"in": "path",
 						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "enrich",
+						"in": "query",
+						"required": false,
+						"description": "Comma allowlist. Use bibl to inject EthioStudies biblStruct children (download profile). Absent = raw.",
 						"schema": {
 							"type": "string"
 						}

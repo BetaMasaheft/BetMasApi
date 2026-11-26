@@ -30,6 +30,8 @@ import module namespace catalog = "https://www.betamasaheft.uni-hamburg.de/BetMa
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
 import module namespace viewItem = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/viewItem" at "xmldb:exist:///db/apps/BetMasWeb/modules/viewItem.xqm";
 import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
+import module namespace expand = "https://www.betamasaheft.uni-hamburg.de/BetMas/expand" at "xmldb:exist:///db/apps/BetMasWeb/modules/expand.xqm";
+import module namespace batchExpand = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/batchExpand" at "xmldb:exist:///db/apps/BetMasWeb/modules/batchExpand.xqm";
 
 declare %private function api:namedEntityTitleNoLink($entity) {
 	let $id := replace($entity/@ref, "https://betamasaheft.eu/", "")
@@ -462,18 +464,30 @@ declare function api:citation($item as node()) {
 };
 
 (:~
- : given the file id, returns the source TEI xml
+ : given the file id, returns the source TEI xml.
+ : Optional ?enrich=bibl injects EthioStudies biblStruct children on the
+ : response only (Debake Task 2b). Default / absent enrich = raw passthrough.
  :)
-declare function api:get-tei-by-ID($id as xs:string) {
+declare function api:get-tei-by-ID($id as xs:string) as node()* {
+	api:get-tei-by-ID($id, ())
+};
+
+declare function api:get-tei-by-ID($id as xs:string, $enrich as item()*) as node()* {
 	let $log := log:add-log-message("/api/" || $id || "/tei", sm:id()//sm:real/sm:username/string(), "REST")
 	let $login := xmldb:login($config:data-root, $config:ADMIN, $config:ppw)
-	return (api:get-tei-rec-by-ID($id))
+	let $doc := api:get-tei-rec-by-ID($id)
+	let $tei := ($doc[self::t:TEI])[1]
+	let $opts := batchExpand:enrich-opts($enrich)
+	return if (map:get($opts, "enrich-bibl") = true() and exists($tei)) then
+		expand:enrich-bibl-tei($tei)
+	else
+		$doc
 };
 
 declare %test:arg("id", "LIT1367Exodus") %test:assertXPath("//*:text") function api:get-tei-by-ID-route(
 	$request as map(*)
 ) {
-	api:get-tei-by-ID($request?parameters?id)
+	api:get-tei-by-ID($request?parameters?id, $request?parameters?enrich)
 };
 
 (:~
