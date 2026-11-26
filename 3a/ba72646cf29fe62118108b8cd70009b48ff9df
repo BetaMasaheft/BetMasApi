@@ -1,0 +1,19 @@
+local/rest.xqm
+  s_b9450a356bc06f::t_444709eb6fc0b9 480-486
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3aba72646cf29fe62118108b8cd70009b48ff9df",
+  "prompts": {},
+  "sessions": {
+    "s_b9450a356bc06f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1bd97766-acd4-49d3-bb31-b1719f9da3e6",
+        "model": "default"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
