@@ -1,0 +1,24 @@
+local/rest.xqm
+  s_b9450a356bc06f::t_b59c85199ad643 479,481-482
+  s_b9450a356bc06f::t_074aa2241d50b1 33-34
+  s_b9450a356bc06f::t_722ad88d0de7ff 467-469,471-475,478,480,483-484,490
+api.json
+  s_b9450a356bc06f::t_ae8d7329896394 3311,3320-3325
+  s_b9450a356bc06f::t_bbd37b9a723d5b 3326-3328
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0c7c87ba80540a6050e0079865017611f05c551e",
+  "prompts": {},
+  "sessions": {
+    "s_b9450a356bc06f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1bd97766-acd4-49d3-bb31-b1719f9da3e6",
+        "model": "default"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
