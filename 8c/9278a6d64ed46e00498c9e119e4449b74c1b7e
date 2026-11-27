@@ -1,0 +1,29 @@
+local/apiSearch.xqm
+  s_b9450a356bc06f::t_924f8397970c07 160-165,172
+  s_b9450a356bc06f::t_234e9add68dfff 67-72
+local/clavis.xqm
+  s_b9450a356bc06f::t_a50964a021766d 18
+  s_b9450a356bc06f::t_58de583d260411 111-113
+.codacy/.gitignore
+  s_b9450a356bc06f::t_3eb316f8f3cb4f 1
+.codacy/codacy.config.baseline.json
+  s_b9450a356bc06f::t_dddc23cd4b24d5 1-1733
+.codacy/codacy.config.json
+  s_b9450a356bc06f::t_25efe8744d7e3e 1-1733
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8c9278a6d64ed46e00498c9e119e4449b74c1b7e",
+  "prompts": {},
+  "sessions": {
+    "s_b9450a356bc06f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1bd97766-acd4-49d3-bb31-b1719f9da3e6",
+        "model": "default"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
