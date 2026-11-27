@@ -31,6 +31,11 @@ import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMas
 import module namespace viewItem = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/viewItem" at "xmldb:exist:///db/apps/BetMasWeb/modules/viewItem.xqm";
 import module namespace string = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/string" at "xmldb:exist:///db/apps/BetMasWeb/modules/tei2string.xqm";
 import module namespace batchExpand = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/batchExpand" at "xmldb:exist:///db/apps/BetMasWeb/modules/batchExpand.xqm";
+(:
+ : Load expand into the static context so function-lookup can see enrich-bibl-tei.
+ : Lookup (not a static call) keeps this module loadable when Web lacks that helper.
+ :)
+import module namespace expand = "https://www.betamasaheft.uni-hamburg.de/BetMas/expand" at "xmldb:exist:///db/apps/BetMasWeb/modules/expand.xqm";
 
 declare %private function api:namedEntityTitleNoLink($entity) {
 	let $id := replace($entity/@ref, "https://betamasaheft.eu/", "")
@@ -477,7 +482,7 @@ declare function api:get-tei-by-ID($id as xs:string, $enrich as item()*) as node
 	let $doc := api:get-tei-rec-by-ID($id)
 	let $tei := ($doc[self::t:TEI])[1]
 	let $opts := batchExpand:enrich-opts($enrich)
-	(: function-lookup: compiles against older BetMasWeb until Task 2b lands in the image :)
+	(: function-lookup after expand import: soft-fail if enrich-bibl-tei is absent :)
 	let $enrich-fn := function-lookup(
 		QName("https://www.betamasaheft.uni-hamburg.de/BetMas/expand", "enrich-bibl-tei"),
 		1
