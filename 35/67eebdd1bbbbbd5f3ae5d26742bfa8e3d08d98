@@ -1,0 +1,26 @@
+local/rest.xqm
+  s_b9450a356bc06f::t_35c07dc33b9608 34-36
+  s_b9450a356bc06f::t_cd33bd192451f9 37-38
+  s_b9450a356bc06f::t_bf34d065a202d4 485
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3567eebdd1bbbbbd5f3ae5d26742bfa8e3d08d98",
+  "prompts": {},
+  "humans": {
+    "h_ff0005bef58c9d": {
+      "author": "duncdrum <d.paterson@me.com>"
+    }
+  },
+  "sessions": {
+    "s_b9450a356bc06f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1bd97766-acd4-49d3-bb31-b1719f9da3e6",
+        "model": "default"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
