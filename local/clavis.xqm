@@ -15,6 +15,7 @@ declare namespace json = "http://www.json.org";
 import module namespace log = "http://www.betamasaheft.eu/log" at "xmldb:exist:///db/apps/BetMasWeb/modules/log.xqm";
 import module namespace exptit = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/exptit" at "xmldb:exist:///db/apps/BetMasWeb/modules/exptit.xqm";
 import module namespace config = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/config" at "xmldb:exist:///db/apps/BetMasWeb/modules/config.xqm";
+import module namespace all = "https://www.betamasaheft.uni-hamburg.de/BetMasWeb/all" at "xmldb:exist:///db/apps/BetMasWeb/modules/all.xqm";
 
 (:~
  : returns a JSON object with the aligned known clavis ids
@@ -107,39 +108,41 @@ se interrogato da titolo da gli id, altrimenti per id da gli altri id e il titol
  :)
 declare function clavis:Clavis($request as map(*)) {
 	let $q as xs:string+ := $request?parameters?q
+	return if (all:lucene-wildcard-too-broad(string-join($q, " "))) then
+		map {"results": [], "total": 0, "error": $all:LUCENE-WILDCARD-TOO-BROAD-MSG}
+	else
+		let $log := log:add-log-message("/api/clavis?q=" || $q, sm:id()//sm:real/sm:username/string(), "REST")
+		let $hits := collection($config:data-rootW)//t:TEI[ft:query(., $q)]
+		let $hi :=
+			for $hit in $hits
+			let $root := root($hit)
+			let $id := string($root//t:TEI/@xml:id)
+			group by $id := $id
+			let $title := exptit:printTitleID($id)
+			let $hitCount := count($hit)
+			let $clavisBibl := $root//t:listBibl[@type eq "clavis"]
+			let $CC := $clavisBibl/t:bibl[@type eq "CC"]/t:citedRange/text()
+			let $CPG := $clavisBibl/t:bibl[@type eq "CPG"]/t:citedRange/text()
+			let $CANT := $clavisBibl/t:bibl[@type eq "CANT"]/t:citedRange/text()
+			let $CAVT := $clavisBibl/t:bibl[@type eq "CAVT"]/t:citedRange/text()
+			let $BHO := $clavisBibl/t:bibl[@type eq "BHO"]/t:citedRange/text()
+			let $BHL := $clavisBibl/t:bibl[@type eq "BHL"]/t:citedRange/text()
+			let $syriaca := $clavisBibl/t:bibl[@type eq "syriaca"]/t:citedRange/text()
+			let $clavisIDS := map {
+				"CC": $CC,
+				"CPG": $CPG,
+				"CANT": $CANT,
+				"CAVT": $CAVT,
+				"BHO": $BHO,
+				"BHL": $BHL,
+				"syriaca": $syriaca
+			}
 
-	let $log := log:add-log-message("/api/clavis?q=" || $q, sm:id()//sm:real/sm:username/string(), "REST")
-	let $hits := collection($config:data-rootW)//t:TEI[ft:query(., $q)]
-	let $hi :=
-		for $hit in $hits
-		let $root := root($hit)
-		let $id := string($root//t:TEI/@xml:id)
-		group by $id := $id
-		let $title := exptit:printTitleID($id)
-		let $hitCount := count($hit)
-		let $clavisBibl := $root//t:listBibl[@type eq "clavis"]
-		let $CC := $clavisBibl/t:bibl[@type eq "CC"]/t:citedRange/text()
-		let $CPG := $clavisBibl/t:bibl[@type eq "CPG"]/t:citedRange/text()
-		let $CANT := $clavisBibl/t:bibl[@type eq "CANT"]/t:citedRange/text()
-		let $CAVT := $clavisBibl/t:bibl[@type eq "CAVT"]/t:citedRange/text()
-		let $BHO := $clavisBibl/t:bibl[@type eq "BHO"]/t:citedRange/text()
-		let $BHL := $clavisBibl/t:bibl[@type eq "BHL"]/t:citedRange/text()
-		let $syriaca := $clavisBibl/t:bibl[@type eq "syriaca"]/t:citedRange/text()
-		let $clavisIDS := map {
-			"CC": $CC,
-			"CPG": $CPG,
-			"CANT": $CANT,
-			"CAVT": $CAVT,
-			"BHO": $BHO,
-			"BHL": $BHL,
-			"syriaca": $syriaca
-		}
-
-		return map {"CAe": $id, "title": $title, "clavis": $clavisIDS, "hits": $hitCount}
-	let $c := count($hits)
-	return if (count($hits) gt 0) then (
-		map {"items": $hi, "totalhits": $c}
-	) else (
-		<json:value><json:value json:array="true"><info>No results, sorry</info></json:value></json:value>
-	)
+			return map {"CAe": $id, "title": $title, "clavis": $clavisIDS, "hits": $hitCount}
+		let $c := count($hits)
+		return if (count($hits) gt 0) then (
+			map {"items": $hi, "totalhits": $c}
+		) else (
+			<json:value><json:value json:array="true"><info>No results, sorry</info></json:value></json:value>
+		)
 };

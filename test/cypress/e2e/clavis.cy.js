@@ -41,16 +41,19 @@ it("GET /api/clavis", () => {
 	});
 });
 
-it("GET /api/clavis?q=... reaches ft:query with the actual parameter value", () => {
+it("GET /api/clavis?q=... reaches the wildcard guard with the actual parameter value", () => {
 	// q used to be spliced into a util:eval string; a leftover from that
 	// refactor made q a dead literal that ft:query never saw. Assert q is
-	// live by sending Lucene syntax invalid only when actually parsed
-	// (leading wildcard) - a query engine that ignores q would return 200.
+	// live via the shared Lucene wildcard gate (BetMasWeb all.xqm): a leading
+	// * is rejected before ft:query. Ignoring q would return empty hits with
+	// no error. Pre-#320 this asserted Lucene 500/WildcardQuery instead.
 	cy.request({
 		url: "/api/clavis?q=%2Afoo",
 		failOnStatusCode: false,
 	}).then((res) => {
-		expect(res.status).to.eq(500);
-		expect(JSON.stringify(res.body)).to.match(/WildcardQuery/);
+		expect(res.status).to.eq(200);
+		expect(res.body).to.have.property("error");
+		expect(String(res.body.error)).to.match(/too broad|Leading \*|wildcard/i);
+		expect(res.body.total).to.eq(0);
 	});
 });
