@@ -1,0 +1,21 @@
+local/apiSearch.xqm
+  s_e353b2519321ef::t_4e0b1f53229208 69,160
+local/clavis.xqm
+  s_e353b2519321ef::t_57de6b0c5ad0ea 114-139,141-147
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "682c11deca8f13c42095805e07ccd49922afb2ee",
+  "prompts": {},
+  "sessions": {
+    "s_e353b2519321ef": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "s_e353b2519321ef",
+        "model": "unknown"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
