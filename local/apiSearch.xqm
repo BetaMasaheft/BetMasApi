@@ -34,32 +34,6 @@ declare variable $apiS:MAX-HITS := 100;
 (: declare variable $apiS:col := collection('/db/apps/expanded'); :)
 
 (:~
- : builds XPath as string to be added to string which will be evaluated by API search.
- :)
-declare function apiS:BuildSearchQuery($element as xs:string, $query as xs:string) {
-	let $SearchOptions := <options>
-		<default-operator>or</default-operator>
-		<phrase-slop>0</phrase-slop>
-		<leading-wildcard>yes</leading-wildcard>
-		<filter-rewrite>yes</filter-rewrite>
-	</options>
-	return concat("descendant::t:", $element, "[ft:query(., '", $query, "', ", serialize($SearchOptions), ")]")
-};
-
-(:~
- : builds XPath as string to be added to string which will be evaluated by API search.
- :)
-declare function apiS:BuildSearchQuery2($element as xs:string, $query as xs:string) {
-	let $SearchOptions := <options>
-		<default-operator>or</default-operator>
-		<phrase-slop>0</phrase-slop>
-		<leading-wildcard>yes</leading-wildcard>
-		<filter-rewrite>yes</filter-rewrite>
-	</options>
-	return concat("t:", $element, "[ft:query(., '", $query, "', ", serialize($SearchOptions), ")]")
-};
-
-(:~
  : Serializes HTML nodes to a string for embedding in a JSON value. The JSON
  : serializer would otherwise write nodes as XML, turning an empty
  : <span class="previous"></span> into a self-closing <span class="previous"/>,
@@ -89,6 +63,10 @@ declare function apiS:kwicSearch($request as map(*)) {
 			<json:value json:array="true">
 				<info>you have to specify a query string and a list or elements, sorry</info>
 			</json:value>
+		</json:value>
+	) else if (all:lucene-wildcard-too-broad(string-join($q, " "))) then (
+		<json:value>
+			<json:value json:array="true"><info>{ $all:LUCENE-WILDCARD-TOO-BROAD-MSG }</info></json:value>
 		</json:value>
 	) else
 		let $log := log:add-log-message("/api/kwicsearch?q=" || $q, sm:id()//sm:real/sm:username/string(), "REST")
@@ -177,13 +155,17 @@ declare function apiS:search($request as map(*)) {
 				<info>you have to specify a query string and a list or elements, sorry</info>
 			</json:value>
 		</json:value>
+	) else if (all:lucene-wildcard-too-broad(string-join($q, " "))) then (
+		<json:value>
+			<json:value json:array="true"><info>{ $all:LUCENE-WILDCARD-TOO-BROAD-MSG }</info></json:value>
+		</json:value>
 	) else
 		let $log := log:add-log-message("/api/search?q=" || $q, sm:id()//sm:real/sm:username/string(), "REST")
 		let $login := xmldb:login($config:data-root, $config:ADMIN, $config:ppw)
 		let $SearchOptions := <options>
 			<default-operator>or</default-operator>
 			<phrase-slop>0</phrase-slop>
-			<leading-wildcard>yes</leading-wildcard>
+			<leading-wildcard>no</leading-wildcard>
 			<filter-rewrite>yes</filter-rewrite>
 		</options>
 		let $script := if ($script != "") then (
