@@ -136,6 +136,8 @@ describe("dtslib response-wrapper regression", () => {
 			expect(res.headers["content-type"]).to.include("tei+xml");
 			expect(res.body).not.to.include("rest:response");
 			expect(res.body).to.include("EMIP01859");
+			// BetMasApi#78: must be XML serialization, not TEI string-value text
+			expect(res.body).to.match(/<TEI\b/);
 		});
 	});
 });
