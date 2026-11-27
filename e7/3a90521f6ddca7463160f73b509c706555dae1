@@ -1,0 +1,33 @@
+local/clavis.xqm
+  s_e353b2519321ef::t_57de6b0c5ad0ea 114-139,141-147
+  s_b9450a356bc06f::t_58de583d260411 111-113
+  s_b9450a356bc06f::t_a50964a021766d 18
+local/apiSearch.xqm
+  s_b9450a356bc06f::t_924f8397970c07 158-159,161,168
+  s_e353b2519321ef::t_4e0b1f53229208 69,160
+  s_b9450a356bc06f::t_234e9add68dfff 67-68,70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e73a90521f6ddca7463160f73b509c706555dae1",
+  "prompts": {},
+  "sessions": {
+    "s_b9450a356bc06f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1bd97766-acd4-49d3-bb31-b1719f9da3e6",
+        "model": "default"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    },
+    "s_e353b2519321ef": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "s_e353b2519321ef",
+        "model": "unknown"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
